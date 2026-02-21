@@ -125,9 +125,11 @@ const Header = () => {
                       navigate("/");
                       setTimeout(() => {
                         window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
-                      }, 100);
+                        document.getElementById("news")?.scrollIntoView({ behavior: "smooth" });
+                      }, 300);
                     } else {
                       window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                      document.getElementById("news")?.scrollIntoView({ behavior: "smooth" });
                     }
                   } else {
                     navigate(link.href);
@@ -185,9 +187,11 @@ const Header = () => {
                         navigate("/");
                         setTimeout(() => {
                           window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
-                        }, 100);
+                          document.getElementById("news")?.scrollIntoView({ behavior: "smooth" });
+                        }, 300);
                       } else {
                         window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                        document.getElementById("news")?.scrollIntoView({ behavior: "smooth" });
                       }
                     } else {
                       navigate(link.href);
