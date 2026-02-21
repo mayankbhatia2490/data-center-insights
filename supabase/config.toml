@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.news-chat]
 verify_jwt = false
+
+[functions.fetch-stocks]
+verify_jwt = false
+
+[functions.fetch-events]
+verify_jwt = false

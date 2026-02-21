@@ -53,6 +53,69 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string
+          date_text: string | null
+          end_date: string | null
+          id: string
+          location: string | null
+          name: string
+          source_url: string | null
+          start_date: string | null
+        }
+        Insert: {
+          created_at?: string
+          date_text?: string | null
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          source_url?: string | null
+          start_date?: string | null
+        }
+        Update: {
+          created_at?: string
+          date_text?: string | null
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          source_url?: string | null
+          start_date?: string | null
+        }
+        Relationships: []
+      }
+      market_tickers: {
+        Row: {
+          change_percent: string | null
+          id: string
+          name: string
+          price: number | null
+          status: string | null
+          symbol: string
+          updated_at: string
+        }
+        Insert: {
+          change_percent?: string | null
+          id?: string
+          name: string
+          price?: number | null
+          status?: string | null
+          symbol: string
+          updated_at?: string
+        }
+        Update: {
+          change_percent?: string | null
+          id?: string
+          name?: string
+          price?: number | null
+          status?: string | null
+          symbol?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
