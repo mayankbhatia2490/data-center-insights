@@ -83,24 +83,6 @@ const Header = () => {
       </div>
 
       {/* Row 1: Top Bar — 36px, 8px grid */}
-      <div className="h-9 bg-background border-b border-border overflow-hidden mt-[2px]">
-        <div className="container h-full flex items-center justify-between text-[11px]">
-          <span className="text-muted-foreground shrink-0 hidden sm:block">{today}</span>
-          <div className="flex-1 mx-6 overflow-hidden relative">
-            <div className="flex animate-ticker-scroll whitespace-nowrap gap-12">
-              {[...tickerHeadlines, ...tickerHeadlines].map((headline, i) => (
-                <span key={i} className="text-muted-foreground">
-                  <span className="text-destructive font-bold mr-1.5">●</span>
-                  {headline}
-                </span>
-              ))}
-            </div>
-          </div>
-          <span className="text-muted-foreground shrink-0 hidden sm:block">
-            Edition: <span className="text-foreground font-semibold">Dubai</span> | Global
-          </span>
-        </div>
-      </div>
 
       {/* Row 2: Main Header — 64px */}
       <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
