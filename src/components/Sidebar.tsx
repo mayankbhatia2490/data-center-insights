@@ -1,4 +1,6 @@
-import { trendingStories, marketTickers, upcomingEvents } from "@/data/mockData";
+import { useArticles } from "@/hooks/useArticles";
+import { marketTickers, upcomingEvents } from "@/data/mockData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const sparklines: Record<string, string> = {
   EQIX: "M0,12 L4,10 L8,8 L12,9 L16,6 L20,4 L24,5 L28,3 L32,2",
@@ -31,6 +33,8 @@ const getCategoryColor = (cat: string) => {
 };
 
 const Sidebar = () => {
+  const { data: trendingArticles, isLoading } = useArticles(undefined, 5);
+
   return (
     <aside className="space-y-0">
       {/* Market Pulse */}
@@ -75,25 +79,37 @@ const Sidebar = () => {
           Trending Now
         </h3>
         <div className="space-y-4">
-          {trendingStories.map((story, i) => (
-            <div key={story.id} className="group cursor-pointer flex gap-2">
-              <span className="text-[11px] font-bold text-primary shrink-0">
-                {String(i + 1).padStart(2, "0")}&thinsp;/
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors duration-200">
-                  {story.title}
-                </p>
-                <span className={`text-[10px] font-extrabold uppercase tracking-[1.5px] mt-1 inline-block ${getCategoryColor(story.category)}`}>
-                  {story.category}
-                </span>
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-2">
+                <Skeleton className="h-4 w-8 shrink-0" />
+                <div className="flex-1 space-y-1">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            (trendingArticles || []).map((story, i) => (
+              <a key={story.id} href={story.source_url || "#"} target="_blank" rel="noopener noreferrer" className="group cursor-pointer flex gap-2 no-underline">
+                <span className="text-[11px] font-bold text-primary shrink-0">
+                  {String(i + 1).padStart(2, "0")}&thinsp;/
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors duration-200">
+                    {story.title}
+                  </p>
+                  <span className={`text-[10px] font-extrabold uppercase tracking-[1.5px] mt-1 inline-block ${getCategoryColor(story.category || "")}`}>
+                    {story.category}
+                  </span>
+                </div>
+              </a>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Upcoming Events — horizontal timeline */}
+      {/* Upcoming Events */}
       <div>
         <h3 className="flex items-center text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-4">
           <span className="w-[2px] h-4 bg-primary mr-2 shrink-0" />
