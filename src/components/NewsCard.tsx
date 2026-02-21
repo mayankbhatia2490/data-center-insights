@@ -25,14 +25,14 @@ const NewsCard = ({ article }: { article: Article }) => {
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className={`px-2 py-0.5 text-xs font-semibold rounded ${getCategoryColor(article.category)}`}>
+            <span className={`px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-[1.5px] rounded ${getCategoryColor(article.category)}`}>
               {article.category}
             </span>
             <span className="text-muted-foreground text-xs flex items-center gap-1">
               <Clock size={12} /> {article.timestamp}
             </span>
           </div>
-          <h3 className="text-xl font-bold text-foreground mb-2 leading-tight group-hover:text-primary transition-colors">
+          <h3 className="text-lg font-bold text-[hsl(210_40%_96%)] mb-2 leading-tight group-hover:text-primary transition-colors">
             {article.title}
           </h3>
           <p className="text-muted-foreground text-sm line-clamp-2">
