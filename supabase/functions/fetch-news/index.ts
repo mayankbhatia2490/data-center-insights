@@ -195,7 +195,7 @@ async function fetchRSS(feedUrl: string, sourceName: string) {
       };
       const title = getTag("title");
       const link = getTag("link") || getTag("guid");
-      const description = getTag("description").replace(/<[^>]+>/g, "").slice(0, 300);
+      const description = getTag("description").replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim().slice(0, 300);
       const pubDate = getTag("pubDate");
 
       if (title && link) {
@@ -237,8 +237,8 @@ async function fetchAtom(feedUrl: string, sourceName: string) {
       const title = getTag("title");
       const linkMatch = entry.match(/<link[^>]+href="([^"]+)"/);
       const link = linkMatch ? linkMatch[1] : "";
-      const summary = getTag("summary").replace(/<[^>]+>/g, "").slice(0, 300) ||
-                      getTag("content").replace(/<[^>]+>/g, "").slice(0, 300);
+      const summary = getTag("summary").replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim().slice(0, 300) ||
+                      getTag("content").replace(/<[^>]*>/g, "").replace(/&[a-z]+;/gi, " ").replace(/\s+/g, " ").trim().slice(0, 300);
       const pubDate = getTag("published") || getTag("updated");
 
       if (title && link) {
