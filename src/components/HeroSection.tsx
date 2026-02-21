@@ -1,5 +1,5 @@
 import { useArticles, Article } from "@/hooks/useArticles";
-import { Clock } from "lucide-react";
+import { Clock, BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 
@@ -25,6 +25,10 @@ const formatTime = (date: string | null) => {
 
 const HeroSection = () => {
   const { data: articles, isLoading } = useArticles(undefined, 5);
+  const { data: allArticles } = useArticles(undefined, 50);
+
+  const articleCount = allArticles?.length || 0;
+  const latestDate = articles?.[0]?.published_at;
 
   if (isLoading || !articles?.length) {
     return (
@@ -59,6 +63,20 @@ const HeroSection = () => {
   return (
     <section className="border-b border-border bg-card">
       <div className="container py-8 md:py-12">
+        {/* Stats bar */}
+        <div className="flex items-center gap-4 mb-6 text-[11px] text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <BarChart3 size={12} className="text-primary" />
+            <span className="text-foreground font-semibold">{articleCount}</span> stories analyzed today
+          </span>
+          {latestDate && (
+            <>
+              <span className="text-border">|</span>
+              <span>Last updated {formatTime(latestDate)}</span>
+            </>
+          )}
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           <div className="lg:w-[60%]">
             <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary mb-4 block">

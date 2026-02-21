@@ -1,6 +1,8 @@
 import { Article } from "@/hooks/useArticles";
 import { Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import ShareButtons from "@/components/ShareButtons";
+import BookmarkButton from "@/components/BookmarkButton";
 
 const getCategoryBorder = (cat: string) => {
   switch (cat) {
@@ -77,7 +79,11 @@ const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: bo
           <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
             {article.source}
           </span>
-          <span className="text-xs text-muted-foreground">{article.read_time}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">{article.read_time}</span>
+            <ShareButtons url={article.source_url || ""} title={article.title} />
+            <BookmarkButton articleId={article.id} />
+          </div>
         </div>
       </div>
     </a>
