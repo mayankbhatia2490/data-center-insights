@@ -29,10 +29,11 @@ const Index = () => {
   // Reading progress
   const [readProgress, setReadProgress] = useState(0);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowModal(true), 30000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Newsletter popup disabled
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setShowModal(true), 30000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // Listen for nav filter changes from Header
   useEffect(() => {
