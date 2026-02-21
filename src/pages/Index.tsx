@@ -31,7 +31,7 @@ const Index = () => {
   const [readProgress, setReadProgress] = useState(0);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowModal(true), 15000);
+    const timer = setTimeout(() => setShowModal(true), 30000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -168,8 +168,8 @@ const Index = () => {
 
       {/* Newsletter Modal */}
       {showModal && !modalSubscribed && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full relative shadow-2xl">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full relative shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors duration-200"
