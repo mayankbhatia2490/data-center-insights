@@ -158,6 +158,9 @@ const Index = () => {
             <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
               Briefing Archive
             </Link>
+            <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
+              Industry Leaders
+            </Link>
             <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
           </div>
         </div>
