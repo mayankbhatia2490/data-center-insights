@@ -12,10 +12,10 @@ import { Input } from "@/components/ui/input";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 const navLinks = [
-  { label: "Global News", href: "#news" },
-  { label: "Middle East Focus", href: "#news" },
-  { label: "Hyperscale", href: "#news" },
-  { label: "Sustainability", href: "#news" },
+  { label: "Global News", filter: "All", href: "#news" },
+  { label: "Middle East Focus", filter: "Middle East", href: "#news" },
+  { label: "Hyperscale", filter: "AI", href: "#news" },
+  { label: "Sustainability", filter: "Sustainability", href: "#news" },
 ];
 
 const tickerHeadlines = [
@@ -111,7 +111,10 @@ const Header = () => {
               <a
                 key={link.label}
                 href={link.href}
-                onClick={() => setActiveLink(link.label)}
+                onClick={(e) => {
+                  setActiveLink(link.label);
+                  window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                }}
                 className={`h-full flex items-center px-4 text-[13px] font-medium transition-colors duration-200 ${
                   activeLink === link.label
                     ? "text-foreground border-b-2 border-b-primary"
@@ -155,7 +158,11 @@ const Header = () => {
                   key={link.label}
                   href={link.href}
                   className="text-sm font-medium text-muted-foreground"
-                  onClick={() => { setActiveLink(link.label); setMobileOpen(false); }}
+                  onClick={() => {
+                    setActiveLink(link.label);
+                    setMobileOpen(false);
+                    window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                  }}
                 >
                   {link.label}
                 </a>
