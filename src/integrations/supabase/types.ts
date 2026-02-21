@@ -53,6 +53,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_digests: {
+        Row: {
+          article_count: number | null
+          content: string
+          created_at: string
+          digest_date: string
+          id: string
+        }
+        Insert: {
+          article_count?: number | null
+          content: string
+          created_at?: string
+          digest_date: string
+          id?: string
+        }
+        Update: {
+          article_count?: number | null
+          content?: string
+          created_at?: string
+          digest_date?: string
+          id?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string

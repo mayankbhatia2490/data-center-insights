@@ -10,6 +10,7 @@ import { Zap, Mail, X, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsChatbot from "@/components/NewsChatbot";
+import DailyDigest from "@/components/DailyDigest";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -38,6 +39,7 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-16">
       <Header />
       <HeroSection />
+      <DailyDigest />
 
       <main id="news" className="container py-8 md:py-12">
         <div className="mb-8 flex items-center justify-between">
