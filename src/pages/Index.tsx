@@ -11,25 +11,43 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsChatbot from "@/components/NewsChatbot";
 import DailyDigest from "@/components/DailyDigest";
+import { useSubscribe } from "@/hooks/useSubscribe";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeFilter, setActiveFilter] = useState("All");
   const { data: articles, isLoading } = useArticles(activeFilter, 50);
+  const { subscribe, isLoading: subLoading } = useSubscribe();
 
   const visibleNews = (articles || []).slice(0, visibleCount);
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
   const [modalSubscribed, setModalSubscribed] = useState(false);
 
+  // Reading progress
+  const [readProgress, setReadProgress] = useState(0);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowModal(true), 15000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleModalSubscribe = (e: React.FormEvent) => {
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setReadProgress(docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleModalSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (modalEmail) {
+    if (!modalEmail) return;
+    const result = await subscribe(modalEmail);
+    if (result.success) {
       setModalSubscribed(true);
       setTimeout(() => setShowModal(false), 2000);
     }
@@ -37,6 +55,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-16">
+      {/* Reading progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-[70] h-[2px]">
+        <div
+          className="h-full bg-primary transition-all duration-150"
+          style={{ width: `${readProgress}%` }}
+        />
+      </div>
+
       <Header />
       <HeroSection />
       <DailyDigest />
@@ -46,7 +72,7 @@ const Index = () => {
           <h2 className="flex items-center gap-2">
             <Globe className="h-5 w-5 text-primary" /> Latest Briefing
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {["All", "M&A", "AI", "Middle East", "Sustainability", "Policy"].map((filter) => (
               <button
                 key={filter}
@@ -113,9 +139,12 @@ const Index = () => {
             <Zap className="h-4 w-4 text-primary" />
             <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
           </div>
-          <p className="text-xs text-muted-foreground">
-            © 2026 Data Center Pulse. Intelligence for infrastructure leaders.
-          </p>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
+              Briefing Archive
+            </Link>
+            <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
+          </div>
         </div>
       </footer>
 
@@ -163,8 +192,8 @@ const Index = () => {
                 required
                 className="h-12 rounded-[4px]"
               />
-              <Button type="submit" className="w-full h-12 font-bold rounded-[4px]">
-                Subscribe for Free
+              <Button type="submit" className="w-full h-12 font-bold rounded-[4px]" disabled={subLoading}>
+                {subLoading ? "Subscribing..." : "Subscribe for Free"}
               </Button>
             </form>
           </div>

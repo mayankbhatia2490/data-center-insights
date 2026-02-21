@@ -1,26 +1,28 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 const BottomSubscribeBar = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [visible, setVisible] = useState(false);
+  const { subscribe, isLoading } = useSubscribe();
 
-  // Rule 7: Show after scrolling past hero section
   useEffect(() => {
     const onScroll = () => {
-      // Hero is roughly 400-500px tall; show bar after scrolling 400px
       setVisible(window.scrollY > 400);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email) return;
+    const result = await subscribe(email);
+    if (result.success) {
       setSubscribed(true);
       setEmail("");
     }
@@ -52,8 +54,8 @@ const BottomSubscribeBar = () => {
             required
             className="h-8 text-xs bg-secondary border-border flex-1 rounded-[4px]"
           />
-          <Button type="submit" size="sm" className="h-8 text-xs px-4 font-bold shrink-0 rounded-[4px]">
-            Subscribe Free
+          <Button type="submit" size="sm" className="h-8 text-xs px-4 font-bold shrink-0 rounded-[4px]" disabled={isLoading}>
+            {isLoading ? "..." : "Subscribe Free"}
           </Button>
         </form>
       </div>

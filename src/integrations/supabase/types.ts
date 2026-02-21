@@ -140,6 +140,36 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribers: {
+        Row: {
+          confirmed: boolean
+          email: string
+          id: string
+          name: string | null
+          preferences: Json | null
+          subscribed_at: string
+          unsubscribe_token: string
+        }
+        Insert: {
+          confirmed?: boolean
+          email: string
+          id?: string
+          name?: string | null
+          preferences?: Json | null
+          subscribed_at?: string
+          unsubscribe_token?: string
+        }
+        Update: {
+          confirmed?: boolean
+          email?: string
+          id?: string
+          name?: string | null
+          preferences?: Json | null
+          subscribed_at?: string
+          unsubscribe_token?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

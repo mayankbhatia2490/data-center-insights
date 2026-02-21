@@ -9,6 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useSubscribe } from "@/hooks/useSubscribe";
 
 const navLinks = [
   { label: "Global News", href: "#news" },
@@ -30,6 +31,7 @@ const Header = () => {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isDark, setIsDark] = useState(() => !document.documentElement.classList.contains("light"));
+  const { subscribe, isLoading } = useSubscribe();
 
   const toggleTheme = () => {
     const next = !isDark;
@@ -46,9 +48,11 @@ const Header = () => {
     }
   }, []);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email) return;
+    const result = await subscribe(email);
+    if (result.success) {
       setSubscribed(true);
       setTimeout(() => {
         setDialogOpen(false);
@@ -102,7 +106,6 @@ const Header = () => {
             </span>
           </div>
 
-          {/* Rule 3: Active nav link gets 2px blue bottom border */}
           <nav className="hidden items-center gap-0 md:flex h-full">
             {navLinks.map((link) => (
               <a
@@ -205,7 +208,9 @@ const Header = () => {
                 required
                 className="rounded-[4px]"
               />
-              <Button type="submit" className="w-full rounded-[4px]">Subscribe Free</Button>
+              <Button type="submit" className="w-full rounded-[4px]" disabled={isLoading}>
+                {isLoading ? "Subscribing..." : "Subscribe Free"}
+              </Button>
               <p className="text-center text-xs text-muted-foreground">No spam. Unsubscribe anytime.</p>
             </form>
           )}

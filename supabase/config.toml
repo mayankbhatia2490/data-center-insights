@@ -14,3 +14,12 @@ verify_jwt = false
 
 [functions.generate-digest]
 verify_jwt = false
+
+[functions.subscribe]
+verify_jwt = false
+
+[functions.unsubscribe]
+verify_jwt = false
+
+[functions.send-newsletter]
+verify_jwt = false
