@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import NewsTicker from "@/components/NewsTicker";
 import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsCard from "@/components/NewsCard";
 import Sidebar from "@/components/Sidebar";
@@ -64,6 +65,7 @@ const Index = () => {
       </div>
 
       <Header />
+      <NewsTicker />
       <HeroSection />
       <DailyDigest />
 
