@@ -17,6 +17,12 @@ const navLinks = [
   { label: "Sustainability", href: "#news" },
 ];
 
+const tickerHeadlines = [
+  "BREAKING: Blackstone closes $10B European data center deal",
+  "NVIDIA unveils next-gen liquid cooling for AI racks",
+  "AWS commits $7.8B to Saudi Arabia infrastructure",
+];
+
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -35,10 +41,38 @@ const Header = () => {
     }
   };
 
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between">
+      {/* Row 1: Top Bar */}
+      <div className="h-9 bg-[hsl(222,47%,2%)] border-b border-border/30 overflow-hidden">
+        <div className="container h-full flex items-center justify-between text-[11px]">
+          <span className="text-muted-foreground shrink-0 hidden sm:block">{today}</span>
+          <div className="flex-1 mx-6 overflow-hidden relative">
+            <div className="flex animate-ticker-scroll whitespace-nowrap gap-12">
+              {[...tickerHeadlines, ...tickerHeadlines].map((headline, i) => (
+                <span key={i} className="text-muted-foreground">
+                  <span className="text-destructive font-bold mr-1.5">●</span>
+                  {headline}
+                </span>
+              ))}
+            </div>
+          </div>
+          <span className="text-muted-foreground shrink-0 hidden sm:block">
+            Edition: <span className="text-foreground font-semibold">Dubai</span> | Global
+          </span>
+        </div>
+      </div>
+
+      {/* Row 2: Main Header */}
+      <header className="sticky top-0 z-50 h-16 bg-[hsl(222,47%,6%)] border-b-2 border-b-primary">
+        <div className="container h-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary" />
             <span className="text-lg font-bold tracking-tight">
@@ -51,7 +85,7 @@ const Header = () => {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
@@ -64,7 +98,7 @@ const Header = () => {
               onClick={() => setDialogOpen(true)}
               className="hidden sm:inline-flex"
             >
-              Get the Newsletter
+              Subscribe
             </Button>
             <button
               className="md:hidden text-foreground"
@@ -89,7 +123,7 @@ const Header = () => {
                 </a>
               ))}
               <Button size="sm" onClick={() => { setDialogOpen(true); setMobileOpen(false); }}>
-                Get the Newsletter
+                Subscribe
               </Button>
             </nav>
           </div>
