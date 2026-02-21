@@ -6,11 +6,16 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Data center industry's most tracked stocks — REITs, power/cooling infrastructure, and AI/chip suppliers
 const SYMBOLS = [
   { symbol: "EQIX", name: "Equinix" },
   { symbol: "DLR", name: "Digital Realty" },
+  { symbol: "VRT", name: "Vertiv" },
+  { symbol: "NVDA", name: "NVIDIA" },
+  { symbol: "AMD", name: "AMD" },
   { symbol: "IRM", name: "Iron Mountain" },
-  { symbol: "QTS", name: "QTS Realty" },
+  { symbol: "ANET", name: "Arista Networks" },
+  { symbol: "DELL", name: "Dell Technologies" },
 ];
 
 Deno.serve(async (req) => {
