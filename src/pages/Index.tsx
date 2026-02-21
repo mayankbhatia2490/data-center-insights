@@ -44,7 +44,7 @@ const Index = () => {
             <Globe className="h-5 w-5 text-primary" /> Latest Briefing
           </h2>
           <div className="flex gap-2">
-            {["All", "M&A", "AI", "Middle East"].map((filter) => (
+            {["All", "M&A", "AI", "Middle East", "Sustainability", "Policy"].map((filter) => (
               <button
                 key={filter}
                 onClick={() => { setActiveFilter(filter); setVisibleCount(6); }}
