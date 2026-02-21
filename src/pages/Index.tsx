@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsCard from "@/components/NewsCard";
 import Sidebar from "@/components/Sidebar";
 import { mockNews } from "@/data/mockData";
@@ -30,7 +31,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-14">
       <Header />
       <HeroSection />
 
@@ -89,6 +90,8 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      <BottomSubscribeBar />
 
       {/* Newsletter Modal (15-second trigger) */}
       {showModal && !modalSubscribed && (
