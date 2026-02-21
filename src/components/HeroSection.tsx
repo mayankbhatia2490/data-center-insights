@@ -1,69 +1,64 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Zap, CheckCircle } from "lucide-react";
+import { mockNews } from "@/data/mockData";
+import { Clock } from "lucide-react";
+
+const getCategoryColor = (cat: string) => {
+  switch (cat) {
+    case "M&A": return "text-primary";
+    case "Sustainability": return "text-accent";
+    case "AI": return "text-[hsl(270,70%,65%)]";
+    case "Middle East": return "text-[hsl(35,92%,60%)]";
+    case "Policy": return "text-[hsl(0,0%,70%)]";
+    default: return "text-primary";
+  }
+};
 
 const HeroSection = () => {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
-  };
+  const featured = mockNews[0];
+  const secondaryStories = mockNews.slice(1, 5);
 
   return (
-    <section className="relative overflow-hidden border-b border-border/50" style={{ background: "var(--gradient-hero)" }}>
-      {/* Subtle grid overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
-        backgroundSize: "60px 60px",
-      }} />
-
-      <div className="container relative py-16 md:py-24">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            <Zap className="h-3 w-3" />
-            Trusted by 5,000+ Industry Professionals
+    <section className="border-b border-[#1e293b] bg-[hsl(222,47%,6%)]">
+      <div className="container py-10 md:py-14">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
+          {/* Left: Featured Story (60%) */}
+          <div className="lg:w-[60%]">
+            <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary mb-3 block">
+              Featured Story
+            </span>
+            <h1 className="text-[40px] md:text-[48px] font-black leading-[1.08] tracking-[-2px] text-foreground mb-4">
+              {featured.title}
+            </h1>
+            <p className="text-[15px] leading-relaxed line-clamp-2 mb-5">
+              {featured.summary}
+            </p>
+            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+              <span className="font-semibold text-foreground uppercase tracking-wider">{featured.source}</span>
+              <span className="text-border">|</span>
+              <span className="flex items-center gap-1"><Clock size={11} /> {featured.timestamp}</span>
+              <span className="text-border">|</span>
+              <span>{featured.readTime}</span>
+            </div>
           </div>
 
-          <h1 className="mb-4 tracking-[-2px]">
-            The Daily Intelligence for{" "}
-            <span className="text-gradient">Data Center Leaders</span>
-          </h1>
-
-          <p className="mb-8 text-base text-muted-foreground md:text-lg">
-            Curated insights on M&A, Edge Computing, and AI Infrastructure.
-            Read by pros at Equinix, AWS, Google, and Digital Realty.
-          </p>
-
-          {subscribed ? (
-            <div className="mx-auto flex max-w-md items-center justify-center gap-2 rounded-lg border border-accent/30 bg-accent/10 p-4">
-              <CheckCircle className="h-5 w-5 text-accent" />
-              <span className="font-medium text-accent">Thanks for joining! Check your inbox.</span>
-            </div>
-          ) : (
-            <form onSubmit={handleSubscribe} className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
-              <Input
-                type="email"
-                placeholder="Enter your work email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="h-12 flex-1 bg-secondary/50 text-base"
-              />
-              <Button type="submit" size="lg" className="h-12 px-8 font-semibold">
-                Subscribe Free
-              </Button>
-            </form>
-          )}
-
-          <p className="mt-3 text-xs text-muted-foreground">
-            No spam. Unsubscribe anytime. Join industry leaders.
-          </p>
+          {/* Right: 2x2 Grid of Top Stories (40%) */}
+          <div className="lg:w-[40%] grid grid-cols-2 border-l-0 lg:border-l border-[#1e293b]">
+            {secondaryStories.map((story, i) => (
+              <div
+                key={story.id}
+                className={`group cursor-pointer px-4 lg:pl-6 py-4 hover:bg-secondary/30 transition-colors ${
+                  i < 2 ? "border-b border-[#1e293b]" : ""
+                } ${i % 2 === 0 ? "border-r border-[#1e293b]" : ""}`}
+              >
+                <span className={`text-[10px] font-extrabold uppercase tracking-[1.5px] ${getCategoryColor(story.category)}`}>
+                  {story.category}
+                </span>
+                <h3 className="text-[14px] font-bold leading-snug mt-1.5 text-[hsl(210,40%,96%)] group-hover:text-primary transition-colors line-clamp-3">
+                  {story.title}
+                </h3>
+                <span className="text-[10px] text-muted-foreground mt-2 block">{story.timestamp}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
