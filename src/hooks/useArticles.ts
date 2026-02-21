@@ -12,6 +12,7 @@ export interface Article {
   published_at: string | null;
   read_time: string | null;
   created_at: string;
+  sentiment: string | null;
 }
 
 export function useArticles(category?: string, limit = 20) {
