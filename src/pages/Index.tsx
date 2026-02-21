@@ -4,18 +4,18 @@ import HeroSection from "@/components/HeroSection";
 import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsCard from "@/components/NewsCard";
 import Sidebar from "@/components/Sidebar";
-import { mockNews } from "@/data/mockData";
+import { useArticles } from "@/hooks/useArticles";
 import { Button } from "@/components/ui/button";
 import { Zap, Mail, X, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeFilter, setActiveFilter] = useState("All");
-  const filteredNews = activeFilter === "All"
-    ? mockNews
-    : mockNews.filter((a) => a.category === activeFilter);
-  const visibleNews = filteredNews.slice(0, visibleCount);
+  const { data: articles, isLoading } = useArticles(activeFilter, 50);
+
+  const visibleNews = (articles || []).slice(0, visibleCount);
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
   const [modalSubscribed, setModalSubscribed] = useState(false);
@@ -62,18 +62,39 @@ const Index = () => {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           <div>
-            {visibleNews.map((article, i) => (
-              <NewsCard key={article.id} article={article} isFirst={i === 0} />
-            ))}
-            {visibleCount < filteredNews.length && (
-              <div className="flex justify-center py-8">
-                <button
-                  onClick={() => setVisibleCount((c) => Math.min(c + 4, filteredNews.length))}
-                  className="text-muted-foreground hover:text-foreground font-medium border-b border-border pb-1 hover:border-foreground transition-all duration-200 text-sm"
-                >
-                  Load previous days
-                </button>
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex gap-6 px-6 py-6 border-b border-border">
+                  <Skeleton className="w-44 h-28 shrink-0" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+              ))
+            ) : visibleNews.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <p className="text-lg font-semibold">No articles yet</p>
+                <p className="text-sm mt-1">News will appear here once the aggregator runs.</p>
               </div>
+            ) : (
+              <>
+                {visibleNews.map((article, i) => (
+                  <NewsCard key={article.id} article={article} isFirst={i === 0} />
+                ))}
+                {visibleCount < (articles?.length || 0) && (
+                  <div className="flex justify-center py-8">
+                    <button
+                      onClick={() => setVisibleCount((c) => Math.min(c + 4, articles?.length || 0))}
+                      className="text-muted-foreground hover:text-foreground font-medium border-b border-border pb-1 hover:border-foreground transition-all duration-200 text-sm"
+                    >
+                      Load previous days
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
