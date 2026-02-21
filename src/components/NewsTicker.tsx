@@ -7,13 +7,11 @@ const NewsTicker = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [hotIndex, setHotIndex] = useState(0);
 
-  // Rotate the "HOT" tag every 8 seconds to a different article
+  // Pick the "HOT" article based on the current day (rotates every 24h)
   useEffect(() => {
     if (!articles || articles.length === 0) return;
-    const interval = setInterval(() => {
-      setHotIndex((prev) => (prev + 1) % Math.min(articles.length, 5));
-    }, 8000);
-    return () => clearInterval(interval);
+    const dayOfYear = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+    setHotIndex(dayOfYear % Math.min(articles.length, 5));
   }, [articles]);
 
   if (!articles || articles.length === 0) return null;
