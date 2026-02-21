@@ -6,6 +6,8 @@ export function stripHtml(html: string | null | undefined): string {
   if (!html) return "";
   return html
     .replace(/<[^>]*>/g, "")
+    .replace(/\bp\s+data-block-key="[^"]*"/gi, "")
+    .replace(/\/p\b/gi, "")
     .replace(/&amp;/gi, "&")
     .replace(/&lt;/gi, "<")
     .replace(/&gt;/gi, ">")

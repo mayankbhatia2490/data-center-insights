@@ -3,7 +3,7 @@ import { useMarketTickers, useEvents } from "@/hooks/useSidebarData";
 import { Skeleton } from "@/components/ui/skeleton";
 import KeyPeopleSidebar from "@/components/KeyPeopleSidebar";
 import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
-import WordBubble from "@/components/WordBubble";
+import WordCloudDisplay from "@/components/WordCloudDisplay";
 
 const Sparkline = ({ status }: { status: string | null }) => {
   // Generate a random-ish sparkline based on status
@@ -64,7 +64,7 @@ const Sidebar = () => {
     <aside className="space-y-0">
       <WeeklyIndexWidget />
       <KeyPeopleSidebar />
-      <WordBubble />
+      <WordCloudDisplay />
       {/* Market Pulse */}
       <div className="border-b border-border pb-8 mb-8">
         <h3 className="flex items-center text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-4">
