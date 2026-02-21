@@ -16,7 +16,6 @@ const Index = () => {
   const [modalEmail, setModalEmail] = useState("");
   const [modalSubscribed, setModalSubscribed] = useState(false);
 
-  // Trigger newsletter modal after 15 seconds
   useEffect(() => {
     const timer = setTimeout(() => setShowModal(true), 15000);
     return () => clearTimeout(timer);
@@ -31,20 +30,20 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-14">
+    <div className="min-h-screen bg-background pb-16">
       <Header />
       <HeroSection />
 
       <main id="news" className="container py-8 md:py-12">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl font-bold md:text-2xl flex items-center gap-2">
+          <h2 className="flex items-center gap-2">
             <Globe className="h-5 w-5 text-primary" /> Latest Briefing
           </h2>
           <div className="flex gap-2">
             {["All", "M&A", "AI", "Middle East"].map((filter) => (
               <button
                 key={filter}
-                className="rounded-md px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                className="rounded-[4px] px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:bg-secondary hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
                 data-active={filter === "All"}
               >
                 {filter}
@@ -54,16 +53,15 @@ const Index = () => {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-          {/* News Feed */}
           <div>
-            {visibleNews.map((article) => (
-              <NewsCard key={article.id} article={article} />
+            {visibleNews.map((article, i) => (
+              <NewsCard key={article.id} article={article} isFirst={i === 0} />
             ))}
             {visibleCount < mockNews.length && (
-              <div className="flex justify-center py-6">
+              <div className="flex justify-center py-8">
                 <button
                   onClick={() => setVisibleCount((c) => Math.min(c + 4, mockNews.length))}
-                  className="text-muted-foreground hover:text-foreground font-medium border-b border-border pb-1 hover:border-foreground transition-all text-sm"
+                  className="text-muted-foreground hover:text-foreground font-medium border-b border-border pb-1 hover:border-foreground transition-all duration-200 text-sm"
                 >
                   Load previous days
                 </button>
@@ -71,19 +69,17 @@ const Index = () => {
             )}
           </div>
 
-          {/* Sidebar */}
           <div className="hidden lg:block">
             <Sidebar />
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/50">
+      <footer className="border-t border-border bg-card">
         <div className="container flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold">Data Center Pulse</span>
+            <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
           </div>
           <p className="text-xs text-muted-foreground">
             © 2026 Data Center Pulse. Intelligence for infrastructure leaders.
@@ -93,18 +89,18 @@ const Index = () => {
 
       <BottomSubscribeBar />
 
-      {/* Newsletter Modal (15-second trigger) */}
+      {/* Newsletter Modal */}
       {showModal && !modalSubscribed && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="rounded-2xl border border-border bg-card p-8 max-w-md w-full relative shadow-2xl shadow-primary/10">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
+          <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full relative shadow-2xl">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
               <X size={20} />
             </button>
-            <div className="text-center mb-6">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center mb-8">
+              <div className="w-12 h-12 bg-primary rounded-[4px] flex items-center justify-center mx-auto mb-4">
                 <Mail className="text-primary-foreground" size={24} />
               </div>
               <h2 className="text-2xl font-bold mb-2">Get the Edge</h2>
@@ -113,7 +109,7 @@ const Index = () => {
               </p>
             </div>
 
-            <ul className="space-y-2 mb-6 text-sm">
+            <ul className="space-y-2 mb-8 text-sm">
               <li className="flex items-center gap-2">
                 <Zap size={14} className="text-accent" /> Daily Market Briefing
               </li>
@@ -125,16 +121,16 @@ const Index = () => {
               </li>
             </ul>
 
-            <form onSubmit={handleModalSubscribe} className="space-y-3">
+            <form onSubmit={handleModalSubscribe} className="space-y-4">
               <Input
                 type="email"
                 placeholder="Work email address"
                 value={modalEmail}
                 onChange={(e) => setModalEmail(e.target.value)}
                 required
-                className="h-12"
+                className="h-12 rounded-[4px]"
               />
-              <Button type="submit" className="w-full h-12 font-bold">
+              <Button type="submit" className="w-full h-12 font-bold rounded-[4px]">
                 Subscribe for Free
               </Button>
             </form>
@@ -142,11 +138,10 @@ const Index = () => {
         </div>
       )}
 
-      {/* Modal success state */}
       {showModal && modalSubscribed && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="rounded-2xl border border-border bg-card p-8 max-w-md w-full text-center shadow-2xl shadow-primary/10">
-            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full text-center">
+            <div className="w-12 h-12 bg-accent rounded-[4px] flex items-center justify-center mx-auto mb-4">
               <Zap className="text-accent-foreground" size={24} />
             </div>
             <p className="text-lg font-semibold">Welcome aboard!</p>

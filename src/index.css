@@ -6,48 +6,37 @@
 
 @layer base {
   :root {
-    /* Page background: #0a0f1e */
     --background: 226 52% 8%;
-    /* Primary text: #e2e8f0 */
     --foreground: 214 32% 91%;
 
-    /* Section bg: #0f172a */
     --card: 222 47% 11%;
     --card-foreground: 214 32% 91%;
 
     --popover: 222 47% 11%;
     --popover-foreground: 214 32% 91%;
 
-    /* Accent blue: #3b82f6 */
     --primary: 217 91% 60%;
     --primary-foreground: 226 52% 8%;
 
-    /* Card/hover: #111827 */
     --secondary: 220 41% 11%;
     --secondary-foreground: 214 32% 91%;
 
-    /* Hover: #111827 */
     --muted: 220 41% 11%;
-    /* Secondary text: #64748b */
     --muted-foreground: 215 16% 47%;
 
-    /* Emerald: #10b981 */
     --accent: 160 84% 39%;
     --accent-foreground: 226 52% 8%;
 
-    /* Red: #ef4444 */
     --destructive: 0 84% 60%;
     --destructive-foreground: 214 32% 91%;
 
-    /* Border subtle: #1e293b */
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
 
-    /* Emphasized border: #334155 */
     --border-emphasis: 215 25% 27%;
 
-    --radius: 0.5rem;
+    --radius: 4px;
 
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 214 32% 91%;
@@ -58,12 +47,14 @@
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 217 91% 60%;
 
-    /* Category colors */
     --category-ma: 217 91% 60%;
     --category-ai: 217 91% 60%;
     --category-green: 160 84% 39%;
     --category-me: 35 92% 55%;
     --category-policy: 215 16% 47%;
+
+    /* Subscribe bar bg: #1e3a5f */
+    --subscribe-bar: 213 52% 25%;
   }
 
   .light {
@@ -128,6 +119,12 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Global transition default: 200ms ease */
+  a, button, input, [class*="hover:"] {
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+  }
 }
 
 @layer components {
@@ -167,9 +164,5 @@
 @layer utilities {
   .text-gradient {
     @apply text-primary;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
