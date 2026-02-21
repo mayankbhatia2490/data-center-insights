@@ -191,10 +191,10 @@ const Index = () => {
                 <Zap size={14} className="text-accent" /> Daily Market Briefing
               </li>
               <li className="flex items-center gap-2">
-                <Zap size={14} className="text-accent" /> Exclusive M&A Rumors
+                <Zap size={14} className="text-accent" /> M&A Deal Alerts
               </li>
               <li className="flex items-center gap-2">
-                <Zap size={14} className="text-accent" /> Regional Job Board (UAE/KSA)
+                <Zap size={14} className="text-accent" /> AI Infrastructure Intel
               </li>
             </ul>
 
