@@ -17,7 +17,7 @@ const BottomSubscribeBar = () => {
 
   if (subscribed) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-[hsl(222,47%,4%)] border-t border-[#1e293b] flex items-center justify-center gap-2">
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-background border-t border-border flex items-center justify-center gap-2">
         <CheckCircle className="h-4 w-4 text-accent" />
         <span className="text-sm font-medium text-accent">You're in — check your inbox.</span>
       </div>
@@ -25,7 +25,7 @@ const BottomSubscribeBar = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-[hsl(222,47%,4%)] border-t border-[#1e293b]">
+    <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-background border-t border-border">
       <div className="container h-full flex items-center justify-between gap-4">
         <span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">
           Join <span className="text-foreground font-semibold">5,000+</span> data center professionals
@@ -37,7 +37,7 @@ const BottomSubscribeBar = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="h-8 text-xs bg-secondary/50 border-border/50 flex-1"
+            className="h-8 text-xs bg-secondary border-border flex-1"
           />
           <Button type="submit" size="sm" className="h-8 text-xs px-4 font-bold shrink-0">
             Subscribe Free

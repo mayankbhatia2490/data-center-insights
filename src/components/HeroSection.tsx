@@ -5,9 +5,9 @@ const getCategoryColor = (cat: string) => {
   switch (cat) {
     case "M&A": return "text-primary";
     case "Sustainability": return "text-accent";
-    case "AI": return "text-[hsl(270,70%,65%)]";
+    case "AI": return "text-primary";
     case "Middle East": return "text-[hsl(35,92%,60%)]";
-    case "Policy": return "text-[hsl(0,0%,70%)]";
+    case "Policy": return "text-muted-foreground";
     default: return "text-primary";
   }
 };
@@ -17,7 +17,7 @@ const HeroSection = () => {
   const secondaryStories = mockNews.slice(1, 5);
 
   return (
-    <section className="border-b border-[#1e293b] bg-[hsl(222,47%,6%)]">
+    <section className="border-b border-border bg-card">
       <div className="container py-10 md:py-14">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
           {/* Left: Featured Story (60%) */}
@@ -41,18 +41,18 @@ const HeroSection = () => {
           </div>
 
           {/* Right: 2x2 Grid of Top Stories (40%) */}
-          <div className="lg:w-[40%] grid grid-cols-2 border-l-0 lg:border-l border-[#1e293b]">
+          <div className="lg:w-[40%] grid grid-cols-2 border-l-0 lg:border-l border-border">
             {secondaryStories.map((story, i) => (
               <div
                 key={story.id}
-                className={`group cursor-pointer px-4 lg:pl-6 py-4 hover:bg-secondary/30 transition-colors ${
-                  i < 2 ? "border-b border-[#1e293b]" : ""
-                } ${i % 2 === 0 ? "border-r border-[#1e293b]" : ""}`}
+                className={`group cursor-pointer px-4 lg:pl-6 py-4 hover:bg-secondary transition-colors ${
+                  i < 2 ? "border-b border-border" : ""
+                } ${i % 2 === 0 ? "border-r border-border" : ""}`}
               >
                 <span className={`text-[10px] font-extrabold uppercase tracking-[1.5px] ${getCategoryColor(story.category)}`}>
                   {story.category}
                 </span>
-                <h3 className="text-[14px] font-bold leading-snug mt-1.5 text-[hsl(210,40%,96%)] group-hover:text-primary transition-colors line-clamp-3">
+                <h3 className="text-[14px] font-bold leading-snug mt-1.5 text-foreground group-hover:text-primary transition-colors line-clamp-3">
                   {story.title}
                 </h3>
                 <span className="text-[10px] text-muted-foreground mt-2 block">{story.timestamp}</span>
