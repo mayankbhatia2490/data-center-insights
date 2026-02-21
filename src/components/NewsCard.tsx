@@ -116,7 +116,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
           {article.insight && (
             <div className="mt-2 flex items-start gap-1.5 text-xs text-primary/80 bg-primary/5 rounded-[4px] px-3 py-2">
               <Lightbulb size={12} className="mt-0.5 shrink-0 text-primary" />
-              <span><strong className="text-primary">Why it matters:</strong> {article.insight}</span>
+              <span className="line-clamp-2"><strong className="text-primary">Why it matters:</strong> {article.insight}</span>
             </div>
           )}
 
