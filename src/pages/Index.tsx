@@ -15,6 +15,7 @@ import DailyDigest from "@/components/DailyDigest";
 import EditorsPicks from "@/components/EditorsPicks";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import { Link } from "react-router-dom";
+import MarketSignals from "@/components/MarketSignals";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -80,6 +81,7 @@ const Index = () => {
       <NewsTicker />
       <HeroSection />
       <DailyDigest />
+      <MarketSignals />
       <EditorsPicks />
 
       <main id="news" className="container py-8 md:py-12">
@@ -160,6 +162,9 @@ const Index = () => {
             </Link>
             <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
               Industry Leaders
+            </Link>
+            <Link to="/stats" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
+              Statistics
             </Link>
             <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
           </div>
