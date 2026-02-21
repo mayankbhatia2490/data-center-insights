@@ -3,6 +3,26 @@ import { useStats } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, Zap, Globe, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  PieChart,
+  Pie,
+} from "recharts";
+
+const CHART_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(210 80% 55%)",
+  "hsl(142 76% 36%)",
+  "hsl(47 96% 53%)",
+  "hsl(280 65% 60%)",
+];
 
 const Stats = () => {
   const { data, isLoading } = useStats();
@@ -97,28 +117,104 @@ const Stats = () => {
                   <span className="w-[2px] h-4 bg-primary shrink-0" />
                   Top Companies by Capacity
                 </h2>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-muted-foreground text-[10px] uppercase tracking-wider">
-                      <th className="text-left pb-2 font-semibold">Rank</th>
-                      <th className="text-left pb-2 font-semibold">Company</th>
-                      <th className="text-right pb-2 font-semibold">Capacity (GW)</th>
-                      <th className="text-right pb-2 font-semibold">Region</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topCompanies.map((c: any) => (
-                      <tr key={c.id} className="border-b border-border/50 last:border-0">
-                        <td className="py-2 text-muted-foreground font-mono text-xs">{c.rank}</td>
-                        <td className="py-2 font-semibold text-foreground">{c.company}</td>
-                        <td className="py-2 text-right font-mono">{c.total_capacity_gw}</td>
-                        <td className="py-2 text-right text-muted-foreground">{c.region}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="h-[320px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={topCompanies.map((c: any) => ({
+                        name: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
+                        capacity: c.total_capacity_gw,
+                        fullName: c.company,
+                      }))}
+                      margin={{ top: 5, right: 20, left: 0, bottom: 60 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis
+                        dataKey="name"
+                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                        angle={-35}
+                        textAnchor="end"
+                      />
+                      <YAxis
+                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                        label={{ value: "GW", angle: -90, position: "insideLeft", fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: 4,
+                          fontSize: 12,
+                        }}
+                        formatter={(value: number, _: any, entry: any) => [
+                          `${value} GW`,
+                          entry.payload.fullName,
+                        ]}
+                      />
+                      <Bar dataKey="capacity" radius={[4, 4, 0, 0]}>
+                        {topCompanies.map((_: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
+
+            {/* Growth Gauges */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+              {latestCapacity?.growth_rate_pct != null && (
+                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
+                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Capacity Growth</span>
+                  <div className="h-[160px] w-[160px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={[{ value: latestCapacity.growth_rate_pct }, { value: 100 - latestCapacity.growth_rate_pct }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
+                          <Cell fill="hsl(var(--primary))" />
+                          <Cell fill="hsl(var(--muted))" />
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <span className="text-2xl font-black -mt-4">{latestCapacity.growth_rate_pct}%</span>
+                  <span className="text-xs text-muted-foreground">YoY Growth</span>
+                </div>
+              )}
+              {latestInvestment?.growth_pct != null && (
+                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
+                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Investment Growth</span>
+                  <div className="h-[160px] w-[160px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={[{ value: latestInvestment.growth_pct }, { value: 100 - latestInvestment.growth_pct }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
+                          <Cell fill="hsl(142 76% 36%)" />
+                          <Cell fill="hsl(var(--muted))" />
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <span className="text-2xl font-black -mt-4">{latestInvestment.growth_pct}%</span>
+                  <span className="text-xs text-muted-foreground">Growth ({latestInvestment.year})</span>
+                </div>
+              )}
+              {latestEnergy?.percent_of_electricity != null && (
+                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
+                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Electricity Share</span>
+                  <div className="h-[160px] w-[160px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={[{ value: latestEnergy.percent_of_electricity }, { value: 100 - latestEnergy.percent_of_electricity }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
+                          <Cell fill="hsl(47 96% 53%)" />
+                          <Cell fill="hsl(var(--muted))" />
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <span className="text-2xl font-black -mt-4">{latestEnergy.percent_of_electricity}%</span>
+                  <span className="text-xs text-muted-foreground">of Global Electricity</span>
+                </div>
+              )}
+            </div>
 
             {!latestCapacity && !latestEnergy && !latestInvestment && (
               <div className="text-center py-12 text-muted-foreground">
