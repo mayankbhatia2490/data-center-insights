@@ -1,5 +1,6 @@
 import { useArticles } from "@/hooks/useArticles";
 import { Award, ArrowRight, Mail } from "lucide-react";
+import { stripHtml } from "@/lib/stripHtml";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ const EditorsPicks = () => {
               Editor's Picks
             </h2>
             <span className="ml-2 text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
-              Curated by AI
+              Curated
             </span>
           </div>
 
@@ -86,7 +87,7 @@ const EditorsPicks = () => {
                   {article.title}
                 </h3>
                 <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
-                  {article.summary}
+                  {stripHtml(article.summary)}
                 </p>
                 <div className="flex items-center gap-1 text-[10px] text-primary font-medium">
                   Read more <ArrowRight size={10} />
@@ -110,7 +111,7 @@ const EditorsPicks = () => {
               Data Center Pulse.
             </p>
             <ul className="text-xs text-muted-foreground space-y-1 mb-6">
-              <li>✓ AI-curated daily digest at 8:30 AM Dubai</li>
+              <li>✓ Daily intelligence digest at 8:30 AM Dubai</li>
               <li>✓ M&A deal flow & market intelligence</li>
               <li>✓ Sustainability & policy alerts</li>
               <li>✓ Free forever — no spam</li>

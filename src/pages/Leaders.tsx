@@ -3,14 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import { Link } from "react-router-dom";
-import { Users, Zap, ArrowLeft, Search } from "lucide-react";
+import { Users, Zap, ArrowLeft, Search, Globe, LayoutGrid } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
+const regionTabs = ["MENA", "Global", "US", "Europe", "Asia", "All"];
+const roleFilters = ["All", "CEO", "Government", "Investor", "CTO", "VP"];
+
 const Leaders = () => {
   const [search, setSearch] = useState("");
-  const [regionFilter, setRegionFilter] = useState("All");
+  const [regionFilter, setRegionFilter] = useState("MENA");
+  const [roleFilter, setRoleFilter] = useState("All");
 
   const { data: leaders, isLoading } = useQuery({
     queryKey: ["leaders"],
@@ -25,15 +29,32 @@ const Leaders = () => {
     },
   });
 
-  const regions = ["All", ...new Set((leaders || []).map((l) => l.region).filter(Boolean))];
+  const { data: curatedLists } = useQuery({
+    queryKey: ["people-lists"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("people_lists")
+        .select("id, slug, title, region, role_filter, description");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const filtered = (leaders || []).filter((l) => {
     const matchesSearch =
       !search ||
       l.name.toLowerCase().includes(search.toLowerCase()) ||
       (l.organization || "").toLowerCase().includes(search.toLowerCase());
-    const matchesRegion = regionFilter === "All" || l.region === regionFilter;
-    return matchesSearch && matchesRegion;
+
+    const matchesRegion =
+      regionFilter === "All" ||
+      (l.region || "").toLowerCase().includes(regionFilter.toLowerCase());
+
+    const matchesRole =
+      roleFilter === "All" ||
+      (l.title || "").toLowerCase().includes(roleFilter.toLowerCase());
+
+    return matchesSearch && matchesRegion && matchesRole;
   });
 
   return (
@@ -51,11 +72,30 @@ const Leaders = () => {
             <h1 className="text-3xl font-black tracking-tight text-foreground">Industry Leaders</h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            AI-tracked executives, regulators, and key decision-makers mentioned in data center news.
+            Tracked executives, regulators, and key decision-makers mentioned in data center news.
           </p>
         </div>
 
-        {/* Filters */}
+        {/* Region Tabs */}
+        <div className="border-b border-border mb-6">
+          <div className="flex gap-0 -mb-px">
+            {regionTabs.map((r) => (
+              <button
+                key={r}
+                onClick={() => setRegionFilter(r)}
+                className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 ${
+                  regionFilter === r
+                    ? "border-b-primary text-foreground"
+                    : "border-b-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Filters Row */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1 max-w-sm">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -66,13 +106,13 @@ const Leaders = () => {
               className="pl-9 h-9 text-sm rounded-[4px]"
             />
           </div>
-          <div className="flex gap-2 flex-wrap">
-            {regions.map((r) => (
+          <div className="flex gap-1.5 flex-wrap">
+            {roleFilters.map((r) => (
               <button
                 key={r}
-                onClick={() => setRegionFilter(r as string)}
+                onClick={() => setRoleFilter(r)}
                 className={`rounded-[4px] px-3 py-1 text-xs font-medium transition-colors ${
-                  regionFilter === r
+                  roleFilter === r
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
@@ -82,6 +122,29 @@ const Leaders = () => {
             ))}
           </div>
         </div>
+
+        {/* Curated Lists */}
+        {curatedLists && curatedLists.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            {curatedLists.map((list) => (
+              <div
+                key={list.id}
+                className="border border-border rounded-[4px] p-4 hover:border-primary/30 transition-colors"
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <LayoutGrid size={12} className="text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                    {list.region || "All"}
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-foreground leading-snug">{list.title}</h4>
+                {list.description && (
+                  <p className="text-[11px] text-muted-foreground mt-1">{list.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Table */}
         {isLoading ? (
@@ -94,7 +157,11 @@ const Leaders = () => {
           <div className="text-center py-12 text-muted-foreground">
             <Users size={40} className="mx-auto mb-3 opacity-30" />
             <p className="text-lg font-semibold">No leaders found</p>
-            <p className="text-sm mt-1">People will appear here once the news pipeline extracts them.</p>
+            <p className="text-sm mt-1">
+              {regionFilter !== "All"
+                ? `No ${regionFilter} leaders tracked yet. Try broadening your filters.`
+                : "People will appear here once the news pipeline extracts them."}
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">

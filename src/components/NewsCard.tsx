@@ -1,5 +1,6 @@
 import { Article } from "@/hooks/useArticles";
 import { Clock, TrendingUp, TrendingDown, Minus, Lightbulb, Users } from "lucide-react";
+import { stripHtml } from "@/lib/stripHtml";
 import { formatDistanceToNow } from "date-fns";
 import ShareButtons from "@/components/ShareButtons";
 import BookmarkButton from "@/components/BookmarkButton";
@@ -109,7 +110,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
           <h3 className="text-lg font-bold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors duration-200">
             {article.title}
           </h3>
-          <p className="text-sm line-clamp-2">{article.summary}</p>
+          <p className="text-sm line-clamp-2">{stripHtml(article.summary)}</p>
 
           {/* Insight */}
           {article.insight && (
