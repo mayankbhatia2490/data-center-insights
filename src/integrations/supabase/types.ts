@@ -104,6 +104,39 @@ export type Database = {
         }
         Relationships: []
       }
+      company_capacity: {
+        Row: {
+          capacity_mw: number | null
+          city: string | null
+          company: string | null
+          country: string | null
+          id: string
+          last_updated: string | null
+          region: string | null
+          source_url: string | null
+        }
+        Insert: {
+          capacity_mw?: number | null
+          city?: string | null
+          company?: string | null
+          country?: string | null
+          id?: string
+          last_updated?: string | null
+          region?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          capacity_mw?: number | null
+          city?: string | null
+          company?: string | null
+          country?: string | null
+          id?: string
+          last_updated?: string | null
+          region?: string | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       daily_digests: {
         Row: {
           article_count: number | null
@@ -125,6 +158,114 @@ export type Database = {
           created_at?: string
           digest_date?: string
           id?: string
+        }
+        Relationships: []
+      }
+      dc_capacity_stats: {
+        Row: {
+          growth_rate_pct: number | null
+          id: string
+          last_updated: string | null
+          region: string | null
+          source: string | null
+          total_capacity_gw: number | null
+        }
+        Insert: {
+          growth_rate_pct?: number | null
+          id?: string
+          last_updated?: string | null
+          region?: string | null
+          source?: string | null
+          total_capacity_gw?: number | null
+        }
+        Update: {
+          growth_rate_pct?: number | null
+          id?: string
+          last_updated?: string | null
+          region?: string | null
+          source?: string | null
+          total_capacity_gw?: number | null
+        }
+        Relationships: []
+      }
+      dc_company_capacity_stats: {
+        Row: {
+          company: string | null
+          id: string
+          last_updated: string | null
+          rank: number | null
+          region: string | null
+          source: string | null
+          total_capacity_gw: number | null
+        }
+        Insert: {
+          company?: string | null
+          id?: string
+          last_updated?: string | null
+          rank?: number | null
+          region?: string | null
+          source?: string | null
+          total_capacity_gw?: number | null
+        }
+        Update: {
+          company?: string | null
+          id?: string
+          last_updated?: string | null
+          rank?: number | null
+          region?: string | null
+          source?: string | null
+          total_capacity_gw?: number | null
+        }
+        Relationships: []
+      }
+      dc_energy_usage: {
+        Row: {
+          consumption_twh: number | null
+          id: string
+          last_updated: string | null
+          percent_of_electricity: number | null
+          region: string | null
+          source: string | null
+        }
+        Insert: {
+          consumption_twh?: number | null
+          id?: string
+          last_updated?: string | null
+          percent_of_electricity?: number | null
+          region?: string | null
+          source?: string | null
+        }
+        Update: {
+          consumption_twh?: number | null
+          id?: string
+          last_updated?: string | null
+          percent_of_electricity?: number | null
+          region?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
+      dc_investment_stats: {
+        Row: {
+          growth_pct: number | null
+          id: string
+          source: string | null
+          total_investment_usd: number | null
+          year: number | null
+        }
+        Insert: {
+          growth_pct?: number | null
+          id?: string
+          source?: string | null
+          total_investment_usd?: number | null
+          year?: number | null
+        }
+        Update: {
+          growth_pct?: number | null
+          id?: string
+          source?: string | null
+          total_investment_usd?: number | null
+          year?: number | null
         }
         Relationships: []
       }
@@ -158,6 +299,36 @@ export type Database = {
           name?: string
           source_url?: string | null
           start_date?: string | null
+        }
+        Relationships: []
+      }
+      market_signals: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string
+          reason: string | null
+          region: string | null
+          title: string | null
+          type: string | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          region?: string | null
+          title?: string | null
+          type?: string | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          region?: string | null
+          title?: string | null
+          type?: string | null
         }
         Relationships: []
       }
@@ -245,6 +416,45 @@ export type Database = {
         }
         Relationships: []
       }
+      people_leaders: {
+        Row: {
+          bio: string | null
+          company: string | null
+          country: string | null
+          created_at: string | null
+          id: string
+          last_seen: string | null
+          name: string | null
+          region: string | null
+          role: string | null
+          source_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          last_seen?: string | null
+          name?: string | null
+          region?: string | null
+          role?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          last_seen?: string | null
+          name?: string | null
+          region?: string | null
+          role?: string | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       people_lists: {
         Row: {
           created_at: string | null
@@ -320,6 +530,63 @@ export type Database = {
           },
         ]
       }
+      regional_outlook: {
+        Row: {
+          demand_score: number | null
+          id: string
+          opportunity_score: number | null
+          outlook: string | null
+          region: string | null
+          risk_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          demand_score?: number | null
+          id?: string
+          opportunity_score?: number | null
+          outlook?: string | null
+          region?: string | null
+          risk_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          demand_score?: number | null
+          id?: string
+          opportunity_score?: number | null
+          outlook?: string | null
+          region?: string | null
+          risk_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      strategic_insights: {
+        Row: {
+          created_at: string | null
+          horizon: string | null
+          id: string
+          insight: string | null
+          region: string | null
+          sector: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          horizon?: string | null
+          id?: string
+          insight?: string | null
+          region?: string | null
+          sector?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          horizon?: string | null
+          id?: string
+          insight?: string | null
+          region?: string | null
+          sector?: string | null
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           confirmed: boolean
@@ -377,6 +644,24 @@ export type Database = {
           risks?: Json | null
           score?: number | null
           week_start?: string
+        }
+        Relationships: []
+      }
+      word_cloud: {
+        Row: {
+          count: number | null
+          last_updated: string | null
+          word: string
+        }
+        Insert: {
+          count?: number | null
+          last_updated?: string | null
+          word: string
+        }
+        Update: {
+          count?: number | null
+          last_updated?: string | null
+          word?: string
         }
         Relationships: []
       }
