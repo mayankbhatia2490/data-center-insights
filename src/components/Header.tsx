@@ -25,6 +25,7 @@ const tickerHeadlines = [
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState("Global News");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -50,8 +51,13 @@ const Header = () => {
 
   return (
     <>
-      {/* Row 1: Top Bar */}
-      <div className="h-9 bg-background border-b border-border overflow-hidden">
+      {/* Top loading progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-[60] h-[2px]">
+        <div className="h-full bg-primary animate-progress-load" />
+      </div>
+
+      {/* Row 1: Top Bar — 36px, 8px grid */}
+      <div className="h-9 bg-background border-b border-border overflow-hidden mt-[2px]">
         <div className="container h-full flex items-center justify-between text-[11px]">
           <span className="text-muted-foreground shrink-0 hidden sm:block">{today}</span>
           <div className="flex-1 mx-6 overflow-hidden relative">
@@ -70,7 +76,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Row 2: Main Header */}
+      {/* Row 2: Main Header — 64px */}
       <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
         <div className="container h-full flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -80,23 +86,29 @@ const Header = () => {
             </span>
           </div>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          {/* Rule 3: Active nav link gets 2px blue bottom border */}
+          <nav className="hidden items-center gap-0 md:flex h-full">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => setActiveLink(link.label)}
+                className={`h-full flex items-center px-4 text-[13px] font-medium transition-colors duration-200 ${
+                  activeLink === link.label
+                    ? "text-foreground border-b-2 border-b-primary"
+                    : "text-muted-foreground hover:text-foreground border-b-2 border-b-transparent"
+                }`}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button
               size="sm"
               onClick={() => setDialogOpen(true)}
-              className="hidden sm:inline-flex"
+              className="hidden sm:inline-flex rounded-[4px]"
             >
               Subscribe
             </Button>
@@ -111,18 +123,18 @@ const Header = () => {
 
         {mobileOpen && (
           <div className="border-t border-border bg-card p-4 md:hidden">
-            <nav className="flex flex-col gap-3">
+            <nav className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   className="text-sm font-medium text-muted-foreground"
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => { setActiveLink(link.label); setMobileOpen(false); }}
                 >
                   {link.label}
                 </a>
               ))}
-              <Button size="sm" onClick={() => { setDialogOpen(true); setMobileOpen(false); }}>
+              <Button size="sm" className="rounded-[4px]" onClick={() => { setDialogOpen(true); setMobileOpen(false); }}>
                 Subscribe
               </Button>
             </nav>
@@ -131,7 +143,7 @@ const Header = () => {
       </header>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-[4px]">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">Join Data Center Pulse</DialogTitle>
             <DialogDescription>
@@ -140,7 +152,7 @@ const Header = () => {
           </DialogHeader>
           {subscribed ? (
             <div className="py-8 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[4px] bg-accent/20">
                 <Zap className="h-6 w-6 text-accent" />
               </div>
               <p className="text-lg font-semibold">Thanks for joining!</p>
@@ -168,8 +180,9 @@ const Header = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="rounded-[4px]"
               />
-              <Button type="submit" className="w-full">Subscribe Free</Button>
+              <Button type="submit" className="w-full rounded-[4px]">Subscribe Free</Button>
               <p className="text-center text-xs text-muted-foreground">No spam. Unsubscribe anytime.</p>
             </form>
           )}
