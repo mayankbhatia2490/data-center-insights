@@ -6,6 +6,37 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// --- AI Summarization ---
+async function aiSummarize(title: string, rawSummary: string, apiKey: string): Promise<string> {
+  try {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          {
+            role: "system",
+            content: "You are a news summarizer for data center industry professionals. Write a concise 1-2 sentence summary of the article. Be factual and informative. Do not use markdown.",
+          },
+          {
+            role: "user",
+            content: `Article title: ${title}\n\nRaw description: ${rawSummary}`,
+          },
+        ],
+      }),
+    });
+    if (!res.ok) return rawSummary;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content?.trim() || rawSummary;
+  } catch {
+    return rawSummary;
+  }
+}
+
 // --- Auto-categorization ---
 function categorize(text: string): string {
   const lower = text.toLowerCase();
@@ -19,7 +50,7 @@ function categorize(text: string): string {
   for (const [keywords, category] of rules) {
     if (keywords.some((kw) => lower.includes(kw))) return category;
   }
-  return "AI"; // default
+  return "AI";
 }
 
 function estimateReadTime(text: string): string {
@@ -38,7 +69,6 @@ async function fetchRSS(feedUrl: string, sourceName: string) {
     if (!res.ok) return articles;
     const xml = await res.text();
 
-    // Simple XML parsing for RSS items
     const items = xml.split("<item>").slice(1);
     for (const item of items.slice(0, 10)) {
       const getTag = (tag: string) => {
@@ -54,7 +84,7 @@ async function fetchRSS(feedUrl: string, sourceName: string) {
         const fullText = `${title} ${description}`;
         articles.push({
           title,
-          summary: description || title,
+          summary: description || null,
           category: categorize(fullText),
           source: sourceName,
           source_url: link,
@@ -85,7 +115,7 @@ async function fetchNewsAPI(apiKey: string) {
         const fullText = `${a.title} ${a.description || ""}`;
         articles.push({
           title: a.title,
-          summary: a.description || a.title,
+          summary: a.description || null,
           category: categorize(fullText),
           source: a.source?.name || "News API",
           source_url: a.url,
@@ -122,7 +152,7 @@ async function fetchFirecrawl(apiKey: string) {
         const fullText = `${item.title} ${item.description || ""}`;
         articles.push({
           title: item.title,
-          summary: item.description || item.title,
+          summary: item.description || null,
           category: categorize(fullText),
           source: new URL(item.url).hostname.replace("www.", ""),
           source_url: item.url,
@@ -147,6 +177,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
 
     // Fetch from all sources in parallel
     const rssFeeds = [
@@ -171,6 +202,28 @@ Deno.serve(async (req) => {
       .flatMap((r) => (r as PromiseFulfilledResult<any[]>).value);
 
     console.log(`Fetched ${allArticles.length} articles total`);
+
+    // AI-enhance summaries for articles that need it (batch of up to 10 at a time)
+    if (lovableApiKey) {
+      const needsSummary = allArticles.filter(
+        (a) => !a.summary || a.summary === a.title || a.summary.length < 30
+      );
+      console.log(`${needsSummary.length} articles need AI summaries`);
+      
+      // Process in batches of 5 to avoid rate limits
+      for (let i = 0; i < Math.min(needsSummary.length, 20); i += 5) {
+        const batch = needsSummary.slice(i, i + 5);
+        const summaryPromises = batch.map((a) =>
+          aiSummarize(a.title, a.summary || a.title, lovableApiKey)
+        );
+        const summaries = await Promise.allSettled(summaryPromises);
+        summaries.forEach((result, j) => {
+          if (result.status === "fulfilled") {
+            batch[j].summary = result.value;
+          }
+        });
+      }
+    }
 
     // Deduplicate and upsert
     let inserted = 0;

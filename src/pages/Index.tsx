@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Zap, Mail, X, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import NewsChatbot from "@/components/NewsChatbot";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -117,6 +118,7 @@ const Index = () => {
       </footer>
 
       <BottomSubscribeBar />
+      <NewsChatbot />
 
       {/* Newsletter Modal */}
       {showModal && !modalSubscribed && (
