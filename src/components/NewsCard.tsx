@@ -1,8 +1,34 @@
 import { Article } from "@/hooks/useArticles";
-import { Clock } from "lucide-react";
+import { Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import ShareButtons from "@/components/ShareButtons";
 import BookmarkButton from "@/components/BookmarkButton";
+
+const getSentimentBadge = (sentiment: string | null) => {
+  if (!sentiment) return null;
+  switch (sentiment) {
+    case "Bullish":
+      return (
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-accent/15 text-accent text-[10px] font-bold">
+          <TrendingUp size={10} /> Bullish
+        </span>
+      );
+    case "Bearish":
+      return (
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-destructive/15 text-destructive text-[10px] font-bold">
+          <TrendingDown size={10} /> Bearish
+        </span>
+      );
+    case "Neutral":
+      return (
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-muted text-muted-foreground text-[10px] font-bold">
+          <Minus size={10} /> Neutral
+        </span>
+      );
+    default:
+      return null;
+  }
+};
 
 const getCategoryBorder = (cat: string) => {
   switch (cat) {
@@ -68,6 +94,7 @@ const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: bo
             <span className="text-muted-foreground text-xs flex items-center gap-1">
               <Clock size={11} /> {formatTime(article.published_at)}
             </span>
+            {getSentimentBadge(article.sentiment)}
           </div>
           <h3 className="text-lg font-bold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors duration-200">
             {article.title}

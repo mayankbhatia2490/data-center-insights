@@ -22,6 +22,7 @@ export type Database = {
           image_url: string | null
           published_at: string | null
           read_time: string | null
+          sentiment: string | null
           source: string | null
           source_url: string | null
           summary: string | null
@@ -34,6 +35,7 @@ export type Database = {
           image_url?: string | null
           published_at?: string | null
           read_time?: string | null
+          sentiment?: string | null
           source?: string | null
           source_url?: string | null
           summary?: string | null
@@ -46,6 +48,7 @@ export type Database = {
           image_url?: string | null
           published_at?: string | null
           read_time?: string | null
+          sentiment?: string | null
           source?: string | null
           source_url?: string | null
           summary?: string | null

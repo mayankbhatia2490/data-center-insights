@@ -37,6 +37,41 @@ async function aiSummarize(title: string, rawSummary: string, apiKey: string): P
   }
 }
 
+// --- AI Sentiment Analysis ---
+async function aiSentiment(title: string, summary: string, apiKey: string): Promise<string | null> {
+  try {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          {
+            role: "system",
+            content: "You are a financial sentiment classifier for the data center industry. Classify the article as exactly one of: Bullish, Bearish, or Neutral. Respond with ONLY that single word.",
+          },
+          {
+            role: "user",
+            content: `Title: ${title}\nSummary: ${summary}`,
+          },
+        ],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content?.trim()?.toLowerCase();
+    if (raw?.includes("bullish")) return "Bullish";
+    if (raw?.includes("bearish")) return "Bearish";
+    if (raw?.includes("neutral")) return "Neutral";
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // --- Auto-categorization ---
 function categorize(text: string): string {
   const lower = text.toLowerCase();
@@ -203,14 +238,14 @@ Deno.serve(async (req) => {
 
     console.log(`Fetched ${allArticles.length} articles total`);
 
-    // AI-enhance summaries for articles that need it (batch of up to 10 at a time)
+    // AI-enhance summaries and sentiment for articles
     if (lovableApiKey) {
       const needsSummary = allArticles.filter(
         (a) => !a.summary || a.summary === a.title || a.summary.length < 30
       );
       console.log(`${needsSummary.length} articles need AI summaries`);
       
-      // Process in batches of 5 to avoid rate limits
+      // Process summaries in batches of 5
       for (let i = 0; i < Math.min(needsSummary.length, 20); i += 5) {
         const batch = needsSummary.slice(i, i + 5);
         const summaryPromises = batch.map((a) =>
@@ -223,14 +258,29 @@ Deno.serve(async (req) => {
           }
         });
       }
+
+      // Sentiment analysis in batches of 5
+      console.log("Running sentiment analysis...");
+      for (let i = 0; i < Math.min(allArticles.length, 20); i += 5) {
+        const batch = allArticles.slice(i, i + 5);
+        const sentimentPromises = batch.map((a) =>
+          aiSentiment(a.title, a.summary || a.title, lovableApiKey)
+        );
+        const sentiments = await Promise.allSettled(sentimentPromises);
+        sentiments.forEach((result, j) => {
+          if (result.status === "fulfilled" && result.value) {
+            batch[j].sentiment = result.value;
+          }
+        });
+      }
     }
 
-    // Deduplicate and upsert
+    // Deduplicate and upsert (allow updates for sentiment)
     let inserted = 0;
     for (const article of allArticles) {
       const { error } = await supabase
         .from("articles")
-        .upsert(article, { onConflict: "source_url", ignoreDuplicates: true });
+        .upsert(article, { onConflict: "source_url", ignoreDuplicates: false });
       if (!error) inserted++;
     }
 
