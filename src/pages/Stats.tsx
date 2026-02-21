@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import Header from "@/components/Header";
 import { useStats } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart3, Zap, Globe, TrendingUp } from "lucide-react";
+import { BarChart3, TrendingUp, TrendingDown, Minus, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -15,312 +15,392 @@ import {
   Cell,
   PieChart,
   Pie,
+  LineChart,
+  Line,
 } from "recharts";
+import {
+  keyMetrics,
+  topProviders,
+  donutCharts,
+  investmentHistory,
+  type BarChartDataPoint,
+} from "@/data/marketStats";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
   "hsl(210 80% 55%)",
-  "hsl(142 76% 36%)",
-  "hsl(47 96% 53%)",
-  "hsl(280 65% 60%)",
+  "hsl(142 60% 40%)",
+  "hsl(47 90% 50%)",
+  "hsl(280 55% 55%)",
+  "hsl(200 60% 45%)",
+  "hsl(340 55% 50%)",
 ];
+
+const TrendIcon = ({ direction }: { direction?: "up" | "down" | "neutral" }) => {
+  if (direction === "up") return <TrendingUp size={13} />;
+  if (direction === "down") return <TrendingDown size={13} />;
+  return <Minus size={13} />;
+};
 
 const Stats = () => {
   const { data, isLoading } = useStats();
   const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
-  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
-  const topCompanies = data?.companies || [];
-  const allYears = useMemo(() => {
-    const years = (data?.investment || []).map((i: any) => i.year).filter(Boolean) as number[];
-    return [...new Set(years)].sort((a, b) => b - a);
-  }, [data?.investment]);
+  // Merge live DB data with static fallback
+  const dbCompanies = data?.companies || [];
+  const providers: BarChartDataPoint[] = useMemo(() => {
+    if (dbCompanies.length > 0) {
+      return dbCompanies.map((c: any, i: number) => ({
+        name: c.company,
+        shortName: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
+        capacity: c.total_capacity_gw,
+        color: CHART_COLORS[i % CHART_COLORS.length],
+      }));
+    }
+    return topProviders;
+  }, [dbCompanies]);
 
-  // Initialize selected companies to all on first load
-  const companyNames = useMemo(() => topCompanies.map((c: any) => c.company as string), [topCompanies]);
-  const activeCompanies = selectedCompanies.size === 0 ? new Set(companyNames) : selectedCompanies;
+  const providerNames = useMemo(() => providers.map((p) => p.name), [providers]);
+  const activeCompanies = selectedCompanies.size === 0 ? new Set(providerNames) : selectedCompanies;
 
   const toggleCompany = (company: string) => {
     setSelectedCompanies((prev) => {
-      const current = prev.size === 0 ? new Set(companyNames) : new Set(prev);
-      if (current.has(company)) {
-        current.delete(company);
-      } else {
-        current.add(company);
-      }
-      // If all are selected again, reset to empty (meaning "all")
-      if (current.size === companyNames.length) return new Set();
+      const current = prev.size === 0 ? new Set(providerNames) : new Set(prev);
+      if (current.has(company)) current.delete(company);
+      else current.add(company);
+      if (current.size === providerNames.length) return new Set();
       return current;
     });
   };
 
-  const selectAllCompanies = () => setSelectedCompanies(new Set());
+  const filteredProviders = providers.filter((p) => activeCompanies.has(p.name));
 
-  const filteredCompanies = topCompanies.filter((c: any) => activeCompanies.has(c.company));
-
-  const latestCapacity = data?.capacity?.[0];
-  const latestEnergy = data?.energy?.[0];
-  const activeYear = selectedYear ?? allYears[0] ?? null;
-  const latestInvestment = activeYear
-    ? (data?.investment || []).find((i: any) => i.year === activeYear)
-    : data?.investment?.[0];
+  // Live metrics from DB with fallback
+  const liveMetrics = useMemo(() => {
+    const cap = data?.capacity?.[0];
+    const energy = data?.energy?.[0];
+    const inv = data?.investment?.[0];
+    return keyMetrics.map((m) => {
+      if (m.label === "Global Capacity" && cap) {
+        return { ...m, value: String(cap.total_capacity_gw ?? m.value), trend: `+${cap.growth_rate_pct}%` };
+      }
+      if (m.label === "Energy Consumption" && energy) {
+        return { ...m, value: String(energy.consumption_twh ?? m.value), trend: `${energy.percent_of_electricity}%` };
+      }
+      if (m.label === "Annual CapEx" && inv) {
+        return { ...m, value: `$${inv.total_investment_usd ?? "600"}`, trend: `+${inv.growth_pct}%` };
+      }
+      return m;
+    });
+  }, [data]);
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container py-8 md:py-12">
-        <div className="mb-8">
-          <h1 className="text-2xl font-black mb-2 flex items-center gap-2">
-            <BarChart3 className="h-6 w-6 text-primary" />
-            Industry Statistics
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            AI-analyzed data center market statistics, updated monthly.
+      <main className="container py-6 md:py-10">
+        {/* Page Header */}
+        <div className="mb-6 border-b border-border pb-4">
+          <div className="flex items-center gap-2 mb-1">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            <h1 className="text-xl font-black tracking-tight">Market Intelligence Dashboard</h1>
+          </div>
+          <p className="text-xs text-muted-foreground ml-7">
+            Live industry metrics · Updated from aggregated intelligence feeds
           </p>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-40" />
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-24" />)}
           </div>
         ) : (
           <>
-            {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-              <div className="rounded-[4px] border border-border bg-card p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Globe className="h-4 w-4 text-primary" />
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
-                    Global Capacity
+            {/* ─── TOP BANNER: Key Metrics Strip ─────────────────── */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+              {liveMetrics.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="rounded-[4px] border border-border bg-card px-4 py-3"
+                >
+                  <span className="text-[9px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground block mb-1">
+                    {metric.label}
                   </span>
-                </div>
-                <div className="text-3xl font-black text-foreground">
-                  {latestCapacity?.total_capacity_gw ?? "—"} <span className="text-lg font-normal text-muted-foreground">GW</span>
-                </div>
-                {latestCapacity?.growth_rate_pct != null && (
-                  <div className="flex items-center gap-1 mt-2 text-sm text-primary">
-                    <TrendingUp size={14} />
-                    {latestCapacity.growth_rate_pct}% YoY growth
-                  </div>
-                )}
-              </div>
-
-              <div className="rounded-[4px] border border-border bg-card p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="h-4 w-4 text-primary" />
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
-                    Energy Consumption
-                  </span>
-                </div>
-                <div className="text-3xl font-black text-foreground">
-                  {latestEnergy?.consumption_twh ?? "—"} <span className="text-lg font-normal text-muted-foreground">TWh</span>
-                </div>
-                {latestEnergy?.percent_of_electricity != null && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {latestEnergy.percent_of_electricity}% of global electricity
-                  </p>
-                )}
-              </div>
-
-              <div className="rounded-[4px] border border-border bg-card p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
-                      Annual Investment
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-black text-foreground leading-none">
+                      {metric.value}
                     </span>
+                    {metric.unit && (
+                      <span className="text-sm font-normal text-muted-foreground">{metric.unit}</span>
+                    )}
                   </div>
-                  {allYears.length > 1 && (
-                    <div className="flex gap-1">
-                      {allYears.map((year) => (
-                        <button
-                          key={year}
-                          onClick={() => setSelectedYear(year)}
-                          className={`px-2 py-0.5 text-[10px] font-bold rounded-sm border transition-colors ${
-                            activeYear === year
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
-                          }`}
-                        >
-                          {year}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="text-3xl font-black text-foreground">
-                  ${latestInvestment?.total_investment_usd ?? "—"} <span className="text-lg font-normal text-muted-foreground">B</span>
-                </div>
-                {latestInvestment?.growth_pct != null && (
-                  <div className="flex items-center gap-1 mt-2 text-sm text-primary">
-                    <TrendingUp size={14} />
-                    {latestInvestment.growth_pct}% growth ({latestInvestment.year})
+                  <div className="flex items-center gap-1 mt-1">
+                    {metric.trend && (
+                      <span
+                        className={`flex items-center gap-0.5 text-[11px] font-semibold ${
+                          metric.trendDirection === "up"
+                            ? "text-green-500"
+                            : metric.trendDirection === "down"
+                            ? "text-red-500"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        <TrendIcon direction={metric.trendDirection} />
+                        {metric.trend}
+                      </span>
+                    )}
+                    {metric.subtitle && (
+                      <span className="text-[10px] text-muted-foreground">{metric.subtitle}</span>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
 
-            {/* Top Companies with filter chips */}
-            {topCompanies.length > 0 && (
-              <div className="rounded-[4px] border border-border bg-card p-6">
-                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            {/* ─── MAIN CHART: Top Providers Bar Chart ───────────── */}
+            <div className="rounded-[4px] border border-border bg-card p-5 mb-8">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
                   <h2 className="text-sm font-bold flex items-center gap-2">
                     <span className="w-[2px] h-4 bg-primary shrink-0" />
-                    Top Companies by Capacity
+                    Top Providers by Capacity
                   </h2>
-                  <div className="flex flex-wrap gap-1.5">
-                    <button
-                      onClick={selectAllCompanies}
-                      className={`px-2.5 py-1 text-[10px] font-bold rounded-sm border transition-colors ${
-                        selectedCompanies.size === 0
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      All
-                    </button>
-                    {companyNames.map((company, idx) => {
-                      const shortName = company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" ");
-                      const isActive = activeCompanies.has(company);
-                      return (
-                        <button
-                          key={company}
-                          onClick={() => toggleCompany(company)}
-                          className={`px-2.5 py-1 text-[10px] font-bold rounded-sm border transition-colors flex items-center gap-1.5 ${
-                            isActive
-                              ? "border-foreground/30 text-foreground"
-                              : "border-border text-muted-foreground/40 hover:text-muted-foreground hover:border-border"
-                          }`}
-                        >
-                          <span
-                            className="w-2 h-2 rounded-[2px] shrink-0"
-                            style={{ backgroundColor: isActive ? CHART_COLORS[idx % CHART_COLORS.length] : "hsl(var(--muted))" }}
-                          />
-                          {shortName}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <p className="text-[10px] text-muted-foreground ml-3 mt-0.5">
+                    Total power capacity in Gigawatts (GW)
+                  </p>
                 </div>
-                <div className="h-[320px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={filteredCompanies.map((c: any) => ({
-                        name: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
-                        capacity: c.total_capacity_gw,
-                        fullName: c.company,
-                        colorIdx: companyNames.indexOf(c.company),
-                      }))}
-                      margin={{ top: 5, right: 20, left: 0, bottom: 60 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis
-                        dataKey="name"
-                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
-                        angle={-35}
-                        textAnchor="end"
-                      />
-                      <YAxis
-                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
-                        label={{ value: "GW", angle: -90, position: "insideLeft", fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          background: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: 4,
-                          fontSize: 12,
-                        }}
-                        formatter={(value: number, _: any, entry: any) => [
-                          `${value} GW`,
-                          entry.payload.fullName,
-                        ]}
-                      />
-                      <Bar dataKey="capacity" radius={[4, 4, 0, 0]}>
-                        {filteredCompanies.map((c: any) => (
-                          <Cell
-                            key={c.company}
-                            fill={CHART_COLORS[companyNames.indexOf(c.company) % CHART_COLORS.length]}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    onClick={() => setSelectedCompanies(new Set())}
+                    className={`px-2 py-0.5 text-[10px] font-bold rounded-[2px] border transition-colors ${
+                      selectedCompanies.size === 0
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    All
+                  </button>
+                  {providers.map((p, idx) => {
+                    const isActive = activeCompanies.has(p.name);
+                    return (
+                      <button
+                        key={p.name}
+                        onClick={() => toggleCompany(p.name)}
+                        className={`px-2 py-0.5 text-[10px] font-bold rounded-[2px] border transition-colors flex items-center gap-1 ${
+                          isActive
+                            ? "border-foreground/20 text-foreground"
+                            : "border-border text-muted-foreground/40"
+                        }`}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-[1px] shrink-0"
+                          style={{ backgroundColor: isActive ? CHART_COLORS[idx % CHART_COLORS.length] : "hsl(var(--muted))" }}
+                        />
+                        {p.shortName}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            )}
-
-            {/* Growth Gauges */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-              {latestCapacity?.growth_rate_pct != null && (
-                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Capacity Growth</span>
-                  <div className="h-[160px] w-[160px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={[{ value: latestCapacity.growth_rate_pct }, { value: 100 - latestCapacity.growth_rate_pct }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
-                          <Cell fill="hsl(var(--primary))" />
-                          <Cell fill="hsl(var(--muted))" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <span className="text-2xl font-black -mt-4">{latestCapacity.growth_rate_pct}%</span>
-                  <span className="text-xs text-muted-foreground">YoY Growth</span>
-                </div>
-              )}
-              {latestInvestment?.growth_pct != null && (
-                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Investment Growth</span>
-                  <div className="h-[160px] w-[160px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={[{ value: latestInvestment.growth_pct }, { value: 100 - latestInvestment.growth_pct }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
-                          <Cell fill="hsl(142 76% 36%)" />
-                          <Cell fill="hsl(var(--muted))" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <span className="text-2xl font-black -mt-4">{latestInvestment.growth_pct}%</span>
-                  <span className="text-xs text-muted-foreground">Growth ({latestInvestment.year})</span>
-                </div>
-              )}
-              {latestEnergy?.percent_of_electricity != null && (
-                <div className="rounded-[4px] border border-border bg-card p-6 flex flex-col items-center">
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-2">Electricity Share</span>
-                  <div className="h-[160px] w-[160px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={[{ value: latestEnergy.percent_of_electricity }, { value: 100 - latestEnergy.percent_of_electricity }]} cx="50%" cy="50%" innerRadius={50} outerRadius={70} startAngle={90} endAngle={-270} dataKey="value">
-                          <Cell fill="hsl(47 96% 53%)" />
-                          <Cell fill="hsl(var(--muted))" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <span className="text-2xl font-black -mt-4">{latestEnergy.percent_of_electricity}%</span>
-                  <span className="text-xs text-muted-foreground">of Global Electricity</span>
-                </div>
-              )}
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={filteredProviders.map((p) => ({
+                      name: p.shortName,
+                      capacity: p.capacity,
+                      fullName: p.name,
+                      colorIdx: providerNames.indexOf(p.name),
+                    }))}
+                    margin={{ top: 5, right: 16, left: 0, bottom: 50 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis
+                      dataKey="name"
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      angle={-40}
+                      textAnchor="end"
+                      axisLine={{ stroke: "hsl(var(--border))" }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      axisLine={false}
+                      tickLine={false}
+                      label={{
+                        value: "GW",
+                        angle: -90,
+                        position: "insideLeft",
+                        fill: "hsl(var(--muted-foreground))",
+                        fontSize: 10,
+                        fontFamily: "Inter",
+                      }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 2,
+                        fontSize: 11,
+                        fontFamily: "Inter",
+                        padding: "8px 12px",
+                      }}
+                      formatter={(value: number, _: any, entry: any) => [
+                        `${value} GW`,
+                        entry.payload.fullName,
+                      ]}
+                      cursor={{ fill: "hsl(var(--muted) / 0.3)" }}
+                    />
+                    <Bar dataKey="capacity" radius={[3, 3, 0, 0]} maxBarSize={48}>
+                      {filteredProviders.map((p) => (
+                        <Cell
+                          key={p.name}
+                          fill={CHART_COLORS[providerNames.indexOf(p.name) % CHART_COLORS.length]}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
 
-            {!latestCapacity && !latestEnergy && !latestInvestment && (
-              <div className="text-center py-12 text-muted-foreground">
-                <p className="text-lg font-semibold">No statistics yet</p>
-                <p className="text-sm mt-1">Stats will appear after the monthly fetch-stats function runs.</p>
+            {/* ─── SECONDARY CHARTS: 3-Column Donut Grid ─────────── */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+              {donutCharts.map((chart) => (
+                <div
+                  key={chart.title}
+                  className="rounded-[4px] border border-border bg-card p-5"
+                >
+                  <h3 className="text-xs font-bold text-foreground mb-0.5">{chart.title}</h3>
+                  <p className="text-[10px] text-muted-foreground mb-3">{chart.subtitle}</p>
+
+                  <div className="flex items-center gap-4">
+                    <div className="h-[120px] w-[120px] shrink-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={chart.segments}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={36}
+                            outerRadius={54}
+                            dataKey="value"
+                            startAngle={90}
+                            endAngle={-270}
+                            stroke="none"
+                          >
+                            {chart.segments.map((seg, i) => (
+                              <Cell key={i} fill={seg.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            contentStyle={{
+                              background: "hsl(var(--card))",
+                              border: "1px solid hsl(var(--border))",
+                              borderRadius: 2,
+                              fontSize: 10,
+                              fontFamily: "Inter",
+                            }}
+                            formatter={(value: number) => [`${value}%`]}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="flex-1 space-y-1.5">
+                      {chart.segments.map((seg, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className="w-2 h-2 rounded-[1px] shrink-0"
+                              style={{ backgroundColor: seg.color }}
+                            />
+                            <span className="text-[11px] text-muted-foreground">{seg.name}</span>
+                          </div>
+                          <span className="text-[11px] font-mono font-semibold text-foreground">
+                            {seg.value}%
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ─── INVESTMENT TREND LINE ──────────────────────────── */}
+            <div className="rounded-[4px] border border-border bg-card p-5 mb-8">
+              <h2 className="text-sm font-bold flex items-center gap-2 mb-1">
+                <span className="w-[2px] h-4 bg-primary shrink-0" />
+                Annual CapEx Investment Trend
+              </h2>
+              <p className="text-[10px] text-muted-foreground ml-3 mb-4">
+                Global data center investment in billions USD
+              </p>
+              <div className="h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={investmentHistory}
+                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis
+                      dataKey="year"
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      axisLine={{ stroke: "hsl(var(--border))" }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      axisLine={false}
+                      tickLine={false}
+                      label={{
+                        value: "$B",
+                        angle: -90,
+                        position: "insideLeft",
+                        fill: "hsl(var(--muted-foreground))",
+                        fontSize: 10,
+                      }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 2,
+                        fontSize: 11,
+                        fontFamily: "Inter",
+                      }}
+                      formatter={(value: number, name: string) => {
+                        if (name === "amount") return [`$${value}B`, "Investment"];
+                        return [`${value}%`, "Growth"];
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: "hsl(var(--primary))", strokeWidth: 0 }}
+                      activeDot={{ r: 5, fill: "hsl(var(--primary))" }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-            )}
+            </div>
+
+            {/* ─── Source Attribution ─────────────────────────────── */}
+            <div className="text-[10px] text-muted-foreground/60 text-right">
+              Sources: AI Analysis · Synergy Research · Company filings · Last updated Feb 2026
+            </div>
           </>
         )}
       </main>
 
       <footer className="border-t border-border bg-card">
-        <div className="container flex items-center justify-between py-6">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground no-underline">
+        <div className="container flex items-center justify-between py-5">
+          <Link to="/" className="text-xs text-muted-foreground hover:text-foreground no-underline">
             ← Back to Pulse
+          </Link>
+          <Link to="/intelligence" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground no-underline">
+            Intelligence <ArrowRight size={12} />
           </Link>
         </div>
       </footer>
