@@ -54,7 +54,7 @@ const Index = () => {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           {/* News Feed */}
-          <div className="rounded-lg border border-border/50 bg-card overflow-hidden">
+          <div>
             {visibleNews.map((article) => (
               <NewsCard key={article.id} article={article} />
             ))}
