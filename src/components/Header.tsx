@@ -51,7 +51,7 @@ const Header = () => {
   return (
     <>
       {/* Row 1: Top Bar */}
-      <div className="h-9 bg-[hsl(222,47%,2%)] border-b border-border/30 overflow-hidden">
+      <div className="h-9 bg-background border-b border-border overflow-hidden">
         <div className="container h-full flex items-center justify-between text-[11px]">
           <span className="text-muted-foreground shrink-0 hidden sm:block">{today}</span>
           <div className="flex-1 mx-6 overflow-hidden relative">
@@ -71,7 +71,7 @@ const Header = () => {
       </div>
 
       {/* Row 2: Main Header */}
-      <header className="sticky top-0 z-50 h-16 bg-[hsl(222,47%,6%)] border-b-2 border-b-primary">
+      <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
         <div className="container h-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="h-6 w-6 text-primary" />
@@ -110,7 +110,7 @@ const Header = () => {
         </div>
 
         {mobileOpen && (
-          <div className="border-t border-border/50 bg-background p-4 md:hidden">
+          <div className="border-t border-border bg-card p-4 md:hidden">
             <nav className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <a
