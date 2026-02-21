@@ -29,3 +29,24 @@ verify_jwt = false
 
 [functions.word-bubble]
 verify_jwt = false
+
+[functions.extract-people]
+verify_jwt = false
+
+[functions.extract-capacity]
+verify_jwt = false
+
+[functions.market-signals]
+verify_jwt = false
+
+[functions.regional-outlook]
+verify_jwt = false
+
+[functions.strategic-insights]
+verify_jwt = false
+
+[functions.word-cloud]
+verify_jwt = false
+
+[functions.fetch-stats]
+verify_jwt = false
