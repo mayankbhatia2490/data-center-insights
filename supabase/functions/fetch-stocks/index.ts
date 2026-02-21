@@ -33,7 +33,8 @@ Deno.serve(async (req) => {
 
     let updated = 0;
 
-    for (const { symbol, name } of SYMBOLS) {
+    for (let i = 0; i < SYMBOLS.length; i++) {
+      const { symbol, name } = SYMBOLS[i];
       try {
         const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
         const res = await fetch(url);
@@ -71,13 +72,9 @@ Deno.serve(async (req) => {
         console.error(`Error fetching ${symbol}:`, e);
       }
 
-      // Alpha Vantage free tier: 25 requests/day, must wait between requests
-      if (SYMBOLS.indexOf({ symbol, name }) < SYMBOLS.length - 1) {
+      // Wait 20s between requests to respect rate limits
+      if (i < SYMBOLS.length - 1) {
         await new Promise((r) => setTimeout(r, 20000));
-      }
-    }
-      } catch (e) {
-        console.error(`Error fetching ${symbol}:`, e);
       }
     }
 
