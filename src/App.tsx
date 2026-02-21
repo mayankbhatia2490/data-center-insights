@@ -10,6 +10,8 @@ import Archive from "./pages/Archive";
 import Leaders from "./pages/Leaders";
 import LeaderProfile from "./pages/LeaderProfile";
 import Stats from "./pages/Stats";
+import Intelligence from "./pages/Intelligence";
+import Insights from "./pages/Insights";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/leaders" element={<Leaders />} />
           <Route path="/leaders/:id" element={<LeaderProfile />} />
           <Route path="/stats" element={<Stats />} />
+          <Route path="/intelligence" element={<Intelligence />} />
+          <Route path="/insights" element={<Insights />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

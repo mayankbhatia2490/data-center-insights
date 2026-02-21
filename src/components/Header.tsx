@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Zap, Sun, Moon } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,10 +13,13 @@ import { Input } from "@/components/ui/input";
 import { useSubscribe } from "@/hooks/useSubscribe";
 
 const navLinks = [
-  { label: "Global News", filter: "All", href: "#news" },
-  { label: "Middle East Focus", filter: "Middle East", href: "#news" },
-  { label: "Hyperscale", filter: "AI", href: "#news" },
-  { label: "Sustainability", filter: "Sustainability", href: "#news" },
+  { label: "Global News", filter: "All", href: "/#news" },
+  { label: "Middle East Focus", filter: "Middle East", href: "/#news" },
+  { label: "Hyperscale", filter: "AI", href: "/#news" },
+  { label: "Sustainability", filter: "Sustainability", href: "/#news" },
+  { label: "Intelligence", filter: null, href: "/intelligence" },
+  { label: "Insights", filter: null, href: "/insights" },
+  { label: "Leaders", filter: null, href: "/leaders" },
 ];
 
 const tickerHeadlines = [
@@ -27,6 +31,8 @@ const tickerHeadlines = [
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Global News");
+  const navigate = useNavigate();
+  const location = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -112,8 +118,20 @@ const Header = () => {
                 key={link.label}
                 href={link.href}
                 onClick={(e) => {
+                  e.preventDefault();
                   setActiveLink(link.label);
-                  window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                  if (link.filter !== null) {
+                    if (location.pathname !== "/") {
+                      navigate("/");
+                      setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                      }, 100);
+                    } else {
+                      window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                    }
+                  } else {
+                    navigate(link.href);
+                  }
                 }}
                 className={`h-full flex items-center px-4 text-[13px] font-medium transition-colors duration-200 ${
                   activeLink === link.label
@@ -158,10 +176,22 @@ const Header = () => {
                   key={link.label}
                   href={link.href}
                   className="text-sm font-medium text-muted-foreground"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     setActiveLink(link.label);
                     setMobileOpen(false);
-                    window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                    if (link.filter !== null) {
+                      if (location.pathname !== "/") {
+                        navigate("/");
+                        setTimeout(() => {
+                          window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                        }, 100);
+                      } else {
+                        window.dispatchEvent(new CustomEvent("nav-filter", { detail: link.filter }));
+                      }
+                    } else {
+                      navigate(link.href);
+                    }
                   }}
                 >
                   {link.label}

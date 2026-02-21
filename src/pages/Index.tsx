@@ -12,10 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsChatbot from "@/components/NewsChatbot";
 import DailyDigest from "@/components/DailyDigest";
-import EditorsPicks from "@/components/EditorsPicks";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import { Link } from "react-router-dom";
-import MarketSignals from "@/components/MarketSignals";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -81,8 +79,6 @@ const Index = () => {
       <NewsTicker />
       <HeroSection />
       <DailyDigest />
-      <MarketSignals />
-      <EditorsPicks />
 
       <main id="news" className="container py-8 md:py-12">
         <div className="mb-8 flex items-center justify-between">
