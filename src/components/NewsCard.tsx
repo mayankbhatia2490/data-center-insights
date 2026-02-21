@@ -25,8 +25,11 @@ const getCategoryColor = (cat: string) => {
 
 const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: boolean }) => {
   return (
-    <div
-      className={`group flex flex-col md:flex-row gap-6 px-6 py-6 border-b border-border border-l-[3px] ${getCategoryBorder(article.category)} hover:bg-secondary transition-colors duration-200 cursor-pointer`}
+    <a
+      href={article.sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group flex flex-col md:flex-row gap-6 px-6 py-6 border-b border-border border-l-[3px] ${getCategoryBorder(article.category)} hover:bg-secondary transition-colors duration-200 cursor-pointer no-underline`}
     >
       {/* Rule 8: grayscale(20%) default, 0 on hover */}
       <div className="w-full md:w-44 h-28 flex-shrink-0 overflow-hidden">
@@ -67,7 +70,7 @@ const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: bo
           <span className="text-xs text-muted-foreground">{article.readTime}</span>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 
