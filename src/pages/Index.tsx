@@ -11,7 +11,11 @@ import { Input } from "@/components/ui/input";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
-  const visibleNews = mockNews.slice(0, visibleCount);
+  const [activeFilter, setActiveFilter] = useState("All");
+  const filteredNews = activeFilter === "All"
+    ? mockNews
+    : mockNews.filter((a) => a.category === activeFilter);
+  const visibleNews = filteredNews.slice(0, visibleCount);
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
   const [modalSubscribed, setModalSubscribed] = useState(false);
@@ -43,8 +47,12 @@ const Index = () => {
             {["All", "M&A", "AI", "Middle East"].map((filter) => (
               <button
                 key={filter}
-                className="rounded-[4px] px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:bg-secondary hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
-                data-active={filter === "All"}
+                onClick={() => { setActiveFilter(filter); setVisibleCount(6); }}
+                className={`rounded-[4px] px-3 py-1 text-xs font-medium transition-colors duration-200 ${
+                  activeFilter === filter
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
               >
                 {filter}
               </button>
@@ -57,10 +65,10 @@ const Index = () => {
             {visibleNews.map((article, i) => (
               <NewsCard key={article.id} article={article} isFirst={i === 0} />
             ))}
-            {visibleCount < mockNews.length && (
+            {visibleCount < filteredNews.length && (
               <div className="flex justify-center py-8">
                 <button
-                  onClick={() => setVisibleCount((c) => Math.min(c + 4, mockNews.length))}
+                  onClick={() => setVisibleCount((c) => Math.min(c + 4, filteredNews.length))}
                   className="text-muted-foreground hover:text-foreground font-medium border-b border-border pb-1 hover:border-foreground transition-all duration-200 text-sm"
                 >
                   Load previous days
