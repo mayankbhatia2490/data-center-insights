@@ -20,7 +20,7 @@ const Sidebar = () => {
                 <p className="text-sm font-medium leading-snug transition-colors group-hover:text-primary">
                   {story.title}
                 </p>
-                <span className={`mt-1 inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium ${categoryColors[story.category]}`}>
+                <span className={`mt-1 inline-flex rounded px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-[1.5px] ${categoryColors[story.category]}`}>
                   {story.category}
                 </span>
               </div>

@@ -30,7 +30,7 @@ const HeroSection = () => {
             Trusted by 5,000+ Industry Professionals
           </div>
 
-          <h1 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+          <h1 className="mb-4 tracking-[-2px]">
             The Daily Intelligence for{" "}
             <span className="text-gradient">Data Center Leaders</span>
           </h1>
