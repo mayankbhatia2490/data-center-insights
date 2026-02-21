@@ -15,8 +15,8 @@ import { useSubscribe } from "@/hooks/useSubscribe";
 const navLinks = [
   { label: "Global News", filter: "All", href: "/#news" },
   { label: "Middle East Focus", filter: "Middle East", href: "/#news" },
-  { label: "Hyperscale", filter: "AI", href: "/#news" },
   { label: "Sustainability", filter: "Sustainability", href: "/#news" },
+  { label: "Statistics", filter: null, href: "/stats" },
   { label: "Intelligence", filter: null, href: "/intelligence" },
   { label: "Insights", filter: null, href: "/insights" },
   { label: "Leaders", filter: null, href: "/leaders" },
