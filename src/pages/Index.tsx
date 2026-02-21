@@ -34,12 +34,10 @@ const Index = () => {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           {/* News Feed */}
-          <div className="space-y-6">
-            <div className="grid gap-6 sm:grid-cols-2">
-              {visibleNews.map((article) => (
-                <NewsCard key={article.id} article={article} />
-              ))}
-            </div>
+          <div className="rounded-lg border border-border/50 bg-card overflow-hidden">
+            {visibleNews.map((article) => (
+              <NewsCard key={article.id} article={article} />
+            ))}
             {visibleCount < mockNews.length && (
               <div className="flex justify-center pt-4">
                 <Button
