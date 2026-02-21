@@ -35,6 +35,17 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Listen for nav filter changes from Header
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const filter = (e as CustomEvent).detail as string;
+      setActiveFilter(filter);
+      setVisibleCount(6);
+    };
+    window.addEventListener("nav-filter", handler);
+    return () => window.removeEventListener("nav-filter", handler);
+  }, []);
+
   useEffect(() => {
     const onScroll = () => {
       const scrollTop = window.scrollY;
