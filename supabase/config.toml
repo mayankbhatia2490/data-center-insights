@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.fetch-events]
 verify_jwt = false
+
+[functions.generate-digest]
+verify_jwt = false
