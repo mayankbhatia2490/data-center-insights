@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import Archive from "./pages/Archive";
+import Leaders from "./pages/Leaders";
+import LeaderProfile from "./pages/LeaderProfile";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/archive" element={<Archive />} />
+          <Route path="/leaders" element={<Leaders />} />
+          <Route path="/leaders/:id" element={<LeaderProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,8 +1,9 @@
 import { Article } from "@/hooks/useArticles";
-import { Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Clock, TrendingUp, TrendingDown, Minus, Lightbulb, Users } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import ShareButtons from "@/components/ShareButtons";
 import BookmarkButton from "@/components/BookmarkButton";
+import { Link } from "react-router-dom";
 
 const getSentimentBadge = (sentiment: string | null) => {
   if (!sentiment) return null;
@@ -61,7 +62,16 @@ const formatTime = (date: string | null) => {
   }
 };
 
-const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: boolean }) => {
+interface ArticlePerson {
+  id: string;
+  name: string;
+}
+
+interface ExtendedArticle extends Article {
+  people?: ArticlePerson[];
+}
+
+const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFirst?: boolean }) => {
   return (
     <a
       href={article.source_url || "#"}
@@ -82,7 +92,7 @@ const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: bo
 
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             {isFirst && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-[4px] bg-destructive/15 text-destructive text-[10px] font-extrabold uppercase tracking-[1px]">
                 Breaking
@@ -100,6 +110,31 @@ const NewsCard = ({ article, isFirst = false }: { article: Article; isFirst?: bo
             {article.title}
           </h3>
           <p className="text-sm line-clamp-2">{article.summary}</p>
+
+          {/* Insight */}
+          {article.insight && (
+            <div className="mt-2 flex items-start gap-1.5 text-xs text-primary/80 bg-primary/5 rounded-[4px] px-3 py-2">
+              <Lightbulb size={12} className="mt-0.5 shrink-0 text-primary" />
+              <span><strong className="text-primary">Why it matters:</strong> {article.insight}</span>
+            </div>
+          )}
+
+          {/* People tags */}
+          {article.people && article.people.length > 0 && (
+            <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+              <Users size={11} className="text-muted-foreground" />
+              {article.people.map((p, i) => (
+                <Link
+                  key={p.id}
+                  to={`/leaders/${p.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-[11px] font-medium text-primary hover:underline no-underline"
+                >
+                  {p.name}{i < article.people!.length - 1 ? "," : ""}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between mt-4">

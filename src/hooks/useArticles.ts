@@ -13,6 +13,8 @@ export interface Article {
   read_time: string | null;
   created_at: string;
   sentiment: string | null;
+  insight: string | null;
+  source_excerpt: string | null;
 }
 
 export function useArticles(category?: string, limit = 20) {

@@ -14,16 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_people: {
+        Row: {
+          article_id: string | null
+          context_excerpt: string | null
+          created_at: string | null
+          id: string
+          person_id: string | null
+          role_in_article: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          context_excerpt?: string | null
+          created_at?: string | null
+          id?: string
+          person_id?: string | null
+          role_in_article?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          context_excerpt?: string | null
+          created_at?: string | null
+          id?: string
+          person_id?: string | null
+          role_in_article?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_people_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_people_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           category: string | null
           created_at: string
           id: string
           image_url: string | null
+          insight: string | null
           published_at: string | null
           read_time: string | null
           sentiment: string | null
           source: string | null
+          source_excerpt: string | null
           source_url: string | null
           summary: string | null
           title: string
@@ -33,10 +77,12 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          insight?: string | null
           published_at?: string | null
           read_time?: string | null
           sentiment?: string | null
           source?: string | null
+          source_excerpt?: string | null
           source_url?: string | null
           summary?: string | null
           title: string
@@ -46,10 +92,12 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          insight?: string | null
           published_at?: string | null
           read_time?: string | null
           sentiment?: string | null
           source?: string | null
+          source_excerpt?: string | null
           source_url?: string | null
           summary?: string | null
           title?: string
@@ -143,6 +191,135 @@ export type Database = {
         }
         Relationships: []
       }
+      people: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          first_mentioned: string | null
+          id: string
+          image_url: string | null
+          importance_score: number | null
+          known_as: string | null
+          last_mentioned: string | null
+          mention_count: number | null
+          name: string
+          organization: string | null
+          region: string | null
+          roles: Json | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          first_mentioned?: string | null
+          id?: string
+          image_url?: string | null
+          importance_score?: number | null
+          known_as?: string | null
+          last_mentioned?: string | null
+          mention_count?: number | null
+          name: string
+          organization?: string | null
+          region?: string | null
+          roles?: Json | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          first_mentioned?: string | null
+          id?: string
+          image_url?: string | null
+          importance_score?: number | null
+          known_as?: string | null
+          last_mentioned?: string | null
+          mention_count?: number | null
+          name?: string
+          organization?: string | null
+          region?: string | null
+          roles?: Json | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      people_lists: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_curated: boolean | null
+          region: string | null
+          role_filter: string | null
+          slug: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_curated?: boolean | null
+          region?: string | null
+          role_filter?: string | null
+          slug: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_curated?: boolean | null
+          region?: string | null
+          role_filter?: string | null
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      people_lists_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          list_id: string | null
+          note: string | null
+          person_id: string | null
+          rank: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          list_id?: string | null
+          note?: string | null
+          person_id?: string | null
+          rank?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          list_id?: string | null
+          note?: string | null
+          person_id?: string | null
+          rank?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "people_lists_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "people_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "people_lists_items_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscribers: {
         Row: {
           confirmed: boolean
@@ -170,6 +347,36 @@ export type Database = {
           preferences?: Json | null
           subscribed_at?: string
           unsubscribe_token?: string
+        }
+        Relationships: []
+      }
+      weekly_index: {
+        Row: {
+          created_at: string | null
+          drivers: Json | null
+          id: string
+          outlook: string | null
+          risks: Json | null
+          score: number | null
+          week_start: string
+        }
+        Insert: {
+          created_at?: string | null
+          drivers?: Json | null
+          id?: string
+          outlook?: string | null
+          risks?: Json | null
+          score?: number | null
+          week_start: string
+        }
+        Update: {
+          created_at?: string | null
+          drivers?: Json | null
+          id?: string
+          outlook?: string | null
+          risks?: Json | null
+          score?: number | null
+          week_start?: string
         }
         Relationships: []
       }

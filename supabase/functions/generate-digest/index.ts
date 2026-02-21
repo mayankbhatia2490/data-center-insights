@@ -35,11 +35,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Fetch articles from the last 24 hours
+    // Fetch articles from the last 24 hours including insight
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const { data: articles } = await supabase
       .from("articles")
-      .select("title, summary, category, source")
+      .select("title, summary, category, source, source_url, sentiment, insight")
       .gte("published_at", yesterday)
       .order("published_at", { ascending: false })
       .limit(50);
@@ -50,24 +50,6 @@ Deno.serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    // Group by category
-    const byCategory: Record<string, any[]> = {};
-    for (const a of articles) {
-      const cat = a.category || "Other";
-      if (!byCategory[cat]) byCategory[cat] = [];
-      byCategory[cat].push(a);
-    }
-
-    const articleList = Object.entries(byCategory)
-      .map(([cat, items]) => {
-        const headlines = items
-          .slice(0, 5)
-          .map((a: any) => `- ${a.title} (${a.source}): ${a.summary}`)
-          .join("\n");
-        return `## ${cat}\n${headlines}`;
-      })
-      .join("\n\n");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -80,20 +62,27 @@ Deno.serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are the editor of "Data Center Pulse," a premium daily newsletter for data center industry executives. Write a compelling morning briefing digest.
+            content: `You are a senior market analyst writing "Data Center Pulse," a concise intelligence briefing for C-level readers in the data center industry.
 
 FORMAT:
-- Start with a one-line bold hook that captures the day's biggest theme
-- Then cover each category with 2-3 sentences summarizing the key developments, trends, and implications
-- Categories: M&A, AI, Sustainability, Middle East, Policy (only include categories that have articles)
-- Use a professional, analytical tone — think Bloomberg or Financial Times
-- End with a "Watch Today" bullet of 1-2 things to keep an eye on
-- Use markdown formatting (bold, headers, bullet points)
-- Keep the total digest under 400 words`,
+1) **Executive Summary** — 3 bullet points (high-level)
+2) **Market Signals** — 3-5 short signals with 1-line evidence citing (source)
+3) **What This Means:**
+   - For Investors: 2 lines
+   - For Operators: 2 lines
+   - For Policymakers: 1 line
+4) **Trend Scores** (scale -5..+5): Hyperscale Expansion, AI Infrastructure, Energy & Sustainability, Middle East Growth, Regulation
+5) **Watch Today** — 1-2 bullets of things to keep an eye on
+
+CONSTRAINTS:
+- Use the 'insight' fields as factual support. When citing, append the source name in parentheses.
+- Keep total length < 450 words.
+- Use markdown formatting (bold, headers, bullet points).
+- Use a professional, analytical tone — think Bloomberg or Financial Times.`,
           },
           {
             role: "user",
-            content: `Generate today's digest from these articles:\n\n${articleList}`,
+            content: `Generate today's intelligence briefing from these articles:\n\n${JSON.stringify(articles)}`,
           },
         ],
       }),
