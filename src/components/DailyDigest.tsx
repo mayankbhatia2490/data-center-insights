@@ -47,7 +47,7 @@ const DailyDigest = () => {
           <div className="flex items-center gap-2">
             <Zap size={16} className="text-primary" />
             <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary">
-              AI Morning Briefing
+              Morning Intelligence Brief
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">

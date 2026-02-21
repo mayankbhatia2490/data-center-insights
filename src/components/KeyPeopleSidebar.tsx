@@ -62,7 +62,20 @@ const KeyPeopleSidebar = () => {
           </Link>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">No leaders tracked yet.</p>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-muted/50 shrink-0" />
+              <div className="flex-1 space-y-1">
+                <div className="h-3 w-24 bg-muted/30 rounded-[2px]" />
+                <div className="h-2.5 w-16 bg-muted/20 rounded-[2px]" />
+              </div>
+            </div>
+          ))}
+          <p className="text-[10px] text-muted-foreground/60 italic">
+            Leaders will appear as news is analyzed.
+          </p>
+        </div>
       )}
     </div>
   );

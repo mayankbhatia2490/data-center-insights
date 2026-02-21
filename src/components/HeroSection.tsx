@@ -1,5 +1,6 @@
 import { useArticles, Article } from "@/hooks/useArticles";
 import { Clock, BarChart3 } from "lucide-react";
+import { stripHtml } from "@/lib/stripHtml";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 
@@ -88,7 +89,7 @@ const HeroSection = () => {
               </h1>
             </a>
             <p className="text-[15px] leading-relaxed line-clamp-2 mb-6">
-              {featured.summary}
+              {stripHtml(featured.summary)}
             </p>
             <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
               <span className="font-semibold text-foreground uppercase tracking-wider">{featured.source}</span>
