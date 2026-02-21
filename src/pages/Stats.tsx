@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import Header from "@/components/Header";
 import { useStats } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,11 +27,43 @@ const CHART_COLORS = [
 
 const Stats = () => {
   const { data, isLoading } = useStats();
+  const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+  const topCompanies = data?.companies || [];
+  const allYears = useMemo(() => {
+    const years = (data?.investment || []).map((i: any) => i.year).filter(Boolean) as number[];
+    return [...new Set(years)].sort((a, b) => b - a);
+  }, [data?.investment]);
+
+  // Initialize selected companies to all on first load
+  const companyNames = useMemo(() => topCompanies.map((c: any) => c.company as string), [topCompanies]);
+  const activeCompanies = selectedCompanies.size === 0 ? new Set(companyNames) : selectedCompanies;
+
+  const toggleCompany = (company: string) => {
+    setSelectedCompanies((prev) => {
+      const current = prev.size === 0 ? new Set(companyNames) : new Set(prev);
+      if (current.has(company)) {
+        current.delete(company);
+      } else {
+        current.add(company);
+      }
+      // If all are selected again, reset to empty (meaning "all")
+      if (current.size === companyNames.length) return new Set();
+      return current;
+    });
+  };
+
+  const selectAllCompanies = () => setSelectedCompanies(new Set());
+
+  const filteredCompanies = topCompanies.filter((c: any) => activeCompanies.has(c.company));
 
   const latestCapacity = data?.capacity?.[0];
   const latestEnergy = data?.energy?.[0];
-  const latestInvestment = data?.investment?.[0];
-  const topCompanies = data?.companies || [];
+  const activeYear = selectedYear ?? allYears[0] ?? null;
+  const latestInvestment = activeYear
+    ? (data?.investment || []).find((i: any) => i.year === activeYear)
+    : data?.investment?.[0];
 
   return (
     <div className="min-h-screen bg-background">
@@ -92,11 +125,30 @@ const Stats = () => {
               </div>
 
               <div className="rounded-[4px] border border-border bg-card p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <BarChart3 className="h-4 w-4 text-primary" />
-                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
-                    Annual Investment
-                  </span>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                    <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
+                      Annual Investment
+                    </span>
+                  </div>
+                  {allYears.length > 1 && (
+                    <div className="flex gap-1">
+                      {allYears.map((year) => (
+                        <button
+                          key={year}
+                          onClick={() => setSelectedYear(year)}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-sm border transition-colors ${
+                            activeYear === year
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                          }`}
+                        >
+                          {year}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="text-3xl font-black text-foreground">
                   ${latestInvestment?.total_investment_usd ?? "—"} <span className="text-lg font-normal text-muted-foreground">B</span>
@@ -110,20 +162,56 @@ const Stats = () => {
               </div>
             </div>
 
-            {/* Top Companies */}
+            {/* Top Companies with filter chips */}
             {topCompanies.length > 0 && (
               <div className="rounded-[4px] border border-border bg-card p-6">
-                <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
-                  <span className="w-[2px] h-4 bg-primary shrink-0" />
-                  Top Companies by Capacity
-                </h2>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <h2 className="text-sm font-bold flex items-center gap-2">
+                    <span className="w-[2px] h-4 bg-primary shrink-0" />
+                    Top Companies by Capacity
+                  </h2>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      onClick={selectAllCompanies}
+                      className={`px-2.5 py-1 text-[10px] font-bold rounded-sm border transition-colors ${
+                        selectedCompanies.size === 0
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      All
+                    </button>
+                    {companyNames.map((company, idx) => {
+                      const shortName = company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" ");
+                      const isActive = activeCompanies.has(company);
+                      return (
+                        <button
+                          key={company}
+                          onClick={() => toggleCompany(company)}
+                          className={`px-2.5 py-1 text-[10px] font-bold rounded-sm border transition-colors flex items-center gap-1.5 ${
+                            isActive
+                              ? "border-foreground/30 text-foreground"
+                              : "border-border text-muted-foreground/40 hover:text-muted-foreground hover:border-border"
+                          }`}
+                        >
+                          <span
+                            className="w-2 h-2 rounded-[2px] shrink-0"
+                            style={{ backgroundColor: isActive ? CHART_COLORS[idx % CHART_COLORS.length] : "hsl(var(--muted))" }}
+                          />
+                          {shortName}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
                 <div className="h-[320px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={topCompanies.map((c: any) => ({
+                      data={filteredCompanies.map((c: any) => ({
                         name: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
                         capacity: c.total_capacity_gw,
                         fullName: c.company,
+                        colorIdx: companyNames.indexOf(c.company),
                       }))}
                       margin={{ top: 5, right: 20, left: 0, bottom: 60 }}
                     >
@@ -151,8 +239,11 @@ const Stats = () => {
                         ]}
                       />
                       <Bar dataKey="capacity" radius={[4, 4, 0, 0]}>
-                        {topCompanies.map((_: any, index: number) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        {filteredCompanies.map((c: any) => (
+                          <Cell
+                            key={c.company}
+                            fill={CHART_COLORS[companyNames.indexOf(c.company) % CHART_COLORS.length]}
+                          />
                         ))}
                       </Bar>
                     </BarChart>
