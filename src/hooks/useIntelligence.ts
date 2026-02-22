@@ -133,7 +133,7 @@ export function useStats() {
         supabase.from("dc_capacity_stats").select("*").order("last_updated", { ascending: false }).limit(5),
         supabase.from("dc_energy_usage").select("*").order("last_updated", { ascending: false }).limit(5),
         supabase.from("dc_investment_stats").select("*").order("year", { ascending: false }).limit(5),
-        supabase.from("dc_company_capacity_stats").select("*").order("rank").limit(10),
+        supabase.from("dc_company_capacity_stats").select("*").order("rank").limit(15),
       ]);
       return {
         capacity: capacityRes.data || [],
