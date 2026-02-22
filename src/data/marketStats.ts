@@ -99,10 +99,11 @@ export const donutCharts: DonutChart[] = [
     title: "Regional Capacity Split",
     subtitle: "Global power distribution by region",
     segments: [
-      { name: "United States", value: 54, color: "hsl(var(--primary))" },
+      { name: "United States", value: 48, color: "hsl(var(--primary))" },
+      { name: "MENA", value: 12, color: "hsl(25 80% 50%)" },
       { name: "China", value: 15, color: "hsl(47 90% 50%)" },
-      { name: "Europe", value: 16, color: "hsl(210 80% 55%)" },
-      { name: "Rest of World", value: 15, color: "hsl(var(--muted))" },
+      { name: "Europe", value: 14, color: "hsl(210 80% 55%)" },
+      { name: "Rest of World", value: 11, color: "hsl(var(--muted))" },
     ],
   },
   {
