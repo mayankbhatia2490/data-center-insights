@@ -67,13 +67,19 @@ export const keyMetrics: MetricCard[] = [
 
 // ─── Main Bar Chart: Top Providers ───────────────────────────────
 export const topProviders: BarChartDataPoint[] = [
+  // --- Global Hyperscalers ---
   { name: "Nvidia", shortName: "Nvidia", capacity: 8, color: "hsl(var(--primary))" },
   { name: "Microsoft Azure", shortName: "Microsoft", capacity: 6.5, color: "hsl(210 80% 55%)" },
   { name: "Amazon Web Services", shortName: "AWS", capacity: 6, color: "hsl(142 60% 40%)" },
   { name: "Google Cloud", shortName: "Google", capacity: 5.5, color: "hsl(47 90% 50%)" },
   { name: "Equinix", shortName: "Equinix", capacity: 4.5, color: "hsl(280 55% 55%)" },
+  // --- MENA Leaders ---
   { name: "G42", shortName: "G42", capacity: 4.2, color: "hsl(170 60% 40%)" },
   { name: "Khazna Data Centers", shortName: "Khazna", capacity: 3.9, color: "hsl(25 80% 50%)" },
+  { name: "STC", shortName: "STC", capacity: 3.5, color: "hsl(220 70% 50%)" },
+  { name: "e& (Etisalat)", shortName: "e&", capacity: 3.2, color: "hsl(160 55% 45%)" },
+  { name: "Ooredoo", shortName: "Ooredoo", capacity: 2.8, color: "hsl(0 65% 50%)" },
+  // --- Global Colocation ---
   { name: "Digital Realty", shortName: "Digital Realty", capacity: 3.8, color: "hsl(200 60% 45%)" },
   { name: "NTT Data", shortName: "NTT", capacity: 2.9, color: "hsl(340 55% 50%)" },
 ];
