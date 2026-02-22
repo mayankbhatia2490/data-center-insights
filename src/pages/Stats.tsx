@@ -48,6 +48,8 @@ const Stats = () => {
 
   // Merge live DB data with static fallback
   const dbCompanies = data?.companies || [];
+  const dbSegments = data?.segments || [];
+
   const providers: BarChartDataPoint[] = useMemo(() => {
     if (dbCompanies.length > 0) {
       return dbCompanies.map((c: any, i: number) => ({
@@ -59,6 +61,23 @@ const Stats = () => {
     }
     return topProviders;
   }, [dbCompanies]);
+
+  // Build donut charts from DB segments, falling back to static data
+  const liveDonutCharts = useMemo(() => {
+    if (dbSegments.length === 0) return donutCharts;
+    const chartMap = new Map<string, { title: string; subtitle: string; segments: { name: string; value: number; color: string }[] }>();
+    for (const seg of dbSegments) {
+      if (!chartMap.has(seg.chart_key)) {
+        chartMap.set(seg.chart_key, { title: seg.chart_title, subtitle: seg.chart_subtitle || "", segments: [] });
+      }
+      chartMap.get(seg.chart_key)!.segments.push({
+        name: seg.segment_name,
+        value: Number(seg.segment_value),
+        color: seg.segment_color || "hsl(var(--muted))",
+      });
+    }
+    return Array.from(chartMap.values());
+  }, [dbSegments]);
 
   const providerNames = useMemo(() => providers.map((p) => p.name), [providers]);
   const activeCompanies = selectedCompanies.size === 0 ? new Set(providerNames) : selectedCompanies;
@@ -264,7 +283,7 @@ const Stats = () => {
 
             {/* ─── SECONDARY CHARTS: 3-Column Donut Grid ─────────── */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-              {donutCharts.map((chart) => (
+              {liveDonutCharts.map((chart) => (
                 <div
                   key={chart.title}
                   className="rounded-[4px] border border-border bg-card p-5"

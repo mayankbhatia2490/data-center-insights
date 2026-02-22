@@ -269,6 +269,45 @@ export type Database = {
         }
         Relationships: []
       }
+      dc_market_segments: {
+        Row: {
+          chart_key: string
+          chart_subtitle: string | null
+          chart_title: string
+          id: string
+          last_updated: string | null
+          segment_color: string | null
+          segment_name: string
+          segment_value: number
+          sort_order: number | null
+          source: string | null
+        }
+        Insert: {
+          chart_key: string
+          chart_subtitle?: string | null
+          chart_title: string
+          id?: string
+          last_updated?: string | null
+          segment_color?: string | null
+          segment_name: string
+          segment_value: number
+          sort_order?: number | null
+          source?: string | null
+        }
+        Update: {
+          chart_key?: string
+          chart_subtitle?: string | null
+          chart_title?: string
+          id?: string
+          last_updated?: string | null
+          segment_color?: string | null
+          segment_name?: string
+          segment_value?: number
+          sort_order?: number | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
