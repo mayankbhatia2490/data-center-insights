@@ -103,6 +103,13 @@ Return ONLY a valid JSON array. If no people found, return [].`,
 }
 
 // --- AI Quality Gate ---
+const MENA_KEYWORDS = ["dubai", "saudi", "uae", "abu dhabi", "riyadh", "qatar", "bahrain", "oman", "kuwait", "middle east", "gulf", "mena", "neom", "jeddah", "muscat", "g42", "khazna", "stc", "e&", "mubadala", "adq"];
+
+function isMenaArticle(title: string, summary: string): boolean {
+  const text = `${title} ${summary}`.toLowerCase();
+  return MENA_KEYWORDS.some((kw) => text.includes(kw));
+}
+
 async function aiQualityFilter(articles: any[], apiKey: string): Promise<any[]> {
   if (articles.length === 0) return [];
   const batchSize = 15;
@@ -118,13 +125,14 @@ async function aiQualityFilter(articles: any[], apiKey: string): Promise<any[]> 
       const raw = await callAI([
         {
           role: "system",
-          content: `You are an editorial quality filter for "Data Center Pulse," a premium industry newsletter targeting executives, investors, and decision-makers.
+          content: `You are an editorial quality filter for "Data Center Pulse," a MENA-first premium industry newsletter targeting executives, investors, and decision-makers in the Middle East and globally.
 
 Score each article 1-10 based on:
 - Newsworthiness: Is this breaking news, a major deal, policy change, or significant development?
 - Industry Impact: Does this affect data center investment, operations, technology adoption, or strategy?
 - Specificity: Does it contain concrete facts, numbers, company names, or deal values?
 - Executive Relevance: Would a C-suite executive or investor find this valuable?
+- MENA Relevance: Articles about UAE, Saudi Arabia, Qatar, or broader Middle East get a +2 bonus.
 
 REJECT (score 1-5): Generic website homepages, press release fluff, recycled listicles, vague "industry overview" pages.
 ACCEPT (score 6-10): M&A deals with values, new facility announcements with MW/location, policy changes, earnings data, technology breakthroughs.
@@ -138,9 +146,14 @@ Respond with ONLY a JSON array of scores in order, e.g. [8, 3, 7, 5, 9]. No expl
       if (match) {
         const scores: number[] = JSON.parse(match[0]);
         batch.forEach((article, idx) => {
-          if ((scores[idx] ?? 5) >= 6) scored.push(article);
+          let score = scores[idx] ?? 5;
+          // MENA boost: ensure MENA articles pass more easily
+          if (isMenaArticle(article.title || "", article.summary || "")) {
+            score = Math.min(10, score + 2);
+          }
+          if (score >= 6) scored.push(article);
         });
-        console.log(`Quality gate batch: ${batch.length} → ${scores.filter(s => s >= 6).length} passed`);
+        console.log(`Quality gate batch: ${batch.length} → ${scored.length} passed (with MENA boost)`);
       } else {
         scored.push(...batch);
       }
@@ -242,7 +255,7 @@ async function fetchAtom(feedUrl: string, sourceName: string) {
 async function fetchNewsAPI(apiKey: string) {
   const articles: any[] = [];
   try {
-    const queries = ["data center", "hyperscale cloud infrastructure", "data center M&A acquisition", "data center sustainability energy"];
+    const queries = ["data center", "hyperscale cloud infrastructure", "data center M&A acquisition", "data center sustainability energy", "Middle East data center", "Gulf cloud infrastructure"];
     for (const q of queries) {
       const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=10&apiKey=${apiKey}`;
       const res = await fetch(url);
@@ -267,7 +280,7 @@ async function fetchNewsAPI(apiKey: string) {
 async function fetchFirecrawl(apiKey: string) {
   const articles: any[] = [];
   try {
-    const queries = ["data center news today", "hyperscale data center deals acquisition", "data center sustainability renewable energy", "Middle East data center developments", "data center policy regulation", "liquid cooling GPU data center"];
+    const queries = ["data center news today", "hyperscale data center deals acquisition", "data center sustainability renewable energy", "Middle East data center developments", "UAE data center investment", "Saudi Arabia cloud infrastructure", "G42 Khazna data center", "MENA hyperscale colocation", "Abu Dhabi digital infrastructure", "data center policy regulation", "liquid cooling GPU data center"];
     for (const query of queries) {
       const res = await fetch("https://api.firecrawl.dev/v1/search", {
         method: "POST",
@@ -368,6 +381,13 @@ Deno.serve(async (req) => {
 
     // --- RSS & Atom Feeds ---
     const rssFeeds: [string, string][] = [
+      // --- MENA-First Sources ---
+      ["https://gulfbusiness.com/feed/", "Gulf Business"],
+      ["https://www.arabianbusiness.com/feed", "Arabian Business"],
+      ["https://www.meed.com/rss", "MEED"],
+      ["https://www.zawya.com/en/rss", "Zawya"],
+      ["https://www.telecomreviewmena.com/feed", "Telecom Review ME"],
+      // --- Global Sources ---
       ["https://www.datacenterdynamics.com/en/rss/", "DataCenterDynamics"],
       ["https://www.datacenterknowledge.com/rss.xml", "Data Center Knowledge"],
       ["https://datacenterfrontier.com/feed/", "Datacenter Frontier"],
