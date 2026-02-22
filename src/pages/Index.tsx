@@ -7,14 +7,15 @@ import NewsCard from "@/components/NewsCard";
 import Sidebar from "@/components/Sidebar";
 import { useArticles } from "@/hooks/useArticles";
 import { Button } from "@/components/ui/button";
-import { Zap, Mail, X, Globe } from "lucide-react";
+import { Zap, Mail, X, Globe, TrendingUp, AlertTriangle, Target, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsChatbot from "@/components/NewsChatbot";
 import DailyDigest from "@/components/DailyDigest";
-import MarketGlance from "@/components/MarketGlance";
+import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -26,17 +27,31 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalEmail, setModalEmail] = useState("");
   const [modalSubscribed, setModalSubscribed] = useState(false);
-
-  // Reading progress
   const [readProgress, setReadProgress] = useState(0);
 
-  // Newsletter popup disabled
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setShowModal(true), 30000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  // Credibility stats
+  const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
+  const [articleCount, setArticleCount] = useState<number | null>(null);
+  const [signals, setSignals] = useState<any[]>([]);
 
-  // Listen for nav filter changes from Header
+  useEffect(() => {
+    // Fetch subscriber count
+    supabase.from("subscribers").select("id", { count: "exact", head: true }).then(({ count }) => {
+      if (count !== null) setSubscriberCount(count);
+    });
+    // Fetch article count
+    supabase.from("articles").select("id", { count: "exact", head: true }).then(({ count }) => {
+      if (count !== null) setArticleCount(count);
+    });
+    // Fetch top 3 market signals
+    supabase
+      .from("market_signals")
+      .select("type, title, region, confidence")
+      .order("created_at", { ascending: false })
+      .limit(3)
+      .then(({ data }) => { if (data) setSignals(data); });
+  }, []);
+
   useEffect(() => {
     const handler = (e: Event) => {
       const filter = (e as CustomEvent).detail as string;
@@ -67,6 +82,12 @@ const Index = () => {
     }
   };
 
+  const signalIcon = (type: string) => {
+    if (type === "risk") return <AlertTriangle className="h-3.5 w-3.5 text-destructive" />;
+    if (type === "opportunity") return <Target className="h-3.5 w-3.5 text-accent" />;
+    return <TrendingUp className="h-3.5 w-3.5 text-primary" />;
+  };
+
   return (
     <div className="min-h-screen bg-background pb-16">
       {/* Reading progress bar */}
@@ -81,7 +102,69 @@ const Index = () => {
       <NewsTicker />
       <HeroSection />
       <DailyDigest />
-      <MarketGlance />
+
+      {/* ── MENA Intelligence Snapshot (replaces stock tickers) ── */}
+      <section className="border-y border-border bg-card/50">
+        <div className="container py-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Weekly Pulse Index */}
+            <div className="flex flex-col gap-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">MENA Pulse Index</p>
+              <WeeklyIndexWidget compact />
+            </div>
+
+            {/* Live Market Signals */}
+            <div className="flex flex-col gap-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Live Market Signals</p>
+              {signals.length === 0 ? (
+                <div className="space-y-1.5">
+                  {[1,2,3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {signals.map((s, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      {signalIcon(s.type)}
+                      <span className="text-xs text-foreground leading-snug line-clamp-2">{s.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Credibility Stats */}
+            <div className="flex flex-col gap-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Platform Intelligence</p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-xs text-foreground">
+                    {subscriberCount !== null
+                      ? <><strong>{subscriberCount.toLocaleString()}+</strong> MENA infrastructure leaders subscribed</>
+                      : <Skeleton className="h-4 w-48 inline-block" />}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Globe className="h-3.5 w-3.5 text-primary" />
+                  <span className="text-xs text-foreground">
+                    {articleCount !== null
+                      ? <><strong>{articleCount.toLocaleString()}</strong> MENA articles indexed &amp; AI-analysed</>
+                      : <Skeleton className="h-4 w-48 inline-block" />}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-accent" />
+                  <span className="text-xs text-foreground">
+                    <strong>3 sources</strong> · updated every 2 hours
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       <main id="news" className="container py-8 md:py-12">
         <div className="mb-8 flex items-center justify-between">
@@ -89,7 +172,7 @@ const Index = () => {
             <Globe className="h-5 w-5 text-primary" /> Latest Briefing
           </h2>
           <div className="flex gap-2 flex-wrap">
-            {["All", "M&A", "AI", "Middle East", "Sustainability", "Policy"].map((filter) => (
+            {["All", "M&A", "AI & Infrastructure", "Middle East", "Sustainability", "Policy"].map((filter) => (
               <button
                 key={filter}
                 onClick={() => { setActiveFilter(filter); setVisibleCount(6); }}
@@ -156,15 +239,9 @@ const Index = () => {
             <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
-              Briefing Archive
-            </Link>
-            <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
-              Industry Leaders
-            </Link>
-            <Link to="/stats" className="hover:text-foreground transition-colors no-underline text-muted-foreground">
-              Statistics
-            </Link>
+            <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Briefing Archive</Link>
+            <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Industry Leaders</Link>
+            <Link to="/stats" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Statistics</Link>
             <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
           </div>
         </div>
@@ -175,12 +252,9 @@ const Index = () => {
 
       {/* Newsletter Modal */}
       {showModal && !modalSubscribed && (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-in fade-in duration-500">
           <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full relative shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors duration-200">
               <X size={20} />
             </button>
             <div className="text-center mb-8">
@@ -188,32 +262,15 @@ const Index = () => {
                 <Mail className="text-primary-foreground" size={24} />
               </div>
               <h2 className="text-2xl font-bold mb-2">Get the Edge</h2>
-              <p className="text-muted-foreground text-sm">
-                Join the leading newsletter for data center professionals. Sent every morning at 8 AM Dubai time.
-              </p>
+              <p className="text-muted-foreground text-sm">Join the leading newsletter for MENA data center professionals. Delivered every morning at 8 AM Dubai time.</p>
             </div>
-
             <ul className="space-y-2 mb-8 text-sm">
-              <li className="flex items-center gap-2">
-                <Zap size={14} className="text-accent" /> Daily Market Briefing
-              </li>
-              <li className="flex items-center gap-2">
-                <Zap size={14} className="text-accent" /> M&A Deal Alerts
-              </li>
-              <li className="flex items-center gap-2">
-                <Zap size={14} className="text-accent" /> AI Infrastructure Intel
-              </li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> Daily MENA Market Briefing</li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> M&amp;A Deal Alerts</li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> Weekly Pulse Index Score</li>
             </ul>
-
             <form onSubmit={handleModalSubscribe} className="space-y-4">
-              <Input
-                type="email"
-                placeholder="Work email address"
-                value={modalEmail}
-                onChange={(e) => setModalEmail(e.target.value)}
-                required
-                className="h-12 rounded-[4px]"
-              />
+              <Input type="email" placeholder="Work email address" value={modalEmail} onChange={(e) => setModalEmail(e.target.value)} required className="h-12 rounded-[4px]" />
               <Button type="submit" className="w-full h-12 font-bold rounded-[4px]" disabled={subLoading}>
                 {subLoading ? "Subscribing..." : "Subscribe for Free"}
               </Button>
