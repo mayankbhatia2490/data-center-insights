@@ -72,6 +72,8 @@ export const topProviders: BarChartDataPoint[] = [
   { name: "Amazon Web Services", shortName: "AWS", capacity: 6, color: "hsl(142 60% 40%)" },
   { name: "Google Cloud", shortName: "Google", capacity: 5.5, color: "hsl(47 90% 50%)" },
   { name: "Equinix", shortName: "Equinix", capacity: 4.5, color: "hsl(280 55% 55%)" },
+  { name: "G42", shortName: "G42", capacity: 4.2, color: "hsl(170 60% 40%)" },
+  { name: "Khazna Data Centers", shortName: "Khazna", capacity: 3.9, color: "hsl(25 80% 50%)" },
   { name: "Digital Realty", shortName: "Digital Realty", capacity: 3.8, color: "hsl(200 60% 45%)" },
   { name: "NTT Data", shortName: "NTT", capacity: 2.9, color: "hsl(340 55% 50%)" },
 ];
