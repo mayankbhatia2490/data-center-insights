@@ -114,6 +114,16 @@ export const donutCharts: DonutChart[] = [
       { name: "Standard", value: 62, color: "hsl(var(--muted))" },
     ],
   },
+  {
+    title: "MENA Capacity Breakdown",
+    subtitle: "Regional split across the Middle East",
+    segments: [
+      { name: "UAE", value: 42, color: "hsl(25 80% 50%)" },
+      { name: "Saudi Arabia", value: 30, color: "hsl(142 60% 40%)" },
+      { name: "Qatar", value: 12, color: "hsl(210 80% 55%)" },
+      { name: "Others", value: 16, color: "hsl(var(--muted))" },
+    ],
+  },
 ];
 
 // ─── Investment History ──────────────────────────────────────────

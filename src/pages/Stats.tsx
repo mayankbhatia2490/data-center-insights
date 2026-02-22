@@ -263,7 +263,7 @@ const Stats = () => {
             </div>
 
             {/* ─── SECONDARY CHARTS: 3-Column Donut Grid ─────────── */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
               {donutCharts.map((chart) => (
                 <div
                   key={chart.title}
