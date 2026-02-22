@@ -129,17 +129,19 @@ export function useStats() {
   return useQuery({
     queryKey: ["dc-stats"],
     queryFn: async () => {
-      const [capacityRes, energyRes, investmentRes, companyRes] = await Promise.all([
+      const [capacityRes, energyRes, investmentRes, companyRes, segmentsRes] = await Promise.all([
         supabase.from("dc_capacity_stats").select("*").order("last_updated", { ascending: false }).limit(5),
         supabase.from("dc_energy_usage").select("*").order("last_updated", { ascending: false }).limit(5),
         supabase.from("dc_investment_stats").select("*").order("year", { ascending: false }).limit(5),
         supabase.from("dc_company_capacity_stats").select("*").order("rank").limit(15),
+        supabase.from("dc_market_segments").select("*").order("sort_order"),
       ]);
       return {
         capacity: capacityRes.data || [],
         energy: energyRes.data || [],
         investment: investmentRes.data || [],
         companies: companyRes.data || [],
+        segments: segmentsRes.data || [],
       };
     },
     refetchInterval: 60 * 60 * 1000,
