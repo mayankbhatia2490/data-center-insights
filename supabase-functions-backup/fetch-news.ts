@@ -193,7 +193,7 @@ async function fetchNewsDataMENA(apiKey: string) {
       }
       const data = await res.json();
       if (data.status !== "success") {
-        console.error(`NewsData MENA [${q}] API error:`, data.message);
+        console.error(`NewsData MENA [${q}] error:`, data.message);
         continue;
       }
       for (const a of data.results || []) {
@@ -210,7 +210,6 @@ async function fetchNewsDataMENA(apiKey: string) {
           read_time: estimateReadTime(fullText),
         });
       }
-      // Respect NewsData.io rate limits
       await new Promise((r) => setTimeout(r, 400));
     }
   } catch (e) { console.error("NewsData MENA error:", e); }
@@ -219,7 +218,6 @@ async function fetchNewsDataMENA(apiKey: string) {
 
 // =========================================================
 // SOURCE 2: NewsData.io — Global News Impacting MENA
-// Searches globally for articles that mention MENA/Gulf/GCC
 // =========================================================
 async function fetchNewsDataGlobalMENA(apiKey: string) {
   const articles: any[] = [];
@@ -259,7 +257,50 @@ async function fetchNewsDataGlobalMENA(apiKey: string) {
 }
 
 // =========================================================
-// People Upsert Logic (unchanged)
+// SOURCE 3: NewsAPI.org — Global Breaking News
+// Original industry queries + MENA-specific queries added
+// =========================================================
+async function fetchNewsAPI(apiKey: string) {
+  const articles: any[] = [];
+  try {
+    const queries = [
+      // Original global data center queries (keep for broad industry coverage)
+      "data center",
+      "hyperscale cloud infrastructure",
+      "data center M&A acquisition",
+      "data center sustainability energy",
+      // NEW: MENA-specific queries
+      "data center Middle East",
+      "data center UAE Saudi Arabia",
+      "data center Gulf investment",
+    ];
+
+    for (const q of queries) {
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=10&apiKey=${apiKey}`;
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      for (const a of data.articles || []) {
+        if (!a.title || a.title === "[Removed]") continue;
+        const fullText = `${a.title} ${a.description || ""}`;
+        articles.push({
+          title: a.title,
+          summary: a.description || null,
+          category: categorize(fullText),
+          source: a.source?.name || "NewsAPI",
+          source_url: a.url,
+          image_url: a.urlToImage || null,
+          published_at: a.publishedAt || new Date().toISOString(),
+          read_time: estimateReadTime(fullText),
+        });
+      }
+    }
+  } catch (e) { console.error("NewsAPI error:", e); }
+  return articles;
+}
+
+// =========================================================
+// People Upsert Logic
 // =========================================================
 async function upsertPeople(
   supabase: any,
@@ -334,8 +375,9 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
-    const newsDataKey = Deno.env.get("NEWSDATA_API_KEY");
+    const geminiApiKey  = Deno.env.get("GEMINI_API_KEY");
+    const newsDataKey   = Deno.env.get("NEWSDATA_API_KEY");
+    const newsApiKey    = Deno.env.get("NEWS_API_KEY");
 
     if (!newsDataKey) {
       return new Response(
@@ -344,24 +386,30 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log("[fetch-news] Starting MENA-first ingestion via NewsData.io...");
+    console.log("[fetch-news] Starting MENA-first ingestion...");
     console.log("  Source 1: NewsData.io — MENA country-filtered (ae,sa,qa,bh,kw,om,eg,jo,lb,iq)");
     console.log("  Source 2: NewsData.io — Global news impacting MENA");
+    console.log(`  Source 3: NewsAPI.org — Global breaking news ${newsApiKey ? "(active)" : "(skipped — NEWS_API_KEY not set)"}`);
 
-    const [ndMena, ndGlobal] = await Promise.allSettled([
+    const promises: Promise<any[]>[] = [
       fetchNewsDataMENA(newsDataKey),
       fetchNewsDataGlobalMENA(newsDataKey),
-    ]);
+    ];
+    if (newsApiKey) promises.push(fetchNewsAPI(newsApiKey));
+
+    const [ndMena, ndGlobal, newsApiResult] = await Promise.allSettled(promises);
 
     let allArticles = [
-      ...(ndMena.status === "fulfilled" ? ndMena.value : []),
-      ...(ndGlobal.status === "fulfilled" ? ndGlobal.value : []),
+      ...(ndMena.status       === "fulfilled" ? ndMena.value       : []),
+      ...(ndGlobal.status     === "fulfilled" ? ndGlobal.value     : []),
+      ...(newsApiResult?.status === "fulfilled" ? (newsApiResult as PromiseFulfilledResult<any[]>).value : []),
     ];
 
     const rawCount = allArticles.length;
-    console.log(`[fetch-news] Raw fetched: ${rawCount}`);
-    console.log(`  NewsData MENA: ${ndMena.status === "fulfilled" ? ndMena.value.length : "FAILED"}`);
-    console.log(`  NewsData Global-MENA: ${ndGlobal.status === "fulfilled" ? ndGlobal.value.length : "FAILED"}`);
+    console.log(`[fetch-news] Raw articles fetched: ${rawCount}`);
+    console.log(`  NewsData MENA:        ${ndMena.status       === "fulfilled" ? ndMena.value.length       : "FAILED"}`);
+    console.log(`  NewsData Global-MENA: ${ndGlobal.status     === "fulfilled" ? ndGlobal.value.length     : "FAILED"}`);
+    console.log(`  NewsAPI.org:          ${newsApiResult?.status === "fulfilled" ? (newsApiResult as PromiseFulfilledResult<any[]>).value.length : newsApiKey ? "FAILED" : "SKIPPED"}`);
 
     // Deduplicate by source_url
     const seen = new Set<string>();
@@ -372,7 +420,7 @@ Deno.serve(async (req) => {
     });
     console.log(`[fetch-news] Unique after dedup: ${allArticles.length}`);
 
-    // AI Quality Gate
+    // AI Quality Gate (MENA-relevance scoring)
     if (geminiApiKey && allArticles.length > 0) {
       const beforeCount = allArticles.length;
       allArticles = await aiQualityFilter(allArticles, geminiApiKey);
@@ -381,7 +429,7 @@ Deno.serve(async (req) => {
 
     // AI Enhancement pipeline
     if (geminiApiKey) {
-      // 1. Summaries (for poor/missing descriptions)
+      // 1. Summaries
       const needsSummary = allArticles.filter((a) => !a.summary || a.summary.length < 40);
       console.log(`[fetch-news] Generating summaries for ${Math.min(needsSummary.length, 25)} articles...`);
       for (let i = 0; i < Math.min(needsSummary.length, 25); i += 5) {
@@ -478,8 +526,9 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         sources: {
-          newsdata_mena: ndMena.status === "fulfilled" ? ndMena.value.length : 0,
-          newsdata_global_mena: ndGlobal.status === "fulfilled" ? ndGlobal.value.length : 0,
+          newsdata_mena:        ndMena.status       === "fulfilled" ? ndMena.value.length       : 0,
+          newsdata_global_mena: ndGlobal.status     === "fulfilled" ? ndGlobal.value.length     : 0,
+          newsapi_global:       newsApiResult?.status === "fulfilled" ? (newsApiResult as PromiseFulfilledResult<any[]>).value.length : 0,
         },
         raw: rawCount,
         unique: seen.size,
