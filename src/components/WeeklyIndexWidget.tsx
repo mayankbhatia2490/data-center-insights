@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const WeeklyIndexWidget = () => {
+const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
   const { data: index, isLoading } = useQuery({
     queryKey: ["weekly-index"],
     queryFn: async () => {
