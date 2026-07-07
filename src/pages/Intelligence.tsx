@@ -10,6 +10,11 @@ import { BarChart3 } from "lucide-react";
 const Intelligence = () => {
   return (
     <div className="min-h-screen bg-background pb-16">
+      <Seo
+        title="Market Intelligence — Data Center Pulse"
+        description="Weekly data center market sentiment, emerging signals, and outlook for MENA and global infrastructure investors."
+        path="/intelligence"
+      />
       <Header />
       <NewsTicker />
 
