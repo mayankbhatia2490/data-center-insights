@@ -1,0 +1,14 @@
+# Data Center Pulse
+
+> MENA-first data center news, market intelligence, and infrastructure trends — daily briefings on M&A, AI, and sustainability for industry leaders.
+
+Data Center Pulse tracks the Middle East and North Africa data center market with a global lens, covering hyperscale investment, capacity growth, sustainability, and the people shaping the industry.
+
+## Pages
+
+- [Home](/): Live feed of MENA and global data center news, sorted by region and theme.
+- [Market Intelligence](/intelligence): Weekly market sentiment, emerging signals, and outlook.
+- [Insights](/insights): Editor's picks and trending themes across the industry.
+- [Market Statistics](/stats): Interactive provider capacity, investment history, and regional MENA capacity charts.
+- [Industry Leaders](/leaders): Profiles of CEOs, investors, and government leaders ranked by influence.
+- [Briefing Archive](/archive): Past daily AI-generated intelligence briefings.
