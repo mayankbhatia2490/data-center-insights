@@ -115,6 +115,11 @@ const Stats = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Market Statistics — Data Center Pulse"
+        description="Interactive data center market statistics — provider capacity, investment history, and regional MENA capacity splits visualized."
+        path="/stats"
+      />
       <Header />
       <main className="container py-6 md:py-10">
         {/* Page Header */}

@@ -90,6 +90,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-16">
+      <Seo
+        title="Data Center Pulse — MENA Infrastructure Intelligence"
+        description="Daily MENA-first data center news, market intelligence, and infrastructure trends — M&A, AI, and sustainability coverage for industry leaders."
+        path="/"
+      />
       {/* Reading progress bar */}
       <div className="fixed top-0 left-0 right-0 z-[70] h-[2px]">
         <div

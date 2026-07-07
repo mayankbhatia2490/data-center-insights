@@ -59,6 +59,11 @@ const Leaders = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Industry Leaders — Data Center Pulse"
+        description="The people shaping MENA and global data center infrastructure — CEOs, investors, and government leaders ranked by industry influence."
+        path="/leaders"
+      />
       <Header />
       <NewsTicker />
 
