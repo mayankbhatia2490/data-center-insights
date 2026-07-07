@@ -57,6 +57,26 @@ const LeaderProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {person && (
+        <Seo
+          title={`${person.name} — Data Center Pulse`}
+          description={`${person.name}${person.title ? `, ${person.title}` : ""}${person.organization ? ` at ${person.organization}` : ""} — profile, coverage, and news mentions on Data Center Pulse.`}
+          path={`/leaders/${person.id}`}
+          type="profile"
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: {
+              "@type": "Person",
+              name: person.name,
+              jobTitle: person.title || undefined,
+              worksFor: person.organization
+                ? { "@type": "Organization", name: person.organization }
+                : undefined,
+            },
+          }}
+        />
+      )}
       <Header />
       <NewsTicker />
 
