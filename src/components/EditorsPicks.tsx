@@ -90,7 +90,7 @@ const EditorsPicks = () => {
                   {stripHtml(article.summary)}
                 </p>
                 <div className="flex items-center gap-1 text-[10px] text-primary font-medium">
-                  Read more <ArrowRight size={10} />
+                  Read full article <ArrowRight size={10} />
                 </div>
               </a>
             ))}

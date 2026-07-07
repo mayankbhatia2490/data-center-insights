@@ -114,9 +114,9 @@ const HeroSection = () => {
                 <span className={`text-[10px] font-extrabold uppercase tracking-[1.5px] ${getCategoryColor(story.category || "")}`}>
                   {story.category}
                 </span>
-                <h3 className="text-[14px] font-bold leading-snug mt-2 text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-3">
+                <h2 className="text-[14px] font-bold leading-snug mt-2 text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-3">
                   {story.title}
-                </h3>
+                </h2>
                 <span className="text-[10px] text-muted-foreground mt-2 block">{formatTime(story.published_at)}</span>
               </a>
             ))}

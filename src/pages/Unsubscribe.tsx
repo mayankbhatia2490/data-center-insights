@@ -56,7 +56,7 @@ const Unsubscribe = () => {
       <div className="max-w-md w-full text-center">
         <div className="mb-6">
           <Zap className="h-8 w-8 text-primary mx-auto mb-2" />
-          <h1 className="text-lg font-bold">Data Center Pulse</h1>
+          <h1 className="text-lg font-bold">Unsubscribe from Data Center Pulse</h1>
         </div>
 
         {status === "loading" && (
