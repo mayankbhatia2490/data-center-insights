@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, ArrowLeft, Calendar } from "lucide-react";

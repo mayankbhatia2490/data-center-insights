@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import EditorsPicks from "@/components/EditorsPicks";

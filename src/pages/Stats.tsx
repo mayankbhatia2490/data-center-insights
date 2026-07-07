@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useState, useMemo } from "react";
 import Header from "@/components/Header";
 import { useStats } from "@/hooks/useIntelligence";
