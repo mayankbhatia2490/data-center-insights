@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, ArrowLeft, Calendar } from "lucide-react";
@@ -21,6 +22,11 @@ const Archive = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Briefing Archive — Data Center Pulse"
+        description="Browse past daily AI-generated intelligence briefings on MENA and global data center M&A, AI infrastructure, and sustainability."
+        path="/archive"
+      />
       <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
         <div className="container h-full flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 no-underline">

@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -59,6 +60,11 @@ const Leaders = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Industry Leaders — Data Center Pulse"
+        description="The people shaping MENA and global data center infrastructure — CEOs, investors, and government leaders ranked by industry influence."
+        path="/leaders"
+      />
       <Header />
       <NewsTicker />
 

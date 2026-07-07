@@ -1,3 +1,4 @@
+import Seo from "@/components/Seo";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import EditorsPicks from "@/components/EditorsPicks";
@@ -9,6 +10,11 @@ import { Lightbulb } from "lucide-react";
 const Insights = () => {
   return (
     <div className="min-h-screen bg-background pb-16">
+      <Seo
+        title="Insights — Data Center Pulse"
+        description="Editor's picks and trending themes across MENA and global data center news, curated for infrastructure leaders."
+        path="/insights"
+      />
       <Header />
       <NewsTicker />
 
