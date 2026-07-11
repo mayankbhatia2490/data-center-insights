@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://pulsefeed-chronicle.lovable.app";
+const SITE_URL = import.meta.env.VITE_SITE_URL || "https://pulsefeed-chronicle.lovable.app";
 const SITE_NAME = "Data Center Pulse";
 
 interface SeoProps {

@@ -404,6 +404,8 @@ export type Database = {
       people: {
         Row: {
           bio: string | null
+          claimed_at: string | null
+          claimed_by: string | null
           created_at: string | null
           first_mentioned: string | null
           id: string
@@ -421,6 +423,8 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          claimed_at?: string | null
+          claimed_by?: string | null
           created_at?: string | null
           first_mentioned?: string | null
           id?: string
@@ -438,6 +442,8 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          claimed_at?: string | null
+          claimed_by?: string | null
           created_at?: string | null
           first_mentioned?: string | null
           id?: string
@@ -454,6 +460,44 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      profile_claims: {
+        Row: {
+          claim_email: string
+          created_at: string
+          id: string
+          person_id: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          claim_email: string
+          created_at?: string
+          id?: string
+          person_id: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          claim_email?: string
+          created_at?: string
+          id?: string
+          person_id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_claims_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       people_leaders: {
         Row: {
@@ -633,8 +677,13 @@ export type Database = {
           id: string
           name: string | null
           preferences: Json | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           subscribed_at: string
+          subscription_status: string | null
+          subscription_tier: string
           unsubscribe_token: string
+          user_id: string | null
         }
         Insert: {
           confirmed?: boolean
@@ -642,8 +691,13 @@ export type Database = {
           id?: string
           name?: string | null
           preferences?: Json | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           subscribed_at?: string
+          subscription_status?: string | null
+          subscription_tier?: string
           unsubscribe_token?: string
+          user_id?: string | null
         }
         Update: {
           confirmed?: boolean
@@ -651,8 +705,13 @@ export type Database = {
           id?: string
           name?: string | null
           preferences?: Json | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           subscribed_at?: string
+          subscription_status?: string | null
+          subscription_tier?: string
           unsubscribe_token?: string
+          user_id?: string | null
         }
         Relationships: []
       }

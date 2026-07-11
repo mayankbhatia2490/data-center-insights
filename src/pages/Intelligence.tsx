@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
 import MarketSignals from "@/components/MarketSignals";
+import PremiumGate from "@/components/PremiumGate";
 import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsChatbot from "@/components/NewsChatbot";
 import { BarChart3 } from "lucide-react";
@@ -34,8 +35,13 @@ const Intelligence = () => {
           <WeeklyIndexWidget />
         </div>
 
-        {/* Market Signals */}
-        <MarketSignals />
+        {/* Market Signals — premium tier */}
+        <PremiumGate
+          title="Market Signals is a premium feature"
+          description="Emerging risk and opportunity signals across MENA data center markets, generated daily from our AI pipeline — available to Premium subscribers."
+        >
+          <MarketSignals />
+        </PremiumGate>
       </main>
 
       <footer className="border-t border-border bg-card">

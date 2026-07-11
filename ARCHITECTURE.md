@@ -70,6 +70,9 @@ src/integrations/supabase/client.ts
 | `/leaders/:id` | `LeaderProfile.tsx` | Individual leader profile |
 | `/stats` | `Stats.tsx` | Industry statistics & charts |
 | `/unsubscribe` | `Unsubscribe.tsx` | Newsletter unsubscribe |
+| `/login` | `Login.tsx` | Supabase Auth magic-link sign-in |
+| `/pricing` | `Pricing.tsx` | Free vs. Premium plan comparison + Stripe checkout |
+| `/account` | `Account.tsx` | Signed-in user's plan status, sign out |
 
 ---
 
@@ -98,6 +101,16 @@ src/integrations/supabase/client.ts
 | `subscribe` | On-demand | — | — | Newsletter subscription endpoint |
 | `unsubscribe` | On-demand | — | — | Newsletter unsubscribe endpoint |
 | `word-bubble` | On-demand | — | — | Simple word frequency analysis (no AI) |
+| `create-checkout-session` | On-demand (authenticated) | — | — | Creates a Stripe Checkout session for the Premium tier; returns 501 until `STRIPE_SECRET_KEY`/`STRIPE_PREMIUM_PRICE_ID` are set |
+| `stripe-webhook` | Stripe webhook | — | — | Verifies Stripe signatures and syncs `subscribers.subscription_tier`/`subscription_status`; returns 501 until `STRIPE_WEBHOOK_SECRET` is set |
+
+### Monetization & Community (added 2026-07)
+
+- **Auth**: Supabase Auth email magic-link (`src/hooks/useAuth.tsx`). No passwords; first login of this kind in the project.
+- **Billing**: `subscribers` table extended with `user_id`, `subscription_tier` (`free`/`premium`), `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`. Stripe Checkout (redirect flow, no frontend Stripe.js needed) + webhook keep this in sync. Fully inert (UI shows "not configured" toasts) until Stripe env vars are set — see `.env.example`.
+- **Premium gating**: `src/components/PremiumGate.tsx` wraps a section and shows a teaser + upgrade CTA unless `useSubscription()` reports `subscription_tier = premium`. Currently applied to Market Signals on `/intelligence`.
+- **Claimable profiles**: `people.claimed_by`/`claimed_at` + new `profile_claims` table let a logged-in user request ownership of their auto-extracted `/leaders/:id` profile (`src/hooks/useClaimProfile.ts`). Claims are inserted directly via RLS (`auth.uid() = user_id`); approval (setting `people.claimed_by`) is currently a manual step via the Supabase dashboard — no admin UI yet.
+- **SEO**: `scripts/generate-sitemap.ts` now pulls all `people.id` at build time and adds `/leaders/:id` to `public/sitemap.xml` alongside the static routes (105+ dynamic URLs as of this writing). `BASE_URL`/`Seo.tsx`'s `SITE_URL` both read from an env var (`SITE_URL` / `VITE_SITE_URL`) with the existing Lovable preview URL as fallback.
 
 ### AI Gateway
 - **Current**: `https://ai.gateway.lovable.dev/v1/chat/completions` (OpenAI-compatible)

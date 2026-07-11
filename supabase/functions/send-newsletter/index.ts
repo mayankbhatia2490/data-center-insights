@@ -95,6 +95,7 @@ Deno.serve(async (req) => {
     }
 
     const siteUrl = Deno.env.get("SITE_URL") || "https://datacenterpulse.com";
+    const fromAddress = Deno.env.get("RESEND_FROM_EMAIL") || "Data Center Pulse <onboarding@resend.dev>";
     const dateStr = new Date(digest.digest_date).toLocaleDateString("en-US", {
       weekday: "long", year: "numeric", month: "long", day: "numeric",
     });
@@ -115,7 +116,7 @@ Deno.serve(async (req) => {
               Authorization: `Bearer ${resendApiKey}`,
             },
             body: JSON.stringify({
-              from: "Data Center Pulse <onboarding@resend.dev>",
+              from: fromAddress,
               to: [sub.email],
               subject: `⚡ Data Center Pulse — ${dateStr}`,
               html,
