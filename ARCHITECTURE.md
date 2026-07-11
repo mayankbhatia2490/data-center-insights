@@ -113,16 +113,16 @@ src/integrations/supabase/client.ts
 - **SEO**: `scripts/generate-sitemap.ts` now pulls all `people.id` at build time and adds `/leaders/:id` to `public/sitemap.xml` alongside the static routes (105+ dynamic URLs as of this writing). `BASE_URL`/`Seo.tsx`'s `SITE_URL` both read from an env var (`SITE_URL` / `VITE_SITE_URL`) with the existing Lovable preview URL as fallback.
 
 ### AI Gateway
-- **Current**: `https://ai.gateway.lovable.dev/v1/chat/completions` (OpenAI-compatible)
-- **Auth**: `Bearer LOVABLE_API_KEY`
-- **Migration target**: Replace with direct Gemini API (`https://generativelanguage.googleapis.com/v1beta/`) or OpenAI API
+- **Current** (migrated 2026-07): `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` — Gemini's OpenAI-compatible endpoint, so request/response shape (including `news-chat`'s streaming) is unchanged from the old gateway
+- **Auth**: `Bearer GEMINI_API_KEY`
+- No longer depends on Lovable's AI gateway or `LOVABLE_API_KEY`
 
 ### AI Models Used
 | Model | Used By | Purpose |
 |-------|---------|---------|
-| `google/gemini-2.5-flash-lite` | fetch-news, fetch-stocks, fetch-events, fetch-stats, market-signals, strategic-insights, regional-outlook, word-cloud, extract-capacity, extract-people, backfill-insights | Fast classification, extraction, summarization |
-| `google/gemini-2.5-flash` | generate-weekly-index | Higher quality for weekly index generation |
-| `google/gemini-3-flash-preview` | generate-digest, news-chat, compute-trending | Highest quality for digest writing and conversational AI |
+| `gemini-2.5-flash-lite` | fetch-news, fetch-stocks, fetch-events, fetch-stats, market-signals, strategic-insights, regional-outlook, word-cloud, extract-capacity, extract-people, backfill-insights | Fast classification, extraction, summarization |
+| `gemini-2.5-flash` | generate-weekly-index | Higher quality for weekly index generation |
+| `gemini-3-flash-preview` | generate-digest, news-chat, compute-trending | Highest quality for digest writing and conversational AI |
 
 ---
 
@@ -168,23 +168,8 @@ src/integrations/supabase/client.ts
 
 ## 5. Migration Notes (Lovable → Self-Hosted)
 
-### AI Gateway Replacement
-Replace all `https://ai.gateway.lovable.dev/v1/chat/completions` calls with:
-
-**Option A: Google Gemini Direct**
-```typescript
-const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    contents: [{ parts: [{ text: prompt }] }],
-  }),
-});
-// Add ?key=YOUR_GEMINI_API_KEY to the URL
-```
-
-**Option B: OpenAI-Compatible Proxy (e.g., LiteLLM)**
-Keep the same fetch calls but change the URL to your proxy.
+### AI Gateway Replacement — done (2026-07)
+Every AI-calling function was switched from `https://ai.gateway.lovable.dev/v1/chat/completions` to Gemini's own OpenAI-compatible endpoint, `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`. Because it's OpenAI-compatible, the request/response shape (and streaming for `news-chat`) needed no changes — only the URL, the `GEMINI_API_KEY` env var (replacing `LOVABLE_API_KEY`), and model names (`gemini-2.5-flash-lite` instead of `google/gemini-2.5-flash-lite`, etc.) changed. No more dependency on Lovable's AI gateway anywhere in the codebase.
 
 ### Deployment
 - **Frontend**: `npm run build` → deploy `dist/` to Vercel/Netlify

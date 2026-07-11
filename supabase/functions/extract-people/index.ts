@@ -9,9 +9,9 @@ const corsHeaders = {
 async function callAI(
   messages: { role: string; content: string }[],
   apiKey: string,
-  model = "google/gemini-2.5-flash-lite"
+  model = "gemini-2.5-flash-lite"
 ): Promise<string> {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const apiKey = Deno.env.get("LOVABLE_API_KEY")!;
+    const apiKey = Deno.env.get("GEMINI_API_KEY")!;
 
     // Get recent articles from last 24h
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
