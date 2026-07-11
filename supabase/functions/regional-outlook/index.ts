@@ -9,7 +9,7 @@ const corsHeaders = {
 async function callAI(
   messages: { role: string; content: string }[],
   apiKey: string,
-  model = "gemini-2.5-flash-lite"
+  model = "gemini-3.1-flash-lite"
 ): Promise<string> {
   const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",

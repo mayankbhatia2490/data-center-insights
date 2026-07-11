@@ -82,22 +82,22 @@ src/integrations/supabase/client.ts
 
 | Function | Trigger | Schedule | AI Model Used | Description |
 |----------|---------|----------|---------------|-------------|
-| `fetch-news` | Cron | `0 */2 * * *` (every 2h) | `gemini-2.5-flash-lite` | RSS/API ingestion + AI quality gate, summarization, sentiment, insight, people extraction |
-| `generate-digest` | Cron | `0 4 * * *` (daily 04:00) | `gemini-3-flash-preview` | Morning intelligence briefing from last 24h articles |
+| `fetch-news` | Cron | `0 */2 * * *` (every 2h) | `gemini-3.1-flash-lite` | RSS/API ingestion + AI quality gate, summarization, sentiment, insight, people extraction |
+| `generate-digest` | Cron | `0 4 * * *` (daily 04:00) | `gemini-3.5-flash` | Morning intelligence briefing from last 24h articles |
 | `send-newsletter` | Cron | `30 4 * * *` (daily 04:30) | — | Sends digest email via Resend to all subscribers |
-| `fetch-stocks` | Cron | `0 */4 * * *` (every 4h) | `gemini-2.5-flash-lite` | AI-driven stock ticker extraction + Alpha Vantage quotes |
-| `fetch-events` | Cron | `0 6 * * *` (daily 06:00) | `gemini-2.5-flash-lite` | Firecrawl search + AI extraction of industry events |
-| `fetch-stats` | Cron | `0 5 1 * *` (monthly 1st) | `gemini-2.5-flash-lite` | AI-estimated industry statistics |
-| `extract-people` | Cron | `0 3 * * *` (daily 03:00) | `gemini-2.5-flash-lite` | Extract industry leaders from recent articles |
-| `extract-capacity` | Cron | `0 4 * * *` (daily 04:00) | `gemini-2.5-flash-lite` | Extract MW capacity data from articles |
-| `market-signals` | Cron | `0 5 * * *` (daily 05:00) | `gemini-2.5-flash-lite` | Detect trends, risks, opportunities |
-| `strategic-insights` | Cron | `0 7 * * 1` (weekly Mon) | `gemini-2.5-flash-lite` | Generate actionable business insights from signals |
-| `regional-outlook` | Cron | `0 6 * * 1` (weekly Mon) | `gemini-2.5-flash-lite` | Per-region market outlook (UAE, Saudi, EU, US, Asia) |
-| `word-cloud` | Cron | `0 1 * * *` (daily 01:00) | `gemini-2.5-flash-lite` | AI keyword extraction for trending topics |
-| `generate-weekly-index` | Cron | `0 8 * * 1` (weekly Mon) | `gemini-2.5-flash` | Weekly Pulse Index score (-100 to +100) |
-| `compute-trending` | Cron | — (duplicate of weekly-index) | `gemini-3-flash-preview` | Weekly index (legacy) |
-| `backfill-insights` | Manual | — | `gemini-2.5-flash-lite` | Backfill missing insights & sentiment on articles |
-| `news-chat` | On-demand | — | `gemini-3-flash-preview` | Streaming AI chatbot with news context |
+| `fetch-stocks` | Cron | `0 */4 * * *` (every 4h) | `gemini-3.1-flash-lite` | AI-driven stock ticker extraction + Alpha Vantage quotes |
+| `fetch-events` | Cron | `0 6 * * *` (daily 06:00) | `gemini-3.1-flash-lite` | Firecrawl search + AI extraction of industry events |
+| `fetch-stats` | Cron | `0 5 1 * *` (monthly 1st) | `gemini-3.1-flash-lite` | AI-estimated industry statistics |
+| `extract-people` | Cron | `0 3 * * *` (daily 03:00) | `gemini-3.1-flash-lite` | Extract industry leaders from recent articles |
+| `extract-capacity` | Cron | `0 4 * * *` (daily 04:00) | `gemini-3.1-flash-lite` | Extract MW capacity data from articles |
+| `market-signals` | Cron | `0 5 * * *` (daily 05:00) | `gemini-3.1-flash-lite` | Detect trends, risks, opportunities |
+| `strategic-insights` | Cron | `0 7 * * 1` (weekly Mon) | `gemini-3.1-flash-lite` | Generate actionable business insights from signals |
+| `regional-outlook` | Cron | `0 6 * * 1` (weekly Mon) | `gemini-3.1-flash-lite` | Per-region market outlook (UAE, Saudi, EU, US, Asia) |
+| `word-cloud` | Cron | `0 1 * * *` (daily 01:00) | `gemini-3.1-flash-lite` | AI keyword extraction for trending topics |
+| `generate-weekly-index` | Cron | `0 8 * * 1` (weekly Mon) | `gemini-3.5-flash` | Weekly Pulse Index score (-100 to +100) |
+| `compute-trending` | Cron | — (duplicate of weekly-index) | `gemini-3.5-flash` | Weekly index (legacy) |
+| `backfill-insights` | Manual | — | `gemini-3.1-flash-lite` | Backfill missing insights & sentiment on articles |
+| `news-chat` | On-demand | — | `gemini-3.5-flash` | Streaming AI chatbot with news context |
 | `subscribe` | On-demand | — | — | Newsletter subscription endpoint |
 | `unsubscribe` | On-demand | — | — | Newsletter unsubscribe endpoint |
 | `word-bubble` | On-demand | — | — | Simple word frequency analysis (no AI) |
@@ -120,9 +120,9 @@ src/integrations/supabase/client.ts
 ### AI Models Used
 | Model | Used By | Purpose |
 |-------|---------|---------|
-| `gemini-2.5-flash-lite` | fetch-news, fetch-stocks, fetch-events, fetch-stats, market-signals, strategic-insights, regional-outlook, word-cloud, extract-capacity, extract-people, backfill-insights | Fast classification, extraction, summarization |
-| `gemini-2.5-flash` | generate-weekly-index | Higher quality for weekly index generation |
-| `gemini-3-flash-preview` | generate-digest, news-chat, compute-trending | Highest quality for digest writing and conversational AI |
+| `gemini-3.1-flash-lite` | fetch-news, fetch-stocks, fetch-events, fetch-stats, market-signals, strategic-insights, regional-outlook, word-cloud, extract-capacity, extract-people, backfill-insights | Fast classification, extraction, summarization |
+| `gemini-3.5-flash` | generate-weekly-index | Higher quality for weekly index generation |
+| `gemini-3.5-flash` | generate-digest, news-chat, compute-trending | Highest quality for digest writing and conversational AI |
 
 ---
 
@@ -169,7 +169,7 @@ src/integrations/supabase/client.ts
 ## 5. Migration Notes (Lovable → Self-Hosted)
 
 ### AI Gateway Replacement — done (2026-07)
-Every AI-calling function was switched from `https://ai.gateway.lovable.dev/v1/chat/completions` to Gemini's own OpenAI-compatible endpoint, `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`. Because it's OpenAI-compatible, the request/response shape (and streaming for `news-chat`) needed no changes — only the URL, the `GEMINI_API_KEY` env var (replacing `LOVABLE_API_KEY`), and model names (`gemini-2.5-flash-lite` instead of `google/gemini-2.5-flash-lite`, etc.) changed. No more dependency on Lovable's AI gateway anywhere in the codebase.
+Every AI-calling function was switched from `https://ai.gateway.lovable.dev/v1/chat/completions` to Gemini's own OpenAI-compatible endpoint, `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`. Because it's OpenAI-compatible, the request/response shape (and streaming for `news-chat`) needed no changes — only the URL, the `GEMINI_API_KEY` env var (replacing `LOVABLE_API_KEY`), and model names (`gemini-3.1-flash-lite` instead of `google/gemini-2.5-flash-lite`, etc.) changed. No more dependency on Lovable's AI gateway anywhere in the codebase.
 
 ### Deployment
 - **Frontend**: `npm run build` → deploy `dist/` to Vercel/Netlify
