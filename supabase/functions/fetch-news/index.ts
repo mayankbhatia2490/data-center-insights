@@ -10,9 +10,9 @@ const corsHeaders = {
 async function callAI(
   messages: { role: string; content: string }[],
   apiKey: string,
-  model = "google/gemini-2.5-flash-lite"
+  model = "gemini-2.5-flash-lite"
 ): Promise<string> {
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -377,7 +377,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
 
     // --- RSS & Atom Feeds ---
     const rssFeeds: [string, string][] = [
@@ -429,14 +429,14 @@ Deno.serve(async (req) => {
     console.log(`${allArticles.length} unique articles after dedup`);
 
     // Quality Gate
-    if (lovableApiKey && allArticles.length > 0) {
+    if (geminiApiKey && allArticles.length > 0) {
       const beforeCount = allArticles.length;
-      allArticles = await aiQualityFilter(allArticles, lovableApiKey);
+      allArticles = await aiQualityFilter(allArticles, geminiApiKey);
       console.log(`Quality gate: ${beforeCount} → ${allArticles.length} articles passed`);
     }
 
     // AI-enhance: summaries, sentiment, insight, people
-    if (lovableApiKey) {
+    if (geminiApiKey) {
       // Summaries
       const needsSummary = allArticles.filter(
         (a) => !a.summary || a.summary === a.title || a.summary.length < 30
@@ -444,7 +444,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(needsSummary.length, 20); i += 5) {
         const batch = needsSummary.slice(i, i + 5);
         const summaries = await Promise.allSettled(
-          batch.map((a) => aiSummarize(a.title, a.summary || a.title, lovableApiKey))
+          batch.map((a) => aiSummarize(a.title, a.summary || a.title, geminiApiKey))
         );
         summaries.forEach((result, j) => {
           if (result.status === "fulfilled") batch[j].summary = result.value;
@@ -456,7 +456,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(allArticles.length, 30); i += 5) {
         const batch = allArticles.slice(i, i + 5);
         const sentiments = await Promise.allSettled(
-          batch.map((a) => aiSentiment(a.title, a.summary || a.title, lovableApiKey))
+          batch.map((a) => aiSentiment(a.title, a.summary || a.title, geminiApiKey))
         );
         sentiments.forEach((result, j) => {
           if (result.status === "fulfilled" && result.value) batch[j].sentiment = result.value;
@@ -468,7 +468,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(allArticles.length, 20); i += 5) {
         const batch = allArticles.slice(i, i + 5);
         const insights = await Promise.allSettled(
-          batch.map((a) => aiInsight(a.title, a.summary || "", a.source || "", lovableApiKey))
+          batch.map((a) => aiInsight(a.title, a.summary || "", a.source || "", geminiApiKey))
         );
         insights.forEach((result, j) => {
           if (result.status === "fulfilled") {
@@ -515,9 +515,9 @@ Deno.serve(async (req) => {
       inserted++;
 
       // Extract people for this article
-      if (lovableApiKey) {
+      if (geminiApiKey) {
         try {
-          const people = await aiExtractPeople(article.title, article.summary || "", lovableApiKey);
+          const people = await aiExtractPeople(article.title, article.summary || "", geminiApiKey);
           if (people.length > 0) {
             await upsertPeople(supabase, insertedArticle.id, article.published_at, people);
             peopleExtracted += people.filter((p: any) => (p.confidence ?? 0) >= 0.6).length;

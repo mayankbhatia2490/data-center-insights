@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
     // Step 1: Get recent article titles to find trending stocks
     let symbolsToFetch = [...BASELINE_SYMBOLS];
 
-    if (lovableApiKey) {
+    if (geminiApiKey) {
       const yesterday = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
       const { data: recentArticles } = await supabase
         .from("articles")
@@ -50,14 +50,14 @@ Deno.serve(async (req) => {
           .join("\n");
 
         try {
-          const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          const aiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${lovableApiKey}`,
+              Authorization: `Bearer ${geminiApiKey}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: "google/gemini-2.5-flash-lite",
+              model: "gemini-2.5-flash-lite",
               messages: [
                 {
                   role: "system",
