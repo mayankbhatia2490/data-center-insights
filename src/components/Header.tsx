@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Zap, Sun, Moon } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, Zap, Sun, Moon, UserCircle } from "lucide-react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useSubscribe } from "@/hooks/useSubscribe";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Global News", filter: "All", href: "/#news" },
@@ -38,6 +39,7 @@ const Header = () => {
   const [subscribed, setSubscribed] = useState(false);
   const [isDark, setIsDark] = useState(() => !document.documentElement.classList.contains("light"));
   const { subscribe, isLoading } = useSubscribe();
+  const { user } = useAuth();
 
   const toggleTheme = () => {
     const next = !isDark;
@@ -136,6 +138,13 @@ const Header = () => {
             >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
+            <Link
+              to={user ? "/account" : "/login"}
+              className="hidden sm:flex h-8 w-8 items-center justify-center rounded-[4px] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-200"
+              aria-label={user ? "Account" : "Sign in"}
+            >
+              <UserCircle size={18} />
+            </Link>
             <Button
               size="sm"
               onClick={() => setDialogOpen(true)}

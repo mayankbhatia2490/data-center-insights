@@ -4,9 +4,47 @@ import { supabase } from "@/integrations/supabase/client";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
-import { Users, Zap, ArrowLeft, ExternalLink, Calendar } from "lucide-react";
+import { Users, Zap, ArrowLeft, ExternalLink, Calendar, BadgeCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
+import { useClaimProfile } from "@/hooks/useClaimProfile";
+
+const ClaimProfileBox = ({ personId, claimed }: { personId: string; claimed: boolean }) => {
+  const { user } = useAuth();
+  const { existingClaim, submitClaim, isSubmitting } = useClaimProfile(personId);
+
+  if (claimed) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-accent">
+        <BadgeCheck size={13} /> Verified profile
+      </span>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Link to="/login" className="text-[11px] text-muted-foreground hover:text-foreground underline">
+        Is this you? Sign in to claim this profile
+      </Link>
+    );
+  }
+
+  if (existingClaim) {
+    return (
+      <span className="text-[11px] text-muted-foreground">
+        Claim {existingClaim.status === "pending" ? "submitted, pending review" : existingClaim.status}
+      </span>
+    );
+  }
+
+  return (
+    <Button size="sm" variant="outline" className="h-7 text-xs" onClick={submitClaim} disabled={isSubmitting}>
+      {isSubmitting ? "Submitting..." : "Claim this profile"}
+    </Button>
+  );
+};
 
 const LeaderProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -132,6 +170,9 @@ const LeaderProfile = () => {
                   )}
                 </div>
                 {person.bio && <p className="text-sm text-foreground/80 mt-3">{person.bio}</p>}
+                <div className="mt-3">
+                  <ClaimProfileBox personId={person.id} claimed={!!person.claimed_by} />
+                </div>
               </div>
             </div>
 

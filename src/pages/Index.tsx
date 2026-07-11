@@ -95,6 +95,21 @@ const Index = () => {
         title="Data Center Pulse — MENA Infrastructure Intelligence"
         description="Daily MENA-first data center news, market intelligence, and infrastructure trends — M&A, AI, and sustainability coverage for industry leaders."
         path="/"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Data Center Pulse",
+            url: "https://pulsefeed-chronicle.lovable.app/",
+            description: "The leading source for MENA data center news, market intelligence, and infrastructure trends.",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Data Center Pulse",
+            url: "https://pulsefeed-chronicle.lovable.app/",
+          },
+        ]}
       />
       {/* Reading progress bar */}
       <div className="fixed top-0 left-0 right-0 z-[70] h-[2px]">
