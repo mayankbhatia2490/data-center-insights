@@ -16,6 +16,7 @@ import Insights from "./pages/Insights";
 import Login from "./pages/Login";
 import Pricing from "./pages/Pricing";
 import Account from "./pages/Account";
+import AdminClaims from "./pages/AdminClaims";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/admin/claims" element={<AdminClaims />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
