@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       const [articlesRes, signalsRes, capacityRes] = await Promise.all([
         supabase
           .from("articles")
-          .select("title, summary, sentiment, insight")
+          .select("id, title, summary, sentiment, insight")
           .or(`category.ilike.%${region}%,title.ilike.%${region}%,summary.ilike.%${region}%`)
           .gte("published_at", since)
           .limit(20),
@@ -66,6 +66,10 @@ Deno.serve(async (req) => {
         signals: signalsRes.data || [],
         capacity: capacityRes.data || [],
       };
+
+      const sourceArticleIds = (articlesRes.data || [])
+        .map((a: any) => a.id)
+        .filter(Boolean);
 
       const raw = await callAI([
         {
@@ -107,6 +111,7 @@ Example: {"outlook":"...","demand_score":75,"risk_score":30,"opportunity_score":
                 risk_score: o.risk_score,
                 opportunity_score: o.opportunity_score,
                 updated_at: new Date().toISOString(),
+                source_article_ids: sourceArticleIds,
               })
               .eq("id", existing.id);
           } else {
@@ -117,6 +122,7 @@ Example: {"outlook":"...","demand_score":75,"risk_score":30,"opportunity_score":
               risk_score: o.risk_score,
               opportunity_score: o.opportunity_score,
               updated_at: new Date().toISOString(),
+              source_article_ids: sourceArticleIds,
             });
           }
         }

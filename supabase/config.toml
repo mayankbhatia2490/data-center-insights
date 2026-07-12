@@ -24,13 +24,7 @@ verify_jwt = false
 [functions.send-newsletter]
 verify_jwt = false
 
-[functions.compute-trending]
-verify_jwt = false
-
 [functions.word-bubble]
-verify_jwt = false
-
-[functions.extract-people]
 verify_jwt = false
 
 [functions.extract-capacity]
@@ -61,4 +55,7 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.stripe-webhook]
+verify_jwt = false
+
+[functions.health-check]
 verify_jwt = false

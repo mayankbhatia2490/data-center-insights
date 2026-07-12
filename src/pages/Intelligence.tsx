@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
 import MarketSignals from "@/components/MarketSignals";
+import RegionalOutlookSection from "@/components/RegionalOutlookSection";
 import PremiumGate from "@/components/PremiumGate";
 import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsChatbot from "@/components/NewsChatbot";
@@ -35,12 +36,13 @@ const Intelligence = () => {
           <WeeklyIndexWidget />
         </div>
 
-        {/* Market Signals — premium tier */}
+        {/* Market Signals + Regional Outlook — premium tier */}
         <PremiumGate
           title="Market Signals is a premium feature"
           description="Emerging risk and opportunity signals across MENA data center markets, generated daily from our AI pipeline — available to Premium subscribers."
         >
           <MarketSignals />
+          <RegionalOutlookSection />
         </PremiumGate>
       </main>
 
