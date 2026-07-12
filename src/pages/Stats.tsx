@@ -413,7 +413,7 @@ const Stats = () => {
 
             {/* ─── Source Attribution ─────────────────────────────── */}
             <div className="text-[10px] text-muted-foreground/60 text-right">
-              Sources: AI Analysis · Synergy Research · Company filings · Last updated Feb 2026
+              Illustrative estimates, not yet independently verified · Sourced, verified data coming soon
             </div>
           </>
         )}

@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const { data: articles, error } = await supabase
       .from("articles")
-      .select("title, summary, category, sentiment, insight")
+      .select("id, title, summary, category, sentiment, insight")
       .gte("published_at", since)
       .order("published_at", { ascending: false })
       .limit(50);
@@ -49,6 +49,8 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const sourceArticleIds = articles.map((a) => a.id);
 
     const raw = await callAI([
       {
@@ -88,6 +90,7 @@ Return ONLY a valid JSON array of 5-10 signals. If none found, return [].`,
           region: s.region || "Global",
           reason: s.reason || null,
           confidence: s.confidence || null,
+          source_article_ids: sourceArticleIds,
         });
         inserted++;
       } catch (err) {
