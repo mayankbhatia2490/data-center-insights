@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import { Link } from "react-router-dom";
-import { Users, Zap, ArrowLeft, Search, Globe, LayoutGrid } from "lucide-react";
+import { Users, Zap, ArrowLeft, Search, Globe, LayoutGrid, BadgeCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -22,7 +22,7 @@ const Leaders = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("people")
-        .select("id, name, title, organization, region, mention_count, importance_score, last_mentioned")
+        .select("id, name, title, organization, region, mention_count, importance_score, last_mentioned, claimed_by")
         .order("mention_count", { ascending: false })
         .limit(200);
       if (error) throw error;
@@ -194,6 +194,13 @@ const Leaders = () => {
                       >
                         {l.name}
                       </Link>
+                      {l.claimed_by && (
+                        <BadgeCheck
+                          size={12}
+                          className="inline-block ml-1.5 text-accent align-text-bottom"
+                          aria-label="Verified profile"
+                        />
+                      )}
                     </td>
                     <td className="py-3 pr-4 text-muted-foreground hidden md:table-cell">{l.title}</td>
                     <td className="py-3 pr-4 text-muted-foreground hidden md:table-cell">{l.organization}</td>

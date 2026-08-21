@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: articles } = await supabase
       .from("articles")
-      .select("title, insight, category, sentiment")
+      .select("id, title, insight, category, sentiment")
       .gte("created_at", sevenDaysAgo)
       .order("published_at", { ascending: false })
       .limit(100);
@@ -34,6 +34,8 @@ Deno.serve(async (req) => {
       });
     }
 
+    const sourceArticleIds = articles.map((a) => a.id);
+
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
       method: "POST",
       headers: {
@@ -41,7 +43,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.5-flash",
         messages: [
           {
             role: "system",
@@ -101,6 +103,7 @@ Return ONLY valid JSON:
           drivers: result.drivers,
           risks: result.risks,
           outlook: result.outlook,
+          source_article_ids: sourceArticleIds,
         },
         { onConflict: "week_start" }
       );
@@ -113,6 +116,7 @@ Return ONLY valid JSON:
         drivers: result.drivers,
         risks: result.risks,
         outlook: result.outlook,
+        source_article_ids: sourceArticleIds,
       });
     }
 

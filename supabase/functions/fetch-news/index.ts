@@ -10,7 +10,7 @@ const corsHeaders = {
 async function callAI(
   messages: { role: string; content: string }[],
   apiKey: string,
-  model = "gemini-2.5-flash-lite"
+  model = "gemini-3.1-flash-lite"
 ): Promise<string> {
   const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",
@@ -97,7 +97,8 @@ Return ONLY a valid JSON array. If no people found, return [].`,
     const match = raw.match(/\[[\s\S]*\]/);
     if (match) return JSON.parse(match[0]);
     return [];
-  } catch {
+  } catch (e) {
+    console.error("aiExtractPeople error:", e);
     return [];
   }
 }
@@ -311,9 +312,12 @@ async function upsertPeople(
   publishedAt: string,
   people: any[]
 ) {
+  const PLACEHOLDER_NAMES = /^(not specified|unspecified|unknown|n\/a|none|various|commissioners?|officials?)$/i;
+
   for (const p of people) {
     if (!p || !p.name) continue;
     if ((p.confidence ?? 0) < 0.6) continue;
+    if (PLACEHOLDER_NAMES.test(p.name.trim())) continue;
 
     try {
       const { data: existingPerson } = await supabase
@@ -514,8 +518,9 @@ Deno.serve(async (req) => {
       if (error || !insertedArticle) continue;
       inserted++;
 
-      // Extract people for this article
-      if (geminiApiKey) {
+      // Extract people for this article (capped, like the summary/sentiment/insight
+      // steps above, to avoid tripping Gemini rate limits on large ingestion batches)
+      if (geminiApiKey && inserted <= 20) {
         try {
           const people = await aiExtractPeople(article.title, article.summary || "", geminiApiKey);
           if (people.length > 0) {

@@ -1,5 +1,6 @@
 import { useSignals } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
+import ConfidenceBadge from "@/components/ConfidenceBadge";
 import { TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 
 const typeConfig: Record<string, { icon: typeof TrendingUp; color: string; bg: string }> = {
@@ -49,6 +50,7 @@ const MarketSignals = () => {
                 {s.region && (
                   <span className="text-[10px] text-muted-foreground">{s.region}</span>
                 )}
+                <ConfidenceBadge tier={s.confidence_tier} sourceCount={s.source_article_ids?.length} />
               </div>
               <h3 className="text-sm font-bold text-foreground mb-1">{s.title}</h3>
               <p className="text-[12px] text-muted-foreground leading-relaxed">{s.reason}</p>

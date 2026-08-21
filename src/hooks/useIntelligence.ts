@@ -9,6 +9,8 @@ export interface MarketSignal {
   reason: string | null;
   confidence: number | null;
   created_at: string | null;
+  source_article_ids?: string[] | null;
+  confidence_tier?: string | null;
 }
 
 export function useSignals(limit = 20) {
@@ -35,6 +37,8 @@ export interface RegionalOutlook {
   risk_score: number | null;
   opportunity_score: number | null;
   updated_at: string | null;
+  source_article_ids?: string[] | null;
+  confidence_tier?: string | null;
 }
 
 export function useRegionalOutlook() {
@@ -59,6 +63,8 @@ export interface StrategicInsight {
   region: string | null;
   horizon: string | null;
   created_at: string | null;
+  source_article_ids?: string[] | null;
+  confidence_tier?: string | null;
 }
 
 export function useStrategicInsights(limit = 10) {

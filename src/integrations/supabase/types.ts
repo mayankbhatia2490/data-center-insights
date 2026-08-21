@@ -10,10 +10,25 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       article_people: {
         Row: {
           article_id: string | null
@@ -344,28 +359,34 @@ export type Database = {
       market_signals: {
         Row: {
           confidence: number | null
+          confidence_tier: string | null
           created_at: string | null
           id: string
           reason: string | null
           region: string | null
+          source_article_ids: string[] | null
           title: string | null
           type: string | null
         }
         Insert: {
           confidence?: number | null
+          confidence_tier?: string | null
           created_at?: string | null
           id?: string
           reason?: string | null
           region?: string | null
+          source_article_ids?: string[] | null
           title?: string | null
           type?: string | null
         }
         Update: {
           confidence?: number | null
+          confidence_tier?: string | null
           created_at?: string | null
           id?: string
           reason?: string | null
           region?: string | null
+          source_article_ids?: string[] | null
           title?: string | null
           type?: string | null
         }
@@ -460,44 +481,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      profile_claims: {
-        Row: {
-          claim_email: string
-          created_at: string
-          id: string
-          person_id: string
-          reviewed_at: string | null
-          status: string
-          user_id: string
-        }
-        Insert: {
-          claim_email: string
-          created_at?: string
-          id?: string
-          person_id: string
-          reviewed_at?: string | null
-          status?: string
-          user_id: string
-        }
-        Update: {
-          claim_email?: string
-          created_at?: string
-          id?: string
-          person_id?: string
-          reviewed_at?: string | null
-          status?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profile_claims_person_id_fkey"
-            columns: ["person_id"]
-            isOneToOne: false
-            referencedRelation: "people"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       people_leaders: {
         Row: {
@@ -613,60 +596,137 @@ export type Database = {
           },
         ]
       }
+      pipeline_health_checks: {
+        Row: {
+          checked_at: string
+          detail: Json | null
+          function_name: string
+          id: string
+          status: string
+          table_name: string
+        }
+        Insert: {
+          checked_at?: string
+          detail?: Json | null
+          function_name: string
+          id?: string
+          status: string
+          table_name: string
+        }
+        Update: {
+          checked_at?: string
+          detail?: Json | null
+          function_name?: string
+          id?: string
+          status?: string
+          table_name?: string
+        }
+        Relationships: []
+      }
+      profile_claims: {
+        Row: {
+          claim_email: string
+          created_at: string
+          id: string
+          person_id: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          claim_email: string
+          created_at?: string
+          id?: string
+          person_id: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          claim_email?: string
+          created_at?: string
+          id?: string
+          person_id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_claims_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       regional_outlook: {
         Row: {
+          confidence_tier: string | null
           demand_score: number | null
           id: string
           opportunity_score: number | null
           outlook: string | null
           region: string | null
           risk_score: number | null
+          source_article_ids: string[] | null
           updated_at: string | null
         }
         Insert: {
+          confidence_tier?: string | null
           demand_score?: number | null
           id?: string
           opportunity_score?: number | null
           outlook?: string | null
           region?: string | null
           risk_score?: number | null
+          source_article_ids?: string[] | null
           updated_at?: string | null
         }
         Update: {
+          confidence_tier?: string | null
           demand_score?: number | null
           id?: string
           opportunity_score?: number | null
           outlook?: string | null
           region?: string | null
           risk_score?: number | null
+          source_article_ids?: string[] | null
           updated_at?: string | null
         }
         Relationships: []
       }
       strategic_insights: {
         Row: {
+          confidence_tier: string | null
           created_at: string | null
           horizon: string | null
           id: string
           insight: string | null
           region: string | null
           sector: string | null
+          source_article_ids: string[] | null
         }
         Insert: {
+          confidence_tier?: string | null
           created_at?: string | null
           horizon?: string | null
           id?: string
           insight?: string | null
           region?: string | null
           sector?: string | null
+          source_article_ids?: string[] | null
         }
         Update: {
+          confidence_tier?: string | null
           created_at?: string | null
           horizon?: string | null
           id?: string
           insight?: string | null
           region?: string | null
           sector?: string | null
+          source_article_ids?: string[] | null
         }
         Relationships: []
       }
@@ -717,30 +777,36 @@ export type Database = {
       }
       weekly_index: {
         Row: {
+          confidence_tier: string | null
           created_at: string | null
           drivers: Json | null
           id: string
           outlook: string | null
           risks: Json | null
           score: number | null
+          source_article_ids: string[] | null
           week_start: string
         }
         Insert: {
+          confidence_tier?: string | null
           created_at?: string | null
           drivers?: Json | null
           id?: string
           outlook?: string | null
           risks?: Json | null
           score?: number | null
+          source_article_ids?: string[] | null
           week_start: string
         }
         Update: {
+          confidence_tier?: string | null
           created_at?: string | null
           drivers?: Json | null
           id?: string
           outlook?: string | null
           risks?: Json | null
           score?: number | null
+          source_article_ids?: string[] | null
           week_start?: string
         }
         Relationships: []
@@ -893,7 +959,7 @@ export type CompositeTypes<
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    ? DefaultSchema["CompositeTypes"][CompositeTypeName]
     : never
 
 export const Constants = {

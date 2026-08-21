@@ -2,6 +2,7 @@ import Seo from "@/components/Seo";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import EditorsPicks from "@/components/EditorsPicks";
+import StrategicReadSection from "@/components/StrategicReadSection";
 import WordCloudDisplay from "@/components/WordCloudDisplay";
 import BottomSubscribeBar from "@/components/BottomSubscribeBar";
 import NewsChatbot from "@/components/NewsChatbot";
@@ -31,6 +32,9 @@ const Insights = () => {
 
         {/* Editor's Picks */}
         <EditorsPicks />
+
+        {/* Strategic Read */}
+        <StrategicReadSection />
 
         {/* Keyword Cloud */}
         <div className="border border-border bg-card rounded-[4px] p-6 mt-8">

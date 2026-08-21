@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "gemini-2.5-flash-lite",
+                model: "gemini-3.1-flash-lite",
                 messages: [
                   {
                     role: "system",
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "gemini-2.5-flash-lite",
+                model: "gemini-3.1-flash-lite",
                 messages: [
                   {
                     role: "system",
