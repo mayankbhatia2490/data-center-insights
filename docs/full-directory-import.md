@@ -2,7 +2,9 @@
 
 ## Source and authorization status
 
-Data Center Map’s public Middle East page currently reports 331 records across 18 countries, while the Explorer page is a three-record demo unless a full export is purchased or otherwise authorized. The public Terms of Use prohibit scraping, automated retrieval, and copying site data into an external database without authorization. Therefore, this repository does **not** contain a scraped copy of the requested 161-record list.
+Data Center Map’s public Middle East page currently reports 331 records across 18 countries, while the Explorer page is a three-record demo unless a full export is purchased or otherwise authorized. The public Terms of Use prohibit scraping, automated retrieval, and copying site data into an external database without authorization. Therefore, this repository does **not** contain a scraped copy of the Data Center Map directory.
+
+The free replacement source used here is [ATLAS / Global Data Center Map](https://github.com/Ringmast4r/Global-Data-Center-Map), which permits product and commercial use with required attribution. The extracted artifact currently contains 218 Middle East records and 85 GCC records. It has 61 Middle East records and 43 GCC records with ATLAS city coordinates; other records are retained with no fabricated facility coordinate.
 
 A full import is supported only from a CSV or GeoJSON export that the project is authorized to use. The importer requires an explicit environment acknowledgement so a restricted export cannot be loaded accidentally.
 
@@ -11,22 +13,22 @@ A full import is supported only from a CSV or GeoJSON export that the project is
 From the repository root:
 
 ```sh
-DATA_CENTER_MAP_LICENSE_ACK=true \
+DATASET_LICENSE_ACK=true \
 SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY \
-node scripts/import-data-centers.mjs /path/to/authorized-export.csv
+node scripts/import-data-centers.mjs data/atlas-middle-east-gcc-subset.json middle_east
 ```
 
 GeoJSON is also supported:
 
 ```sh
-DATA_CENTER_MAP_LICENSE_ACK=true \
+DATASET_LICENSE_ACK=true \
 SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY \
-node scripts/import-data-centers.mjs /path/to/authorized-export.geojson
+node scripts/import-data-centers.mjs /path/to/authorized-export.geojson middle_east
 ```
 
-The importer maps Data Center Map-style fields including facility name, Data Center ID, parent ID, company and company ID, profile and website URLs, lifecycle stage, listing type, capacity type, fully built-out power, latitude, longitude, address and address details, postal, city, market, state, country, whitespace, total building size, year operational, PUE, site code, tier design, and ecosystem statistics. Imported records start at `needs_review`, and original export provenance is written to `data_center_sources`.
+The importer maps ATLAS and Data Center Map-style fields including facility name, Data Center ID, parent ID, company and company ID, profile and website URLs, lifecycle stage, listing type, capacity type, fully built-out power, latitude, longitude, address and address details, postal, city, market, state, country, whitespace, total building size, year operational, PUE, site code, tier design, and ecosystem statistics. Imported records start at `needs_review`, and original export provenance is written to `data_center_sources`.
 
 The importer intentionally does not publish a facility as verified. Run the automated verifier and complete human review after import:
 

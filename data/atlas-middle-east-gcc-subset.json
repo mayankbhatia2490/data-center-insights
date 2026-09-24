@@ -1,0 +1,3248 @@
+{
+  "source": "ATLAS / Global Data Center Map",
+  "source_url": "https://github.com/Ringmast4r/Global-Data-Center-Map",
+  "middle_east": [
+    {
+      "name": "National Bank of Kuwait",
+      "company": "National Bank of Kuwait (NBK)",
+      "street": "Block 1، Fifth Ring road",
+      "city": "Farwaniya",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "Block 1، Fifth Ring road Farwaniya Kuwait",
+      "city_coords": [
+        29.2971097,
+        47.9119937
+      ]
+    },
+    {
+      "name": "Qatar National Bank",
+      "company": "Qatar National Bank (QNB)",
+      "street": "Arab League St",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Arab League St Doha Qatar"
+    },
+    {
+      "name": "3SAMNET",
+      "company": "3SAMNET",
+      "street": "1 Atarot St Jerusalem",
+      "city": "Israel",
+      "state": "",
+      "zip": "",
+      "country": "Israel",
+      "address": "1 Atarot St Jerusalem Israel"
+    },
+    {
+      "name": "6th of October",
+      "company": "Raya Data Center",
+      "street": "26 July St",
+      "city": "6th",
+      "state": "",
+      "zip": "12568",
+      "country": "Egypt",
+      "address": "26 July St 12568 6th of October Egypt"
+    },
+    {
+      "name": "Abu Dhabi",
+      "company": "CenterServ",
+      "street": "Airport Road, Rashid Al Maktoum Street 2 Abu Dhabi United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Airport Road, Rashid Al Maktoum Street 2 Abu Dhabi United Arab Emirates"
+    },
+    {
+      "name": "Abu Dhabi",
+      "company": "Etisalat",
+      "street": "tbc Abu Dhabi United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "tbc Abu Dhabi United Arab Emirates"
+    },
+    {
+      "name": "ACG Data Center",
+      "company": "Asia Consultancy Group (ACG)",
+      "street": "Shash Darak Kabul",
+      "city": "Afghanistan",
+      "state": "",
+      "zip": "",
+      "country": "Afghanistan",
+      "address": "Shash Darak Kabul Afghanistan",
+      "city_coords": [
+        34.5292477,
+        69.1935657
+      ]
+    },
+    {
+      "name": "ADP DataCenter",
+      "company": "Atieh Dadeh Pardaz",
+      "street": "#29 Mollasadra St. Vanak Sq.",
+      "city": "Tehran",
+      "state": "",
+      "zip": "1991916713",
+      "country": "Iran",
+      "address": "#29 Mollasadra St. Vanak Sq. 1991916713 Tehran Iran"
+    },
+    {
+      "name": "Al Samoud",
+      "company": "Kuwait National Guard",
+      "street": "Al-Asima Governorate Kuwait",
+      "city": "City",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "Al-Asima Governorate Kuwait City Kuwait",
+      "city_coords": [
+        29.3733968,
+        47.9674446
+      ]
+    },
+    {
+      "name": "Al-Waab",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Al Waab St PO Box 217",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Al Waab St PO Box 217 Doha Qatar"
+    },
+    {
+      "name": "Allama Iqbal Open University",
+      "company": "Allama Iqbal Open University (AIOU)",
+      "street": "Allama Iqbal Open University",
+      "city": "Islamabad",
+      "state": "",
+      "zip": "44000",
+      "country": "Pakistan",
+      "address": "Allama Iqbal Open University 44000 Islamabad Pakistan",
+      "city_coords": [
+        33.6842062,
+        73.0555742
+      ]
+    },
+    {
+      "name": "Armman",
+      "company": "iLevant",
+      "street": "Zahran St Amman",
+      "city": "Jordan",
+      "state": "",
+      "zip": "",
+      "country": "Jordan",
+      "address": "Zahran St Amman Jordan",
+      "city_coords": [
+        31.9579742,
+        35.8511567
+      ]
+    },
+    {
+      "name": "Beirut",
+      "company": "CenterServ",
+      "street": "Azarieh Building, Azarieh Street Bloc A5, Fifth Floor Beirut",
+      "city": "Lebanon",
+      "state": "",
+      "zip": "",
+      "country": "Lebanon",
+      "address": "Azarieh Building, Azarieh Street Bloc A5, Fifth Floor Beirut Lebanon"
+    },
+    {
+      "name": "Buraidah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "tbc",
+      "city": "Buraidah",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Buraidah Saudi Arabia"
+    },
+    {
+      "name": "Cairo",
+      "company": "Orange",
+      "street": "77 Misr Helwan road, Maadi",
+      "city": "Cairo",
+      "state": "",
+      "zip": "11431",
+      "country": "Egypt",
+      "address": "77 Misr Helwan road, Maadi 11431 Cairo Egypt"
+    },
+    {
+      "name": "Cairo",
+      "company": "Telecom Egypt",
+      "street": "KM 28 Cairo-Alex Desert Road",
+      "city": "Cairo",
+      "state": "",
+      "zip": "12577",
+      "country": "Egypt",
+      "address": "KM 28 Cairo-Alex Desert Road 12577 Cairo Egypt"
+    },
+    {
+      "name": "Cairo",
+      "company": "Link Datacenter",
+      "street": "94 Road 105 Maadi",
+      "city": "Cairo",
+      "state": "",
+      "zip": "11431",
+      "country": "Egypt",
+      "address": "94 Road 105 Maadi 11431 Cairo Egypt"
+    },
+    {
+      "name": "Cairo",
+      "company": "Avit",
+      "street": "Airport Rd, Sheraton Al Matar",
+      "city": "Qism",
+      "state": "",
+      "zip": "11776",
+      "country": "Egypt",
+      "address": "Airport Rd, Sheraton Al Matar 11776 Qism El-Nozha Egypt"
+    },
+    {
+      "name": "Cairo 1",
+      "company": "GPX Global Systems",
+      "street": "2 El Shaheed Ismail Fahmy St.",
+      "city": "Cairo",
+      "state": "",
+      "zip": "11361",
+      "country": "Egypt",
+      "address": "2 El Shaheed Ismail Fahmy St. 11361 Cairo Egypt"
+    },
+    {
+      "name": "Cairo 2",
+      "company": "GPX Global Systems",
+      "street": "Level (B-2), Plot 140 Financial District Fifth Settlement Cairo",
+      "city": "Egypt",
+      "state": "",
+      "zip": "",
+      "country": "Egypt",
+      "address": "Level (B-2), Plot 140 Financial District Fifth Settlement Cairo Egypt"
+    },
+    {
+      "name": "Chapal DC",
+      "company": "Chapal",
+      "street": "G-19/2, Khayaban-e-Jami Block 9, Clifton",
+      "city": "Karachi",
+      "state": "",
+      "zip": "75600",
+      "country": "Pakistan",
+      "address": "G-19/2, Khayaban-e-Jami Block 9, Clifton 75600 Karachi Pakistan"
+    },
+    {
+      "name": "CIS DataCenter",
+      "company": "COMSATS Internet Services",
+      "street": "9, Shahrah-e-Jamhuriat Sector G-5/2",
+      "city": "Islamabad",
+      "state": "",
+      "zip": "44000",
+      "country": "Pakistan",
+      "address": "9, Shahrah-e-Jamhuriat Sector G-5/2 44000 Islamabad Pakistan"
+    },
+    {
+      "name": "CityNet Host",
+      "company": "CityNet Telecom, S.A.E.",
+      "street": "21A Ahlam Towers Tenth of Ramadan",
+      "city": "Egypt",
+      "state": "",
+      "zip": "",
+      "country": "Egypt",
+      "address": "21A Ahlam Towers Tenth of Ramadan Egypt"
+    },
+    {
+      "name": "Cloud4C",
+      "company": "Cloud4C",
+      "street": "G 05 , Ground floor, Building no 11, Dubai Internet city",
+      "city": "Dubai",
+      "state": "",
+      "zip": "500471",
+      "country": "United Arab Emirates",
+      "address": "G 05 , Ground floor, Building no 11, Dubai Internet city 500471 Dubai United Arab Emirates"
+    },
+    {
+      "name": "Corporate Data Center",
+      "company": "Saudi Aramco",
+      "street": "Midra Access Rd",
+      "city": "Dhahran",
+      "state": "",
+      "zip": "34481",
+      "country": "Saudi Arabia",
+      "address": "Midra Access Rd 34481 Dhahran Saudi Arabia"
+    },
+    {
+      "name": "Cube XS Weatherly",
+      "company": "CubeXS Weatherly (Pvt.) Ltd.",
+      "street": "Shahrah-e-Firdousi",
+      "city": "Karachi",
+      "state": "",
+      "zip": "75500",
+      "country": "Pakistan",
+      "address": "Shahrah-e-Firdousi 75500 Karachi Pakistan",
+      "city_coords": [
+        24.8090204,
+        67.0345926
+      ]
+    },
+    {
+      "name": "Damamax Data Center",
+      "company": "DAMAMAX",
+      "street": "Al-Madina Al-Munawara Str.",
+      "city": "Amman",
+      "state": "",
+      "zip": "11953",
+      "country": "Jordan",
+      "address": "Al-Madina Al-Munawara Str. 11953 Amman Jordan"
+    },
+    {
+      "name": "Dammam",
+      "company": "CenterServ",
+      "street": "King Fahd Road",
+      "city": "Dammam",
+      "state": "",
+      "zip": "32232",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Road 32232 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4017427,
+        50.1431493
+      ]
+    },
+    {
+      "name": "Dammam",
+      "company": "NourNet",
+      "street": "King faisal Street",
+      "city": "Dammam",
+      "state": "",
+      "zip": "9531",
+      "country": "Saudi Arabia",
+      "address": "King faisal Street 9531 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4431851,
+        50.1078622
+      ]
+    },
+    {
+      "name": "Datumcenter",
+      "company": "GigaByte Limited",
+      "street": "2 Fener Sokak Kizilbas",
+      "city": "Nicosia",
+      "state": "",
+      "zip": "90000",
+      "country": "Cyprus",
+      "address": "2 Fener Sokak Kizilbas 90000 Nicosia Cyprus",
+      "city_coords": [
+        35.2090216,
+        33.3637947
+      ]
+    },
+    {
+      "name": "Doha",
+      "company": "CenterServ",
+      "street": "Bank Street، Swords Signal",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Bank Street، Swords Signal Doha Qatar"
+    },
+    {
+      "name": "Dubai",
+      "company": "Equinix",
+      "street": "International Media Production Zone (IMPZ), Units F90, F91, F92, Sheikh Mohammed Bin Zayed Road Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "International Media Production Zone (IMPZ), Units F90, F91, F92, Sheikh Mohammed Bin Zayed Road Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai",
+      "company": "Datamena",
+      "street": "Warehouese F90-F92, International Media Production Zone Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Warehouese F90-F92, International Media Production Zone Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai",
+      "company": "Penta Hosting",
+      "street": "Dubai International Financial Center, Gate Building, ER4 Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Dubai International Financial Center, Gate Building, ER4 Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai 1 & 2",
+      "company": "Gulf Data Hub (GDH)",
+      "street": "Dubai Silicon Oasis Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Dubai Silicon Oasis Dubai United Arab Emirates",
+      "city_coords": [
+        25.1205792,
+        55.3886553
+      ]
+    },
+    {
+      "name": "Dubai Silicon Oasis Data Center",
+      "company": "Dubai Silicon Oasis Authority",
+      "street": "Nad Al Sheba",
+      "city": "Dubai",
+      "state": "",
+      "zip": "6009",
+      "country": "United Arab Emirates",
+      "address": "Nad Al Sheba 6009 Dubai United Arab Emirates",
+      "city_coords": [
+        25.151424,
+        55.3753271
+      ]
+    },
+    {
+      "name": "Duqm Data Centre SAOC",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Computer Room Level-2, Samail Industrial Estate, Samail",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Computer Room Level-2, Samail Industrial Estate, Samail Oman"
+    },
+    {
+      "name": "ECC Solutions I",
+      "company": "ECC Solutions",
+      "street": "13 C second industrial zone",
+      "city": "6th",
+      "state": "",
+      "zip": "12581",
+      "country": "Egypt",
+      "address": "13 C second industrial zone 12581 6th of October Egypt"
+    },
+    {
+      "name": "ECC Soutions II",
+      "company": "ECC Solutions",
+      "street": "El-Nahda, Al Kenisah Al Omraneyah",
+      "city": "Egypt",
+      "state": "",
+      "zip": "",
+      "country": "Egypt",
+      "address": "El-Nahda, Al Kenisah Al Omraneyah Egypt"
+    },
+    {
+      "name": "EGID",
+      "company": "Egypt for Information Dissemination (EDID)",
+      "street": "El Tagmoaa El Khames",
+      "city": "New",
+      "state": "",
+      "zip": "11835",
+      "country": "Egypt",
+      "address": "El Tagmoaa El Khames 11835 New Cairo Egypt"
+    },
+    {
+      "name": "EgyProHost 1",
+      "company": "EgyProHost",
+      "street": "36 Sherif st, Downtown",
+      "city": "Cairo",
+      "state": "",
+      "zip": "11311",
+      "country": "Egypt",
+      "address": "36 Sherif st, Downtown 11311 Cairo Egypt"
+    },
+    {
+      "name": "eHosting Datafort",
+      "company": "eHosting Datafort",
+      "street": "DIC Building 4, 3rd Floor Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "DIC Building 4, 3rd Floor Dubai United Arab Emirates"
+    },
+    {
+      "name": "Federal Network (FedNet)",
+      "company": "UAE Telecommunications Regulatory Authority (TRA)",
+      "street": "Al Salam St Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Al Salam St Dubai United Arab Emirates",
+      "city_coords": [
+        25.203685,
+        55.2637834
+      ]
+    },
+    {
+      "name": "Gateway Gulf (KSA)",
+      "company": "Gateway Gulf",
+      "street": "Al Khobar, P.O. Box 180",
+      "city": "Damman",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Al Khobar, P.O. Box 180 Damman Saudi Arabia"
+    },
+    {
+      "name": "Gateway Gulf DC",
+      "company": "Gateway Gulf",
+      "street": "Complex #312, Property #88000071, Road 1202",
+      "city": "Manama",
+      "state": "",
+      "zip": "18029",
+      "country": "Bahrain",
+      "address": "Complex #312, Property #88000071, Road 1202 18029 Manama Bahrain"
+    },
+    {
+      "name": "Gerry's Data Center",
+      "company": "Gerry's Information Technology",
+      "street": "Merewether Rd, 3rd floor Karachi",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "Merewether Rd, 3rd floor Karachi Pakistan"
+    },
+    {
+      "name": "Giza",
+      "company": "ECC Solutions",
+      "street": "13 Al Nahda Street",
+      "city": "Giza",
+      "state": "",
+      "zip": "11461",
+      "country": "Egypt",
+      "address": "13 Al Nahda Street 11461 Giza Egypt"
+    },
+    {
+      "name": "Global Data Center",
+      "company": "Global Data Center",
+      "street": "Abba Eban Blvd 12 Herzliya",
+      "city": "Israel",
+      "state": "",
+      "zip": "",
+      "country": "Israel",
+      "address": "Abba Eban Blvd 12 Herzliya Israel"
+    },
+    {
+      "name": "Hail",
+      "company": "CenterServ",
+      "street": "Ash Shaikh Abdul Aziz Ibn Baz Road, Near STC",
+      "city": "حائل",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Ash Shaikh Abdul Aziz Ibn Baz Road, Near STC حائل Saudi Arabia"
+    },
+    {
+      "name": "HostDime Israel Haifa City",
+      "company": "Hostdime.com",
+      "street": "Omega Center/31905",
+      "city": "Haifa",
+      "state": "",
+      "zip": "3435X",
+      "country": "Israel",
+      "address": "Omega Center/31905 3435X Haifa Israel"
+    },
+    {
+      "name": "Imam Abdulrahman Bin Faisal University",
+      "company": "Imam Abdulrahman Bin Faisal University",
+      "street": "2835 King Faisal Road",
+      "city": "Dammam",
+      "state": "",
+      "zip": "34212",
+      "country": "Saudi Arabia",
+      "address": "2835 King Faisal Road 34212 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4128613,
+        50.174052
+      ]
+    },
+    {
+      "name": "Injazat Data Center",
+      "company": "Injazat Data Systems",
+      "street": "8230 Mohammed Bin Zayed City Abu Dhabi United Arab Emirates",
+      "city": "Mohammed",
+      "state": "",
+      "zip": "8230",
+      "country": "United Arab Emirates",
+      "address": "8230 Mohammed Bin Zayed City Abu Dhabi United Arab Emirates",
+      "city_coords": [
+        24.3339589,
+        54.5535564
+      ]
+    },
+    {
+      "name": "Iran Data Center",
+      "company": "KEYANA IT Co. Ltd.",
+      "street": "No 7. Rahnamai 20. Rahnamai St. Mashhad",
+      "city": "Iran",
+      "state": "",
+      "zip": "",
+      "country": "Iran",
+      "address": "No 7. Rahnamai 20. Rahnamai St. Mashhad Iran"
+    },
+    {
+      "name": "Islamabad",
+      "company": "PTCL",
+      "street": "CDDT Buidling, H-9",
+      "city": "Islamabad",
+      "state": "",
+      "zip": "44000",
+      "country": "Pakistan",
+      "address": "CDDT Buidling, H-9 44000 Islamabad Pakistan"
+    },
+    {
+      "name": "Islamabad",
+      "company": "Multinet",
+      "street": "60 Nazim-ud-din Rd Islamabad",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "60 Nazim-ud-din Rd Islamabad Pakistan",
+      "city_coords": [
+        33.6749226,
+        72.9900884
+      ]
+    },
+    {
+      "name": "Jeddah",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Corneesh street 8732/",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "1149",
+      "country": "Saudi Arabia",
+      "address": "Corneesh street 8732/ 1149 Jeddah Saudi Arabia"
+    },
+    {
+      "name": "Jeddah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "Al Faiha District",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Al Faiha District Jeddah Saudi Arabia",
+      "city_coords": [
+        21.4904847,
+        39.2307769
+      ]
+    },
+    {
+      "name": "Jeddah",
+      "company": "HostGee.Com",
+      "street": "Abo Bakr Al Sedeeq street, Saudi Business Center, 9th Floor, Office # 909",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "22135",
+      "country": "Saudi Arabia",
+      "address": "Abo Bakr Al Sedeeq street, Saudi Business Center, 9th Floor, Office # 909 22135 Jeddah Saudi Arabia"
+    },
+    {
+      "name": "Jerusalem",
+      "company": "Bynet Data Communications",
+      "street": "tbc Jerusalem",
+      "city": "Israel",
+      "state": "",
+      "zip": "",
+      "country": "Israel",
+      "address": "tbc Jerusalem Israel"
+    },
+    {
+      "name": "Jubail",
+      "company": "CenterServ",
+      "street": "Al - Shati",
+      "city": "Al",
+      "state": "",
+      "zip": "35811",
+      "country": "Saudi Arabia",
+      "address": "Al - Shati 35811 Al Jubail Saudi Arabia"
+    },
+    {
+      "name": "Karachi",
+      "company": "Cybernet",
+      "street": "10th Floot Lakson Building III , Sarwar Shaheed Road",
+      "city": "Karachi",
+      "state": "",
+      "zip": "74200",
+      "country": "Pakistan",
+      "address": "10th Floot Lakson Building III , Sarwar Shaheed Road 74200 Karachi Pakistan"
+    },
+    {
+      "name": "Karachi",
+      "company": "PTCL",
+      "street": "CTO Building, I.I Chundrigar Road",
+      "city": "Karachi",
+      "state": "",
+      "zip": "74000",
+      "country": "Pakistan",
+      "address": "CTO Building, I.I Chundrigar Road 74000 Karachi Pakistan"
+    },
+    {
+      "name": "Karachi",
+      "company": "Pakistan Telecommunication Company Limited (PTCL)",
+      "street": "I.I Chundrigar Road Karachi",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "I.I Chundrigar Road Karachi Pakistan",
+      "city_coords": [
+        24.8488499,
+        66.9982598
+      ]
+    },
+    {
+      "name": "Karachi 1",
+      "company": "Multinet",
+      "street": "1D-203 Main Korangi Industrial Road Karachi",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "1D-203 Main Korangi Industrial Road Karachi Pakistan"
+    },
+    {
+      "name": "Karachi 2",
+      "company": "Multinet",
+      "street": "17D-203 Main Korangi Industrial Rd Karachi",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "17D-203 Main Korangi Industrial Rd Karachi Pakistan"
+    },
+    {
+      "name": "Khobar CLS",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Corneesh road",
+      "city": "Al",
+      "state": "",
+      "zip": "31952",
+      "country": "Saudi Arabia",
+      "address": "Corneesh road 31952 Al Khobar Saudi Arabia"
+    },
+    {
+      "name": "King Abdullah Financial District",
+      "company": "Al Ra’idah Investment Company",
+      "street": "King Fahd Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6145776,
+        46.7068844
+      ]
+    },
+    {
+      "name": "Kulacom Jordan Data Center",
+      "company": "Kulacom",
+      "street": "300 King Abdullah II street",
+      "city": "Amman",
+      "state": "",
+      "zip": "11181",
+      "country": "Jordan",
+      "address": "300 King Abdullah II street 11181 Amman Jordan",
+      "city_coords": [
+        31.9640189,
+        35.8433989
+      ]
+    },
+    {
+      "name": "Lahore",
+      "company": "PTCL",
+      "street": "PTCL Data Center, PTCL Complex Daniha Singh wala, Wafaqi",
+      "city": "Lahore",
+      "state": "",
+      "zip": "54000",
+      "country": "Pakistan",
+      "address": "PTCL Data Center, PTCL Complex Daniha Singh wala, Wafaqi 54000 Lahore Pakistan"
+    },
+    {
+      "name": "Lahore",
+      "company": "Wateen Telecom",
+      "street": "30 Aitchison Colony",
+      "city": "Lahore",
+      "state": "",
+      "zip": "54500",
+      "country": "Pakistan",
+      "address": "30 Aitchison Colony 54500 Lahore Pakistan"
+    },
+    {
+      "name": "Lahore",
+      "company": "Multinet",
+      "street": "Shahrah Aiwan-e-Sanat-o-Tijarat",
+      "city": "Lahore",
+      "state": "",
+      "zip": "54000",
+      "country": "Pakistan",
+      "address": "Shahrah Aiwan-e-Sanat-o-Tijarat 54000 Lahore Pakistan"
+    },
+    {
+      "name": "Lahore",
+      "company": "Pakistan Telecommunication Company Limited (PTCL)",
+      "street": "PTCL Complex, Wafaqi Colony Lahore",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "PTCL Complex, Wafaqi Colony Lahore Pakistan"
+    },
+    {
+      "name": "Lebanon DC",
+      "company": "Lebanese For Advanced Information LFAIT",
+      "street": "Kraitem",
+      "city": "Ras",
+      "state": "",
+      "zip": "00961",
+      "country": "Lebanon",
+      "address": "Kraitem 00961 Ras Beirut Lebanon"
+    },
+    {
+      "name": "Life Web Hosting",
+      "company": "Life Web Hosting",
+      "street": "رقم 9، Al Isaweyah Al Maadi",
+      "city": "Egypt",
+      "state": "",
+      "zip": "",
+      "country": "Egypt",
+      "address": "رقم 9، Al Isaweyah Al Maadi Egypt"
+    },
+    {
+      "name": "Limassol",
+      "company": "Simplex",
+      "street": "4th Floor, Zenios Center, 72 Thessalonikis Street",
+      "city": "Limassol",
+      "state": "",
+      "zip": "3025",
+      "country": "Cyprus",
+      "address": "4th Floor, Zenios Center, 72 Thessalonikis Street 3025 Limassol Cyprus"
+    },
+    {
+      "name": "Limassol",
+      "company": "PostCy Ltd",
+      "street": "Pontidos 17",
+      "city": "Limassol",
+      "state": "",
+      "zip": "4103",
+      "country": "Cyprus",
+      "address": "Pontidos 17 4103 Limassol Cyprus",
+      "city_coords": [
+        34.6945359,
+        33.0720424
+      ]
+    },
+    {
+      "name": "Limassol",
+      "company": "PrimeTel PLC",
+      "street": "141 Omonoia Avenue",
+      "city": "Limassol",
+      "state": "",
+      "zip": "3506",
+      "country": "Cyprus",
+      "address": "141 Omonoia Avenue 3506 Limassol Cyprus"
+    },
+    {
+      "name": "Logosnet Data Center",
+      "company": "Logosnet Services LTD",
+      "street": "Patriarchou Petrou",
+      "city": "Strovolos",
+      "state": "",
+      "zip": "2054",
+      "country": "Cyprus",
+      "address": "Patriarchou Petrou 2054 Strovolos Cyprus",
+      "city_coords": [
+        35.1415743,
+        33.3216381
+      ]
+    },
+    {
+      "name": "M-VAULT 1",
+      "company": "Meeza",
+      "street": "Qatar Science & Technology Park, Al Gharaffa St.",
+      "city": "Doha",
+      "state": "",
+      "zip": "5825",
+      "country": "Qatar",
+      "address": "Qatar Science & Technology Park, Al Gharaffa St. 5825 Doha Qatar"
+    },
+    {
+      "name": "M-VAULT 2",
+      "company": "Meeza",
+      "street": "Al Luqta St",
+      "city": "Ar-Rayyan",
+      "state": "",
+      "zip": "5825",
+      "country": "Qatar",
+      "address": "Al Luqta St 5825 Ar-Rayyan Qatar",
+      "city_coords": [
+        25.3202471,
+        51.4601797
+      ]
+    },
+    {
+      "name": "Maddinah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "Abo Bakr Al Siddiq",
+      "city": "Medina",
+      "state": "",
+      "zip": "42331",
+      "country": "Saudi Arabia",
+      "address": "Abo Bakr Al Siddiq 42331 Medina Saudi Arabia"
+    },
+    {
+      "name": "Maksab-PNU",
+      "company": "Saudi Maksab Holdings",
+      "street": "Imam Abdullah Ibn Saud Ibn Abdulaziz Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Imam Abdullah Ibn Saud Ibn Abdulaziz Rd Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Malga 1",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "9390 Al Awsat Valley St Al Olaya Riyadh 12214 2293 Al Awsat Valley St",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12214",
+      "country": "Saudi Arabia",
+      "address": "9390 Al Awsat Valley St Al Olaya Riyadh 12214 2293 Al Awsat Valley St 12214 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Manama",
+      "company": "Batelco (Bahrain Telecommunications Company)",
+      "street": "Sh Salman Hwy Manama",
+      "city": "Bahrain",
+      "state": "",
+      "zip": "",
+      "country": "Bahrain",
+      "address": "Sh Salman Hwy Manama Bahrain"
+    },
+    {
+      "name": "Mansura",
+      "company": "EgyptNetwork",
+      "street": "24 Om kolthom st.,",
+      "city": "Mansura",
+      "state": "",
+      "zip": "11471",
+      "country": "Egypt",
+      "address": "24 Om kolthom st., 11471 Mansura Egypt"
+    },
+    {
+      "name": "Marj Al-Hammam",
+      "company": "Orange",
+      "street": "Princess Taghreed Moh’d Street Amman",
+      "city": "Jordan",
+      "state": "",
+      "zip": "",
+      "country": "Jordan",
+      "address": "Princess Taghreed Moh’d Street Amman Jordan"
+    },
+    {
+      "name": "Melgha II",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Mesaimeer",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Mesaimeer",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Mesaimeer Doha Qatar",
+      "city_coords": [
+        25.2380038,
+        51.5285194
+      ]
+    },
+    {
+      "name": "Ministry of the National Guard",
+      "company": "Ministry of National Guard",
+      "street": "Makkah Al Mukarramah Branch Road, Ar Rabwah",
+      "city": "الرياض",
+      "state": "",
+      "zip": "12822",
+      "country": "Saudi Arabia",
+      "address": "Makkah Al Mukarramah Branch Road, Ar Rabwah 12822 الرياض Saudi Arabia",
+      "city_coords": [
+        24.6951638,
+        46.7317864
+      ]
+    },
+    {
+      "name": "Moro Hub Data Center",
+      "company": "Moro Hub",
+      "street": "Garn Al Sabkha St Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Garn Al Sabkha St Dubai United Arab Emirates"
+    },
+    {
+      "name": "Naitel",
+      "company": "Naitel",
+      "street": "K. Abdullah St. Aqaba",
+      "city": "Jordan",
+      "state": "",
+      "zip": "",
+      "country": "Jordan",
+      "address": "K. Abdullah St. Aqaba Jordan",
+      "city_coords": [
+        29.5479203,
+        35.0197653
+      ]
+    },
+    {
+      "name": "National Data Centre",
+      "company": "Oman Information Technology Authority (ITA)",
+      "street": "Office Complex",
+      "city": "Muscat",
+      "state": "",
+      "zip": "2010",
+      "country": "Oman",
+      "address": "Office Complex 2010 Muscat Oman"
+    },
+    {
+      "name": "NEXNOC-1",
+      "company": "NEXLINX",
+      "street": "37C1 Gulberg 3",
+      "city": "Lahore",
+      "state": "",
+      "zip": "54000",
+      "country": "Pakistan",
+      "address": "37C1 Gulberg 3 54000 Lahore Pakistan",
+      "city_coords": [
+        31.4884245,
+        74.3434994
+      ]
+    },
+    {
+      "name": "Nicosia",
+      "company": "PrimeTel PLC",
+      "street": "Limassol Avenue",
+      "city": "Nicosia",
+      "state": "",
+      "zip": "2121",
+      "country": "Cyprus",
+      "address": "Limassol Avenue 2121 Nicosia Cyprus",
+      "city_coords": [
+        34.9513006,
+        33.4187535
+      ]
+    },
+    {
+      "name": "Nicosia",
+      "company": "Confisio",
+      "street": "tbc CY-2223 Nicosia",
+      "city": "Cyprus",
+      "state": "",
+      "zip": "",
+      "country": "Cyprus",
+      "address": "tbc CY-2223 Nicosia Cyprus"
+    },
+    {
+      "name": "Oman",
+      "company": "Oman Telecommunication Company",
+      "street": "Ruwi, Telecommunication Tower Bldng (TCC). P.O.BOX:789, P.CODE:112 Oman",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Ruwi, Telecommunication Tower Bldng (TCC). P.O.BOX:789, P.CODE:112 Oman Oman"
+    },
+    {
+      "name": "Oman Data Park",
+      "company": "Oman Data Park",
+      "street": "Al Wuttayah Al Wuttayah",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Al Wuttayah Al Wuttayah Oman"
+    },
+    {
+      "name": "Orange DSL",
+      "company": "Orange",
+      "street": "Misr Helwan Agriculture Rd, Maadi Al Khabiri Al Gharbeyah Al Maadi",
+      "city": "Egypt",
+      "state": "",
+      "zip": "",
+      "country": "Egypt",
+      "address": "Misr Helwan Agriculture Rd, Maadi Al Khabiri Al Gharbeyah Al Maadi Egypt"
+    },
+    {
+      "name": "Paphos",
+      "company": "PrimeTel PLC",
+      "street": "tbc Paphos",
+      "city": "Cyprus",
+      "state": "",
+      "zip": "",
+      "country": "Cyprus",
+      "address": "tbc Paphos Cyprus"
+    },
+    {
+      "name": "Paralimni",
+      "company": "MTN",
+      "street": "Kennedy Ave 87 Paralimni",
+      "city": "Cyprus",
+      "state": "",
+      "zip": "",
+      "country": "Cyprus",
+      "address": "Kennedy Ave 87 Paralimni Cyprus",
+      "city_coords": [
+        35.0570673,
+        34.0050522
+      ]
+    },
+    {
+      "name": "Pars National Data Center",
+      "company": "Pars Online Data Center",
+      "street": "224 Khoramshahr Street",
+      "city": "Tehran",
+      "state": "",
+      "zip": "15337",
+      "country": "Iran",
+      "address": "224 Khoramshahr Street 15337 Tehran Iran"
+    },
+    {
+      "name": "Pars Online",
+      "company": "Pars Online Data Center",
+      "street": "Noavari 3, Pardis Technology Park, Bomhen",
+      "city": "Pardis",
+      "state": "",
+      "zip": "1533743546",
+      "country": "Iran",
+      "address": "Noavari 3, Pardis Technology Park, Bomhen 1533743546 Pardis Iran"
+    },
+    {
+      "name": "Peshawar",
+      "company": "The Peshawar Electric Supply Company (Pesco)",
+      "street": "166 Wapda House Shami Rd Peshawar",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "166 Wapda House Shami Rd Peshawar Pakistan"
+    },
+    {
+      "name": "Petach Tikva",
+      "company": "Bezeq International Ltd. (BI)",
+      "street": "Shacham 40 st",
+      "city": "Petach",
+      "state": "",
+      "zip": "49170",
+      "country": "Israel",
+      "address": "Shacham 40 st 49170 Petach Tikva Israel"
+    },
+    {
+      "name": "Petach Tikva 2",
+      "company": "Bezeq International Ltd. (BI)",
+      "street": "12 Bareket St",
+      "city": "Petach",
+      "state": "",
+      "zip": "49517",
+      "country": "Israel",
+      "address": "12 Bareket St 49517 Petach Tikva Israel"
+    },
+    {
+      "name": "Primary Data Center",
+      "company": "Riyad Bank",
+      "street": "7401 Wag Valley",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13521",
+      "country": "Saudi Arabia",
+      "address": "7401 Wag Valley 13521 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Public and Private Cloud",
+      "company": "CubeXS Weatherly (Pvt.) Ltd.",
+      "street": "1st Floor, Federation House, Block-5, Sharah-e-Firdousi, Main Clifton",
+      "city": "Karachi",
+      "state": "",
+      "zip": "75600",
+      "country": "Pakistan",
+      "address": "1st Floor, Federation House, Block-5, Sharah-e-Firdousi, Main Clifton 75600 Karachi Pakistan"
+    },
+    {
+      "name": "Public Pension Agency",
+      "company": "Public Pension Agency",
+      "street": "Al Washm Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12613",
+      "country": "Saudi Arabia",
+      "address": "Al Washm Street 12613 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "Detasad",
+      "street": "Imam Saud Bin Abdulaziz Road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "22135",
+      "country": "Saudi Arabia",
+      "address": "Imam Saud Bin Abdulaziz Road 22135 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "NourNet",
+      "street": "Ibn Al Haitham",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13222",
+      "country": "Saudi Arabia",
+      "address": "Ibn Al Haitham 13222 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "HostGee.Com",
+      "street": "Olaya Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "11372",
+      "country": "Saudi Arabia",
+      "address": "Olaya Street 11372 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6704006,
+        46.6984073
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "GO (Etihad Atheeb Telecom)",
+      "street": "King Abdulaziz road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12432-6799",
+      "country": "Saudi Arabia",
+      "address": "King Abdulaziz road 12432-6799 Riyadh Saudi Arabia",
+      "city_coords": [
+        25.890169,
+        45.3543399
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "Nashirnet National Computer Systems Co.",
+      "street": "Olaya Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "11372",
+      "country": "Saudi Arabia",
+      "address": "Olaya Street 11372 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6704006,
+        46.6984073
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Daba street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "8732-11492",
+      "country": "Saudi Arabia",
+      "address": "Daba street 8732-11492 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "Cisco",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh 1",
+      "company": "Saudi Telecom Company (STC)",
+      "street": "Imam Saud Bin Abdulaziz Bin Mohammed Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Imam Saud Bin Abdulaziz Bin Mohammed Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.8132204,
+        46.7018784
+      ]
+    },
+    {
+      "name": "Riyahd",
+      "company": "Gateway Gulf",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "3199",
+      "country": "Saudi Arabia",
+      "address": "tbc 3199 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6941861,
+        46.6793722
+      ]
+    },
+    {
+      "name": "Rosh Haain",
+      "company": "Tux Internet",
+      "street": "Hamelacha 15",
+      "city": "Rosh",
+      "state": "",
+      "zip": "48091",
+      "country": "Israel",
+      "address": "Hamelacha 15 48091 Rosh Haain Israel"
+    },
+    {
+      "name": "Royal Saudi Air Force",
+      "company": "Saudi Royal Air Force",
+      "street": "Al Kharj Road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "14334",
+      "country": "Saudi Arabia",
+      "address": "Al Kharj Road 14334 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.538131,
+        46.9348223
+      ]
+    },
+    {
+      "name": "SABB",
+      "company": "Saudi British Bank",
+      "street": "6685 الامير عبدالعزيز بن مساعد بن جلوي",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12628",
+      "country": "Saudi Arabia",
+      "address": "6685 الامير عبدالعزيز بن مساعد بن جلوي 12628 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6555128,
+        46.7114581
+      ]
+    },
+    {
+      "name": "SAIB DR Al-Kharj",
+      "company": "The Saudi Investment Bank",
+      "street": "King Fahd Rd Al",
+      "city": "Kharj",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Al Kharj Saudi Arabia"
+    },
+    {
+      "name": "SAMA Data Center at KAFD",
+      "company": "Saudi Arabian Monetary Authority",
+      "street": "King Fahd Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6145776,
+        46.7068844
+      ]
+    },
+    {
+      "name": "Saudi Basic Industries Corp.",
+      "company": "Saudi Basic Industries Corp. (SABIC)",
+      "street": "9393 Al Lulu Rd",
+      "city": "Al",
+      "state": "",
+      "zip": "35811",
+      "country": "Saudi Arabia",
+      "address": "9393 Al Lulu Rd 35811 Al Jubail Saudi Arabia"
+    },
+    {
+      "name": "Shabakah Net",
+      "company": "Shabakah Integrated Technology (Shabakah Net)",
+      "street": "Al Wurud, Olaya Street, Andalus Mall",
+      "city": "الرياض",
+      "state": "",
+      "zip": "12215",
+      "country": "Saudi Arabia",
+      "address": "Al Wurud, Olaya Street, Andalus Mall 12215 الرياض Saudi Arabia"
+    },
+    {
+      "name": "SIMAH-DC",
+      "company": "Simah",
+      "street": "Jazirah Zinjabar",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13241",
+      "country": "Saudi Arabia",
+      "address": "Jazirah Zinjabar 13241 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Smart Village Area 2",
+      "company": "Etisalat",
+      "street": "26 Alexandria Desert Rd",
+      "city": "Al",
+      "state": "",
+      "zip": "12577",
+      "country": "Egypt",
+      "address": "26 Alexandria Desert Rd 12577 Al Omraneyah Egypt"
+    },
+    {
+      "name": "Tadawul Group",
+      "company": "Tadawul Group",
+      "street": "King Fahd Branch Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12211",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Branch Rd 12211 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Tehran",
+      "company": "AtenaHost",
+      "street": "Kavoosi Far Shahid Beheshti",
+      "city": "Iran",
+      "state": "",
+      "zip": "",
+      "country": "Iran",
+      "address": "Kavoosi Far Shahid Beheshti Iran"
+    },
+    {
+      "name": "Tehran",
+      "company": "AFRANET",
+      "street": "No 12 - Hoveyeze street - Beheshti Ave",
+      "city": "Tehran",
+      "state": "",
+      "zip": "1959836111",
+      "country": "Iran",
+      "address": "No 12 - Hoveyeze street - Beheshti Ave 1959836111 Tehran Iran"
+    },
+    {
+      "name": "Tel Aviv",
+      "company": "CenterServ",
+      "street": "Berkovitch St 4 Tel Aviv-Yafo",
+      "city": "Israel",
+      "state": "",
+      "zip": "",
+      "country": "Israel",
+      "address": "Berkovitch St 4 Tel Aviv-Yafo Israel"
+    },
+    {
+      "name": "Tel Aviv",
+      "company": "Bezeq International Ltd. (BI)",
+      "street": "Yated 7 St",
+      "city": "Tel",
+      "state": "",
+      "zip": "68169",
+      "country": "Israel",
+      "address": "Yated 7 St 68169 Tel Aviv Israel"
+    },
+    {
+      "name": "Tripoli",
+      "company": "Libya Telecom and Technology",
+      "street": "Soug Aljouma",
+      "city": "Tripoli",
+      "state": "",
+      "zip": "91612",
+      "country": "Libya",
+      "address": "Soug Aljouma 91612 Tripoli Libya"
+    },
+    {
+      "name": "University of Lahore",
+      "company": "University of Lahore",
+      "street": "1 - KM Defence Road Lahore",
+      "city": "Pakistan",
+      "state": "",
+      "zip": "",
+      "country": "Pakistan",
+      "address": "1 - KM Defence Road Lahore Pakistan",
+      "city_coords": [
+        31.4989024,
+        74.425247
+      ]
+    },
+    {
+      "name": "Vision DC-1",
+      "company": "Vision Telecom Private Limited",
+      "street": "Ibrahim Trade Center, Aibak Block New Garden Town",
+      "city": "Lahore",
+      "state": "",
+      "zip": "4000",
+      "country": "Pakistan",
+      "address": "Ibrahim Trade Center, Aibak Block New Garden Town 4000 Lahore Pakistan"
+    },
+    {
+      "name": "VTEL Jordan",
+      "company": "VTEL Holdings",
+      "street": "Wadi Saqrah, Arar Street",
+      "city": "Amman",
+      "state": "",
+      "zip": "11181",
+      "country": "Jordan",
+      "address": "Wadi Saqrah, Arar Street 11181 Amman Jordan"
+    },
+    {
+      "name": "Zajil Telecom",
+      "company": "Zajil Telecom",
+      "street": "MOC Shuwaikh Exchange, Kaifan Kuwait",
+      "city": "City",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "MOC Shuwaikh Exchange, Kaifan Kuwait City Kuwait"
+    },
+    {
+      "name": "Linkdata.com",
+      "company": "Linkdata.com",
+      "city": "",
+      "state": "",
+      "country": "Iraq",
+      "address": "",
+      "city_coords": [
+        "36.1877383",
+        "44.0106983"
+      ]
+    },
+    {
+      "name": "LS TIP03MDC",
+      "company": "Libyan Spider",
+      "city": "",
+      "state": "",
+      "country": "Libya",
+      "address": "",
+      "city_coords": [
+        "32.869987253403565",
+        "13.19884167814867"
+      ]
+    },
+    {
+      "name": "National Commercial Bank",
+      "company": "National Commercial Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "22.4486944",
+        "39.133554900000036"
+      ]
+    },
+    {
+      "name": "Unayzah",
+      "company": "Etihad Etisalat (Mobily)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "26.1259733",
+        "43.983971"
+      ]
+    },
+    {
+      "name": "King Faisal University",
+      "company": "King Faisal University",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "25.3405347",
+        "49.59991100000002"
+      ]
+    },
+    {
+      "name": "Yasref IT Main Datacenter",
+      "company": "Yasref Company Ltd.",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "23.9969888",
+        "38.19393450000007"
+      ]
+    },
+    {
+      "name": "Disaster Recovery Datacenter",
+      "company": "Banque Saudi Fransi",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "21.2854067",
+        "39.23755070000004"
+      ]
+    },
+    {
+      "name": "National Center for Digital Certification",
+      "company": "Ministry of Communications and Information Technology",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7480328",
+        "46.68753719999995"
+      ]
+    },
+    {
+      "name": "Al Rajhi Bank",
+      "company": "Al Rajhi Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7349947",
+        "46.664694199999985"
+      ]
+    },
+    {
+      "name": "Riyadh Municipality",
+      "company": "Riyadh Municipality",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.6286689",
+        "46.71048410000003"
+      ]
+    },
+    {
+      "name": "Disaster Recovery",
+      "company": "Alinma Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7066911",
+        "46.67524070000002"
+      ]
+    },
+    {
+      "name": "Information Technology and Communications Complex Project",
+      "company": "Al Ra’idah Investment Company",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.741072374661762",
+        "46.63584837141116"
+      ]
+    },
+    {
+      "name": "Riyadh 2",
+      "company": "Saudi Telecom Company (STC)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7135517",
+        "46.67529569999999"
+      ]
+    },
+    {
+      "name": "DC Vault",
+      "company": "DC Vault",
+      "city": "",
+      "state": "",
+      "country": "United Arab Emirates",
+      "address": "",
+      "city_coords": [
+        "24.191144",
+        "54.47055499999999"
+      ]
+    },
+    {
+      "name": "Dubai 1",
+      "company": "Zenlayer",
+      "city": "",
+      "state": "",
+      "country": "United Arab Emirates",
+      "address": "",
+      "city_coords": [
+        "25.0282605",
+        "55.1856957"
+      ]
+    },
+    {
+      "name": "M-VAULT 3",
+      "company": "Meeza",
+      "city": "",
+      "state": "",
+      "country": "Qatar",
+      "address": "",
+      "city_coords": [
+        "25.5510651",
+        "51.43938000000003"
+      ]
+    },
+    {
+      "name": "Latsia",
+      "company": "MTN",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "",
+      "city_coords": [
+        "35.0943766",
+        "33.37666690000003"
+      ]
+    },
+    {
+      "name": "Public Cloud Data Centre",
+      "company": "SAP",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7135517",
+        "46.67529569999999"
+      ]
+    },
+    {
+      "name": "PDO Telecom",
+      "company": "Petroleum Development Oman (PDO)",
+      "city": "",
+      "state": "",
+      "country": "Oman",
+      "address": "",
+      "city_coords": [
+        "23.6238638",
+        "58.51829049999992"
+      ]
+    },
+    {
+      "name": "Sulay",
+      "company": "Etihad Etisalat (Mobily)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.6615689",
+        "46.83602300000007"
+      ]
+    },
+    {
+      "name": "Qualitynet Data Center",
+      "company": "Qualitynet",
+      "city": "",
+      "state": "",
+      "country": "Kuwait",
+      "address": "",
+      "city_coords": [
+        "29.375915",
+        "47.993056000000024"
+      ]
+    },
+    {
+      "name": "AWS BAH Askar Road 5156",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.07105508386889",
+        "50.61172573337402"
+      ]
+    },
+    {
+      "name": "AWS BAH 1440 Road 1429",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.2057094",
+        "50.4831545"
+      ]
+    },
+    {
+      "name": "AWS BAH Zallaq",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.04336368350832",
+        "50.532455543188476"
+      ]
+    },
+    {
+      "name": "NSCY04 Larnaca Data Center",
+      "company": "Netshop ISP",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Larnaca, Cyprus"
+    },
+    {
+      "name": "Stellar Cyprus",
+      "company": "Stellar Professional Communication Systems",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Roupel 3, Nicosia 1105, Cyprus"
+    },
+    {
+      "name": "Limassol Data Center",
+      "company": "CenterServ",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Archbishop Makarios Street, Anogyra, Cyprus"
+    },
+    {
+      "name": "Nicosia Data Center",
+      "company": "CenterServ",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Grivas Digenis Mausoleum, Limassol, Cyprus"
+    },
+    {
+      "name": "NSCY03 Paphos Data Center",
+      "company": "Netshop ISP",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Anatoliko Industrial Zone, Agia Varvara, Paphos, Cyprus"
+    },
+    {
+      "name": "NSCY02 Nicosia Data Center",
+      "company": "Netshop ISP",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Nicosia - Kokkinotrimithia 2054, Kokkinotrimithia, Cyprus"
+    },
+    {
+      "name": "NSCY01 Nicosia Data Center",
+      "company": "Netshop ISP",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Nicosia - Kokkinotrimithia 2408, Kokkinotrimithia, Cyprus"
+    },
+    {
+      "name": "Cyta Data Center Nicosia",
+      "company": "Cyta (Cyprus Telecommunications Authority)",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Λευκωσία, Nicosia, Cyprus"
+    },
+    {
+      "name": "Cyta Data Center Limassol",
+      "company": "Cyta (Cyprus Telecommunications Authority)",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Leoforos Amathountos, 4531 Μουτταγιάκα, Cyprus"
+    },
+    {
+      "name": "LCA1 Data Center",
+      "company": "Cyta (Cyprus Telecommunications Authority)",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "7100, Αραδίππου, Larnaca, Cyprus"
+    },
+    {
+      "name": "PrimeTel Nicosia Data Center",
+      "company": "PrimeTel",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Λευκωσία, Nicosia, Cyprus"
+    },
+    {
+      "name": "PrimeTel Limassol",
+      "company": "PrimeTel",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Λεμεσός, Limassol, Cyprus"
+    },
+    {
+      "name": "PrimeTel Paphos Data Center",
+      "company": "PrimeTel",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Πάφος, Paphos, Cyprus"
+    },
+    {
+      "name": "PrimeTel Landing Station",
+      "company": "PrimeTel",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Yeroskipos, Γεροσκήπου, Paphos, Cyprus"
+    },
+    {
+      "name": "Epic Data Center",
+      "company": "Epic Ltd",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "Λευκωσία, Nicosia, Cyprus"
+    },
+    {
+      "name": "Cablenet Egkomi / Nicosia Data Center",
+      "company": "Cablenet Communication Systems",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "49 Αγίου Νικολάου, 2408 Έγκωμη, Cyprus"
+    },
+    {
+      "name": "CL8 (Cyprus IT Services)",
+      "company": "CL8 (Cyprus IT Services)",
+      "city": "",
+      "state": "",
+      "country": "Cyprus",
+      "address": "1 Falea, 4101 Άγιος Αθανάσιος, Cyprus"
+    },
+    {
+      "name": "Israel Central il-jerusalem-1",
+      "company": "Oracle",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Jerusalem, Israel"
+    },
+    {
+      "name": "MDC-IL1 Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "HaMa'ayan Street, Modi'in-Maccabim-Re'ut, Israel"
+    },
+    {
+      "name": "ISR1 Israel Data Center",
+      "company": "Serverfarm",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ha-Sadna'ot St 8, Herzliya, Israel"
+    },
+    {
+      "name": "Israel Data Center",
+      "company": "Kyndryl",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Em Hamoshavot Road 94, Petah Tikva, Israel"
+    },
+    {
+      "name": "Petach Tikva PT1",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Petach Tikva, Israel"
+    },
+    {
+      "name": "TLV01 Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Etsel St 53, Rishon LeTsiyon, Israel"
+    },
+    {
+      "name": "MDCIL-2 Masmia Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Industrial Zone, Tel Aviv-Yafo, Israel"
+    },
+    {
+      "name": "TLV03 Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Etsel St 53, Rishon LeTsiyon, Israel"
+    },
+    {
+      "name": "MDCIL-4 Beit Shemesh Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Beit Shemesh, Israel"
+    },
+    {
+      "name": "Hamelacha 16 St.",
+      "company": "Adgar Data Center",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "HaMelacha Street 16, Rosh Haayin, Israel"
+    },
+    {
+      "name": "Tel Aviv Data Center",
+      "company": "TI Sparkle",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Yehuda Burla Street 46, Tel Aviv-Yafo, Israel"
+    },
+    {
+      "name": "Bareket Data Center",
+      "company": "Bezeq International (BI)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Bareket Street 12, Petah Tikva, Israel"
+    },
+    {
+      "name": "Adgar 360",
+      "company": "Adgar Data Center",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "HaShlosha Street 2, Tel Aviv, Israel"
+    },
+    {
+      "name": "TLV02 Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Etsel St 53, Rishon LeTsiyon, Israel"
+    },
+    {
+      "name": "TLV04 Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Etsel St 53, Rishon LeTsiyon, Israel"
+    },
+    {
+      "name": "MDCIL-3 MATAM Haifa Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Matam, Haifa, Israel"
+    },
+    {
+      "name": "Herzliya - Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ha-Sadna'ot Street 10, Herzliya, Israel"
+    },
+    {
+      "name": "MDCIL-5 LOD Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Industrial Zone Center, Lod, Israel"
+    },
+    {
+      "name": "TLV Data Center",
+      "company": "Bezeq International (BI)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "HaYated Street 7, Tel Aviv-Yafo, Israel"
+    },
+    {
+      "name": "Petach Tikva PT2",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Petah Tikva, Israel"
+    },
+    {
+      "name": "MDCIL-6 Neve Yamin Data Center",
+      "company": "Mega Data Centers (Mega DC)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Industrial Zone, Tel Aviv, Israel"
+    },
+    {
+      "name": "Rishon LeTsiyon - Tel Aviv Data Center",
+      "company": "EdgeConnex",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Etsel St 53, Rishon LeTsiyon, Israel"
+    },
+    {
+      "name": "Adgar Data Center Petah Tikva",
+      "company": "Adgar Data Center",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ef'al Street 35, Petah Tikva, Israel"
+    },
+    {
+      "name": "Tirat Hacarmel TH2 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "MedOne Data Center, Carmelim Street, Tirat Carmel, Israel"
+    },
+    {
+      "name": "TLV1 Tel Aviv Data Center",
+      "company": "Zenlayer",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "HaMelacha Street 16, Rosh Haayin, Israel"
+    },
+    {
+      "name": "Tel Aviv 5 Data Center",
+      "company": "VPSserver",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tel Aviv, Israel"
+    },
+    {
+      "name": "Tirat Hacarmel TH3 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tirat Carmel, Israel"
+    },
+    {
+      "name": "Sivim Data Center",
+      "company": "Bezeq International (BI)",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ha-Sivim Street 18, Petaj Tikva, Israel"
+    },
+    {
+      "name": "Tirat Hacarmel TH1 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tirat Carmel, Israel"
+    },
+    {
+      "name": "Kfar Yona KF2 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Kfar Yona, Israel"
+    },
+    {
+      "name": "Tel Aviv 1 Data Center",
+      "company": "VPSserver",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tel Aviv, Israel"
+    },
+    {
+      "name": "Tel Aviv 2 Data Center",
+      "company": "VPSserver",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tel Aviv, Israel"
+    },
+    {
+      "name": "Alpha 2 Data Center",
+      "company": "NED INC.",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ben Tsvi Street 16, Kiryat Tiv'on, Israel"
+    },
+    {
+      "name": "Alpha 1 Data Center",
+      "company": "NED INC.",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Ben Tsvi Street 16, Kiryat Tiv'on, Israel"
+    },
+    {
+      "name": "Tel Aviv 3 Data Center",
+      "company": "VPSserver",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tel Aviv, Israel"
+    },
+    {
+      "name": "Haifa Data Center",
+      "company": "CenterServ",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Haifa Port, Haifa, Israel"
+    },
+    {
+      "name": "Tirat Hacarmel TH4 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tirat Carmel, Israel"
+    },
+    {
+      "name": "Dimona 01 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Dimona, Israel"
+    },
+    {
+      "name": "Tel Aviv 4 Data Center",
+      "company": "VPSserver",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Tel Aviv, Israel"
+    },
+    {
+      "name": "Dimona 02 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Dimona, Israel"
+    },
+    {
+      "name": "Kfar Yona KF1 Data Center",
+      "company": "MedOne",
+      "city": "",
+      "state": "",
+      "country": "Israel",
+      "address": "Kfar Yona, Israel"
+    }
+  ],
+  "gcc": [
+    {
+      "name": "National Bank of Kuwait",
+      "company": "National Bank of Kuwait (NBK)",
+      "street": "Block 1، Fifth Ring road",
+      "city": "Farwaniya",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "Block 1، Fifth Ring road Farwaniya Kuwait",
+      "city_coords": [
+        29.2971097,
+        47.9119937
+      ]
+    },
+    {
+      "name": "Qatar National Bank",
+      "company": "Qatar National Bank (QNB)",
+      "street": "Arab League St",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Arab League St Doha Qatar"
+    },
+    {
+      "name": "Abu Dhabi",
+      "company": "CenterServ",
+      "street": "Airport Road, Rashid Al Maktoum Street 2 Abu Dhabi United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Airport Road, Rashid Al Maktoum Street 2 Abu Dhabi United Arab Emirates"
+    },
+    {
+      "name": "Abu Dhabi",
+      "company": "Etisalat",
+      "street": "tbc Abu Dhabi United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "tbc Abu Dhabi United Arab Emirates"
+    },
+    {
+      "name": "Al Samoud",
+      "company": "Kuwait National Guard",
+      "street": "Al-Asima Governorate Kuwait",
+      "city": "City",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "Al-Asima Governorate Kuwait City Kuwait",
+      "city_coords": [
+        29.3733968,
+        47.9674446
+      ]
+    },
+    {
+      "name": "Al-Waab",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Al Waab St PO Box 217",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Al Waab St PO Box 217 Doha Qatar"
+    },
+    {
+      "name": "Buraidah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "tbc",
+      "city": "Buraidah",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Buraidah Saudi Arabia"
+    },
+    {
+      "name": "Cloud4C",
+      "company": "Cloud4C",
+      "street": "G 05 , Ground floor, Building no 11, Dubai Internet city",
+      "city": "Dubai",
+      "state": "",
+      "zip": "500471",
+      "country": "United Arab Emirates",
+      "address": "G 05 , Ground floor, Building no 11, Dubai Internet city 500471 Dubai United Arab Emirates"
+    },
+    {
+      "name": "Corporate Data Center",
+      "company": "Saudi Aramco",
+      "street": "Midra Access Rd",
+      "city": "Dhahran",
+      "state": "",
+      "zip": "34481",
+      "country": "Saudi Arabia",
+      "address": "Midra Access Rd 34481 Dhahran Saudi Arabia"
+    },
+    {
+      "name": "Dammam",
+      "company": "CenterServ",
+      "street": "King Fahd Road",
+      "city": "Dammam",
+      "state": "",
+      "zip": "32232",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Road 32232 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4017427,
+        50.1431493
+      ]
+    },
+    {
+      "name": "Dammam",
+      "company": "NourNet",
+      "street": "King faisal Street",
+      "city": "Dammam",
+      "state": "",
+      "zip": "9531",
+      "country": "Saudi Arabia",
+      "address": "King faisal Street 9531 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4431851,
+        50.1078622
+      ]
+    },
+    {
+      "name": "Doha",
+      "company": "CenterServ",
+      "street": "Bank Street، Swords Signal",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Bank Street، Swords Signal Doha Qatar"
+    },
+    {
+      "name": "Dubai",
+      "company": "Equinix",
+      "street": "International Media Production Zone (IMPZ), Units F90, F91, F92, Sheikh Mohammed Bin Zayed Road Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "International Media Production Zone (IMPZ), Units F90, F91, F92, Sheikh Mohammed Bin Zayed Road Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai",
+      "company": "Datamena",
+      "street": "Warehouese F90-F92, International Media Production Zone Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Warehouese F90-F92, International Media Production Zone Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai",
+      "company": "Penta Hosting",
+      "street": "Dubai International Financial Center, Gate Building, ER4 Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Dubai International Financial Center, Gate Building, ER4 Dubai United Arab Emirates"
+    },
+    {
+      "name": "Dubai 1 & 2",
+      "company": "Gulf Data Hub (GDH)",
+      "street": "Dubai Silicon Oasis Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Dubai Silicon Oasis Dubai United Arab Emirates",
+      "city_coords": [
+        25.1205792,
+        55.3886553
+      ]
+    },
+    {
+      "name": "Dubai Silicon Oasis Data Center",
+      "company": "Dubai Silicon Oasis Authority",
+      "street": "Nad Al Sheba",
+      "city": "Dubai",
+      "state": "",
+      "zip": "6009",
+      "country": "United Arab Emirates",
+      "address": "Nad Al Sheba 6009 Dubai United Arab Emirates",
+      "city_coords": [
+        25.151424,
+        55.3753271
+      ]
+    },
+    {
+      "name": "Duqm Data Centre SAOC",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Computer Room Level-2, Samail Industrial Estate, Samail",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Computer Room Level-2, Samail Industrial Estate, Samail Oman"
+    },
+    {
+      "name": "eHosting Datafort",
+      "company": "eHosting Datafort",
+      "street": "DIC Building 4, 3rd Floor Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "DIC Building 4, 3rd Floor Dubai United Arab Emirates"
+    },
+    {
+      "name": "Federal Network (FedNet)",
+      "company": "UAE Telecommunications Regulatory Authority (TRA)",
+      "street": "Al Salam St Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Al Salam St Dubai United Arab Emirates",
+      "city_coords": [
+        25.203685,
+        55.2637834
+      ]
+    },
+    {
+      "name": "Gateway Gulf (KSA)",
+      "company": "Gateway Gulf",
+      "street": "Al Khobar, P.O. Box 180",
+      "city": "Damman",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Al Khobar, P.O. Box 180 Damman Saudi Arabia"
+    },
+    {
+      "name": "Gateway Gulf DC",
+      "company": "Gateway Gulf",
+      "street": "Complex #312, Property #88000071, Road 1202",
+      "city": "Manama",
+      "state": "",
+      "zip": "18029",
+      "country": "Bahrain",
+      "address": "Complex #312, Property #88000071, Road 1202 18029 Manama Bahrain"
+    },
+    {
+      "name": "Hail",
+      "company": "CenterServ",
+      "street": "Ash Shaikh Abdul Aziz Ibn Baz Road, Near STC",
+      "city": "حائل",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Ash Shaikh Abdul Aziz Ibn Baz Road, Near STC حائل Saudi Arabia"
+    },
+    {
+      "name": "Imam Abdulrahman Bin Faisal University",
+      "company": "Imam Abdulrahman Bin Faisal University",
+      "street": "2835 King Faisal Road",
+      "city": "Dammam",
+      "state": "",
+      "zip": "34212",
+      "country": "Saudi Arabia",
+      "address": "2835 King Faisal Road 34212 Dammam Saudi Arabia",
+      "city_coords": [
+        26.4128613,
+        50.174052
+      ]
+    },
+    {
+      "name": "Injazat Data Center",
+      "company": "Injazat Data Systems",
+      "street": "8230 Mohammed Bin Zayed City Abu Dhabi United Arab Emirates",
+      "city": "Mohammed",
+      "state": "",
+      "zip": "8230",
+      "country": "United Arab Emirates",
+      "address": "8230 Mohammed Bin Zayed City Abu Dhabi United Arab Emirates",
+      "city_coords": [
+        24.3339589,
+        54.5535564
+      ]
+    },
+    {
+      "name": "Jeddah",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Corneesh street 8732/",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "1149",
+      "country": "Saudi Arabia",
+      "address": "Corneesh street 8732/ 1149 Jeddah Saudi Arabia"
+    },
+    {
+      "name": "Jeddah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "Al Faiha District",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Al Faiha District Jeddah Saudi Arabia",
+      "city_coords": [
+        21.4904847,
+        39.2307769
+      ]
+    },
+    {
+      "name": "Jeddah",
+      "company": "HostGee.Com",
+      "street": "Abo Bakr Al Sedeeq street, Saudi Business Center, 9th Floor, Office # 909",
+      "city": "Jeddah",
+      "state": "",
+      "zip": "22135",
+      "country": "Saudi Arabia",
+      "address": "Abo Bakr Al Sedeeq street, Saudi Business Center, 9th Floor, Office # 909 22135 Jeddah Saudi Arabia"
+    },
+    {
+      "name": "Jubail",
+      "company": "CenterServ",
+      "street": "Al - Shati",
+      "city": "Al",
+      "state": "",
+      "zip": "35811",
+      "country": "Saudi Arabia",
+      "address": "Al - Shati 35811 Al Jubail Saudi Arabia"
+    },
+    {
+      "name": "Khobar CLS",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Corneesh road",
+      "city": "Al",
+      "state": "",
+      "zip": "31952",
+      "country": "Saudi Arabia",
+      "address": "Corneesh road 31952 Al Khobar Saudi Arabia"
+    },
+    {
+      "name": "King Abdullah Financial District",
+      "company": "Al Ra’idah Investment Company",
+      "street": "King Fahd Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6145776,
+        46.7068844
+      ]
+    },
+    {
+      "name": "M-VAULT 1",
+      "company": "Meeza",
+      "street": "Qatar Science & Technology Park, Al Gharaffa St.",
+      "city": "Doha",
+      "state": "",
+      "zip": "5825",
+      "country": "Qatar",
+      "address": "Qatar Science & Technology Park, Al Gharaffa St. 5825 Doha Qatar"
+    },
+    {
+      "name": "M-VAULT 2",
+      "company": "Meeza",
+      "street": "Al Luqta St",
+      "city": "Ar-Rayyan",
+      "state": "",
+      "zip": "5825",
+      "country": "Qatar",
+      "address": "Al Luqta St 5825 Ar-Rayyan Qatar",
+      "city_coords": [
+        25.3202471,
+        51.4601797
+      ]
+    },
+    {
+      "name": "Maddinah",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "Abo Bakr Al Siddiq",
+      "city": "Medina",
+      "state": "",
+      "zip": "42331",
+      "country": "Saudi Arabia",
+      "address": "Abo Bakr Al Siddiq 42331 Medina Saudi Arabia"
+    },
+    {
+      "name": "Maksab-PNU",
+      "company": "Saudi Maksab Holdings",
+      "street": "Imam Abdullah Ibn Saud Ibn Abdulaziz Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Imam Abdullah Ibn Saud Ibn Abdulaziz Rd Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Malga 1",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "9390 Al Awsat Valley St Al Olaya Riyadh 12214 2293 Al Awsat Valley St",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12214",
+      "country": "Saudi Arabia",
+      "address": "9390 Al Awsat Valley St Al Olaya Riyadh 12214 2293 Al Awsat Valley St 12214 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Manama",
+      "company": "Batelco (Bahrain Telecommunications Company)",
+      "street": "Sh Salman Hwy Manama",
+      "city": "Bahrain",
+      "state": "",
+      "zip": "",
+      "country": "Bahrain",
+      "address": "Sh Salman Hwy Manama Bahrain"
+    },
+    {
+      "name": "Melgha II",
+      "company": "Etihad Etisalat (Mobily)",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Mesaimeer",
+      "company": "Ooredoo Global Services (OGS)",
+      "street": "Mesaimeer",
+      "city": "Doha",
+      "state": "",
+      "zip": "",
+      "country": "Qatar",
+      "address": "Mesaimeer Doha Qatar",
+      "city_coords": [
+        25.2380038,
+        51.5285194
+      ]
+    },
+    {
+      "name": "Ministry of the National Guard",
+      "company": "Ministry of National Guard",
+      "street": "Makkah Al Mukarramah Branch Road, Ar Rabwah",
+      "city": "الرياض",
+      "state": "",
+      "zip": "12822",
+      "country": "Saudi Arabia",
+      "address": "Makkah Al Mukarramah Branch Road, Ar Rabwah 12822 الرياض Saudi Arabia",
+      "city_coords": [
+        24.6951638,
+        46.7317864
+      ]
+    },
+    {
+      "name": "Moro Hub Data Center",
+      "company": "Moro Hub",
+      "street": "Garn Al Sabkha St Dubai United Arab",
+      "city": "Emirates",
+      "state": "",
+      "zip": "",
+      "country": "United Arab Emirates",
+      "address": "Garn Al Sabkha St Dubai United Arab Emirates"
+    },
+    {
+      "name": "National Data Centre",
+      "company": "Oman Information Technology Authority (ITA)",
+      "street": "Office Complex",
+      "city": "Muscat",
+      "state": "",
+      "zip": "2010",
+      "country": "Oman",
+      "address": "Office Complex 2010 Muscat Oman"
+    },
+    {
+      "name": "Oman",
+      "company": "Oman Telecommunication Company",
+      "street": "Ruwi, Telecommunication Tower Bldng (TCC). P.O.BOX:789, P.CODE:112 Oman",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Ruwi, Telecommunication Tower Bldng (TCC). P.O.BOX:789, P.CODE:112 Oman Oman"
+    },
+    {
+      "name": "Oman Data Park",
+      "company": "Oman Data Park",
+      "street": "Al Wuttayah Al Wuttayah",
+      "city": "Oman",
+      "state": "",
+      "zip": "",
+      "country": "Oman",
+      "address": "Al Wuttayah Al Wuttayah Oman"
+    },
+    {
+      "name": "Primary Data Center",
+      "company": "Riyad Bank",
+      "street": "7401 Wag Valley",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13521",
+      "country": "Saudi Arabia",
+      "address": "7401 Wag Valley 13521 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Public Pension Agency",
+      "company": "Public Pension Agency",
+      "street": "Al Washm Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12613",
+      "country": "Saudi Arabia",
+      "address": "Al Washm Street 12613 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "Detasad",
+      "street": "Imam Saud Bin Abdulaziz Road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "22135",
+      "country": "Saudi Arabia",
+      "address": "Imam Saud Bin Abdulaziz Road 22135 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "NourNet",
+      "street": "Ibn Al Haitham",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13222",
+      "country": "Saudi Arabia",
+      "address": "Ibn Al Haitham 13222 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "HostGee.Com",
+      "street": "Olaya Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "11372",
+      "country": "Saudi Arabia",
+      "address": "Olaya Street 11372 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6704006,
+        46.6984073
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "GO (Etihad Atheeb Telecom)",
+      "street": "King Abdulaziz road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12432-6799",
+      "country": "Saudi Arabia",
+      "address": "King Abdulaziz road 12432-6799 Riyadh Saudi Arabia",
+      "city_coords": [
+        25.890169,
+        45.3543399
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "Nashirnet National Computer Systems Co.",
+      "street": "Olaya Street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "11372",
+      "country": "Saudi Arabia",
+      "address": "Olaya Street 11372 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6704006,
+        46.6984073
+      ]
+    },
+    {
+      "name": "Riyadh",
+      "company": "Integrated Telecom Company Ltd.",
+      "street": "Daba street",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "8732-11492",
+      "country": "Saudi Arabia",
+      "address": "Daba street 8732-11492 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh",
+      "company": "Cisco",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "tbc Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Riyadh 1",
+      "company": "Saudi Telecom Company (STC)",
+      "street": "Imam Saud Bin Abdulaziz Bin Mohammed Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "Imam Saud Bin Abdulaziz Bin Mohammed Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.8132204,
+        46.7018784
+      ]
+    },
+    {
+      "name": "Riyahd",
+      "company": "Gateway Gulf",
+      "street": "tbc",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "3199",
+      "country": "Saudi Arabia",
+      "address": "tbc 3199 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6941861,
+        46.6793722
+      ]
+    },
+    {
+      "name": "Royal Saudi Air Force",
+      "company": "Saudi Royal Air Force",
+      "street": "Al Kharj Road",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "14334",
+      "country": "Saudi Arabia",
+      "address": "Al Kharj Road 14334 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.538131,
+        46.9348223
+      ]
+    },
+    {
+      "name": "SABB",
+      "company": "Saudi British Bank",
+      "street": "6685 الامير عبدالعزيز بن مساعد بن جلوي",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12628",
+      "country": "Saudi Arabia",
+      "address": "6685 الامير عبدالعزيز بن مساعد بن جلوي 12628 Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6555128,
+        46.7114581
+      ]
+    },
+    {
+      "name": "SAIB DR Al-Kharj",
+      "company": "The Saudi Investment Bank",
+      "street": "King Fahd Rd Al",
+      "city": "Kharj",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Al Kharj Saudi Arabia"
+    },
+    {
+      "name": "SAMA Data Center at KAFD",
+      "company": "Saudi Arabian Monetary Authority",
+      "street": "King Fahd Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Rd Riyadh Saudi Arabia",
+      "city_coords": [
+        24.6145776,
+        46.7068844
+      ]
+    },
+    {
+      "name": "Saudi Basic Industries Corp.",
+      "company": "Saudi Basic Industries Corp. (SABIC)",
+      "street": "9393 Al Lulu Rd",
+      "city": "Al",
+      "state": "",
+      "zip": "35811",
+      "country": "Saudi Arabia",
+      "address": "9393 Al Lulu Rd 35811 Al Jubail Saudi Arabia"
+    },
+    {
+      "name": "Shabakah Net",
+      "company": "Shabakah Integrated Technology (Shabakah Net)",
+      "street": "Al Wurud, Olaya Street, Andalus Mall",
+      "city": "الرياض",
+      "state": "",
+      "zip": "12215",
+      "country": "Saudi Arabia",
+      "address": "Al Wurud, Olaya Street, Andalus Mall 12215 الرياض Saudi Arabia"
+    },
+    {
+      "name": "SIMAH-DC",
+      "company": "Simah",
+      "street": "Jazirah Zinjabar",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "13241",
+      "country": "Saudi Arabia",
+      "address": "Jazirah Zinjabar 13241 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Tadawul Group",
+      "company": "Tadawul Group",
+      "street": "King Fahd Branch Rd",
+      "city": "Riyadh",
+      "state": "",
+      "zip": "12211",
+      "country": "Saudi Arabia",
+      "address": "King Fahd Branch Rd 12211 Riyadh Saudi Arabia"
+    },
+    {
+      "name": "Zajil Telecom",
+      "company": "Zajil Telecom",
+      "street": "MOC Shuwaikh Exchange, Kaifan Kuwait",
+      "city": "City",
+      "state": "",
+      "zip": "",
+      "country": "Kuwait",
+      "address": "MOC Shuwaikh Exchange, Kaifan Kuwait City Kuwait"
+    },
+    {
+      "name": "National Commercial Bank",
+      "company": "National Commercial Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "22.4486944",
+        "39.133554900000036"
+      ]
+    },
+    {
+      "name": "Unayzah",
+      "company": "Etihad Etisalat (Mobily)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "26.1259733",
+        "43.983971"
+      ]
+    },
+    {
+      "name": "King Faisal University",
+      "company": "King Faisal University",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "25.3405347",
+        "49.59991100000002"
+      ]
+    },
+    {
+      "name": "Yasref IT Main Datacenter",
+      "company": "Yasref Company Ltd.",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "23.9969888",
+        "38.19393450000007"
+      ]
+    },
+    {
+      "name": "Disaster Recovery Datacenter",
+      "company": "Banque Saudi Fransi",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "21.2854067",
+        "39.23755070000004"
+      ]
+    },
+    {
+      "name": "National Center for Digital Certification",
+      "company": "Ministry of Communications and Information Technology",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7480328",
+        "46.68753719999995"
+      ]
+    },
+    {
+      "name": "Al Rajhi Bank",
+      "company": "Al Rajhi Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7349947",
+        "46.664694199999985"
+      ]
+    },
+    {
+      "name": "Riyadh Municipality",
+      "company": "Riyadh Municipality",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.6286689",
+        "46.71048410000003"
+      ]
+    },
+    {
+      "name": "Disaster Recovery",
+      "company": "Alinma Bank",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7066911",
+        "46.67524070000002"
+      ]
+    },
+    {
+      "name": "Information Technology and Communications Complex Project",
+      "company": "Al Ra’idah Investment Company",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.741072374661762",
+        "46.63584837141116"
+      ]
+    },
+    {
+      "name": "Riyadh 2",
+      "company": "Saudi Telecom Company (STC)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7135517",
+        "46.67529569999999"
+      ]
+    },
+    {
+      "name": "DC Vault",
+      "company": "DC Vault",
+      "city": "",
+      "state": "",
+      "country": "United Arab Emirates",
+      "address": "",
+      "city_coords": [
+        "24.191144",
+        "54.47055499999999"
+      ]
+    },
+    {
+      "name": "Dubai 1",
+      "company": "Zenlayer",
+      "city": "",
+      "state": "",
+      "country": "United Arab Emirates",
+      "address": "",
+      "city_coords": [
+        "25.0282605",
+        "55.1856957"
+      ]
+    },
+    {
+      "name": "M-VAULT 3",
+      "company": "Meeza",
+      "city": "",
+      "state": "",
+      "country": "Qatar",
+      "address": "",
+      "city_coords": [
+        "25.5510651",
+        "51.43938000000003"
+      ]
+    },
+    {
+      "name": "Public Cloud Data Centre",
+      "company": "SAP",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.7135517",
+        "46.67529569999999"
+      ]
+    },
+    {
+      "name": "PDO Telecom",
+      "company": "Petroleum Development Oman (PDO)",
+      "city": "",
+      "state": "",
+      "country": "Oman",
+      "address": "",
+      "city_coords": [
+        "23.6238638",
+        "58.51829049999992"
+      ]
+    },
+    {
+      "name": "Sulay",
+      "company": "Etihad Etisalat (Mobily)",
+      "city": "",
+      "state": "",
+      "country": "Saudi Arabia",
+      "address": "",
+      "city_coords": [
+        "24.6615689",
+        "46.83602300000007"
+      ]
+    },
+    {
+      "name": "Qualitynet Data Center",
+      "company": "Qualitynet",
+      "city": "",
+      "state": "",
+      "country": "Kuwait",
+      "address": "",
+      "city_coords": [
+        "29.375915",
+        "47.993056000000024"
+      ]
+    },
+    {
+      "name": "AWS BAH Askar Road 5156",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.07105508386889",
+        "50.61172573337402"
+      ]
+    },
+    {
+      "name": "AWS BAH 1440 Road 1429",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.2057094",
+        "50.4831545"
+      ]
+    },
+    {
+      "name": "AWS BAH Zallaq",
+      "company": "Amazon",
+      "city": "",
+      "state": "",
+      "country": "Bahrain",
+      "address": "",
+      "city_coords": [
+        "26.04336368350832",
+        "50.532455543188476"
+      ]
+    }
+  ]
+}

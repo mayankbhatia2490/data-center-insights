@@ -4,15 +4,17 @@ import process from "node:process";
 import { createClient } from "@supabase/supabase-js";
 
 const input = process.argv[2];
+const requestedScope = process.argv[3] || "middle_east";
+const dryRun = process.argv.includes("--dry-run");
 if (!input) throw new Error("Usage: node scripts/import-data-centers.mjs <authorized-export.csv|geojson>");
-if (process.env.DATA_CENTER_MAP_LICENSE_ACK !== "true") {
-  throw new Error("Set DATA_CENTER_MAP_LICENSE_ACK=true only after confirming the export license permits this internal/public use.");
+if (process.env.DATASET_LICENSE_ACK !== "true") {
+  throw new Error("Set DATASET_LICENSE_ACK=true only after confirming the export license permits this internal/public use.");
 }
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!supabaseUrl || !serviceKey) throw new Error("VITE_SUPABASE_URL/SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.");
-const db = createClient(supabaseUrl, serviceKey);
+if (!dryRun && (!supabaseUrl || !serviceKey)) throw new Error("VITE_SUPABASE_URL/SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.");
+const db = dryRun ? null : createClient(supabaseUrl, serviceKey);
 
 const clean = (value) => {
   if (value == null) return null;
@@ -53,10 +55,17 @@ const file = await fs.readFile(path.resolve(input), "utf8");
 let rows;
 if (input.toLowerCase().endsWith(".geojson") || input.toLowerCase().endsWith(".json")) {
   const geo = JSON.parse(file);
-  const features = geo.type === "FeatureCollection" ? geo.features : [{ type: "Feature", properties: geo.properties || geo, geometry: geo.geometry }];
-  rows = features.map((feature) => ({ ...(feature.properties || {}), __longitude: feature.geometry?.coordinates?.[0], __latitude: feature.geometry?.coordinates?.[1] }));
+  const selected = Array.isArray(geo) ? geo : (Array.isArray(geo[requestedScope]) ? geo[requestedScope] : geo);
+  const features = selected.type === "FeatureCollection" ? selected.features : Array.isArray(selected) ? selected.map((item) => ({ type: "Feature", properties: item, geometry: item.geometry })) : [{ type: "Feature", properties: selected.properties || selected, geometry: selected.geometry }];
+  rows = features.map((feature) => ({ ...(feature.properties || {}), __longitude: feature.geometry?.coordinates?.[0] ?? feature.properties?.city_coords?.[1], __latitude: feature.geometry?.coordinates?.[1] ?? feature.properties?.city_coords?.[0] }));
 } else rows = csvRows(file);
 if (!rows.length) throw new Error("No records found in the export.");
+
+if (dryRun) {
+  const withCoordinates = rows.filter((row) => (row.city_coords && row.city_coords.length === 2) || first(row, ["Latitude", "lat"]));
+  console.log(JSON.stringify({ ok: true, dry_run: true, scope: requestedScope, records_seen: rows.length, records_with_coordinates: withCoordinates.length }, null, 2));
+  process.exit(0);
+}
 
 const lifecycle = (value) => {
   const normalized = (clean(value) || "unknown").toLowerCase().replace(/[- ]/g, "_");
@@ -133,7 +142,7 @@ for (const row of rows) {
   const { error: sourceError } = await db.from("data_center_sources").insert({
     data_center_id: facility.id,
     source_url: sourceUrl,
-    source_name: "Authorized Data Center Map export",
+    source_name: process.env.IMPORT_SOURCE_NAME || "ATLAS / Global Data Center Map",
     source_type: "manual_research",
     source_title: sourceTitle,
     evidence_excerpt: `Imported from authorized export row. Original ID: ${clean(first(row, ["Data Center ID", "ID", "id"])) || "not supplied"}.`,

@@ -5,7 +5,8 @@ import Header from "@/components/Header";
 import { useStats } from "@/hooks/useIntelligence";
 import { supabase } from "@/integrations/supabase/client";
 import DataCenterMap from "@/components/DataCenterMap";
-import { gccDataCenters, type DataCenter } from "@/data/gccDataCenters";
+import type { DataCenter } from "@/data/gccDataCenters";
+import { atlasMiddleEastDataCenters } from "@/data/atlasDataCenters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, TrendingUp, TrendingDown, Minus, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -72,11 +73,12 @@ const Stats = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const allDataCenters = dbDataCenters && dbDataCenters.length > 0 ? dbDataCenters : gccDataCenters;
+  const allDataCenters = dbDataCenters && dbDataCenters.length > 0 ? dbDataCenters : atlasMiddleEastDataCenters;
   const filteredDataCenters = useMemo(() => allDataCenters.filter((item) => {
     const search = dcSearch.toLowerCase().trim();
     const matchesSearch = !search || [item.canonical_name, item.operator_name, item.city, item.country, ...(item.service_types || [])].filter(Boolean).join(" ").toLowerCase().includes(search);
-    const matchesCountry = dcCountry === "All GCC" || item.country === dcCountry;
+    const gccCountries = new Set(["Saudi Arabia", "United Arab Emirates", "Qatar", "Oman", "Bahrain", "Kuwait"]);
+    const matchesCountry = dcCountry === "All Middle East" || (dcCountry === "GCC only" ? gccCountries.has(item.country) : item.country === dcCountry);
     const matchesStage = dcStage === "All stages" || item.lifecycle_stage === dcStage;
     return matchesSearch && matchesCountry && matchesStage;
   }), [allDataCenters, dcSearch, dcCountry, dcStage]);
@@ -86,6 +88,7 @@ const Stats = () => {
     operational: filteredDataCenters.filter((item) => item.lifecycle_stage === "operational").length,
     reportedMw: filteredDataCenters.reduce((sum, item) => sum + (item.capacity_mw || 0), 0),
     disclosed: filteredDataCenters.filter((item) => item.capacity_mw != null).length,
+    withCoordinates: filteredDataCenters.filter((item) => item.location_precision !== "market" && item.location_precision !== "undisclosed").length,
   }), [filteredDataCenters]);
 
   const countryCapacity = useMemo(() => {
@@ -205,13 +208,13 @@ const Stats = () => {
         <section className="rounded-[4px] border border-border bg-card p-4 md:p-5 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
             <div>
-              <h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-primary shrink-0" />GCC Data Center Map</h2>
-              <p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Search facilities by operator, market, service, lifecycle, and reported capacity.</p>
+              <h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-primary shrink-0" />Middle East & GCC Data Center Map</h2>
+              <p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Search facilities by operator, market, service, lifecycle, coordinates, and reported capacity.</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <input value={dcSearch} onChange={(event) => setDcSearch(event.target.value)} placeholder="Search facility or operator" className="h-8 w-52 rounded-[3px] border border-border bg-background px-3 text-xs outline-none focus:border-primary" />
               <select value={dcCountry} onChange={(event) => setDcCountry(event.target.value)} className="h-8 rounded-[3px] border border-border bg-background px-2 text-xs outline-none focus:border-primary">
-                <option>All GCC</option><option>Saudi Arabia</option><option>United Arab Emirates</option><option>Qatar</option><option>Oman</option><option>Bahrain</option><option>Kuwait</option>
+                <option>All Middle East</option><option>GCC only</option><option>Saudi Arabia</option><option>United Arab Emirates</option><option>Qatar</option><option>Oman</option><option>Bahrain</option><option>Kuwait</option>
               </select>
               <select value={dcStage} onChange={(event) => setDcStage(event.target.value)} className="h-8 rounded-[3px] border border-border bg-background px-2 text-xs outline-none focus:border-primary">
                 <option>All stages</option><option value="operational">Operational</option><option value="under_construction">Under construction</option><option value="planned">Planned</option>
@@ -223,7 +226,7 @@ const Stats = () => {
             <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Facilities in view</span><strong className="text-lg text-foreground">{dcMetrics.total}</strong></div>
             <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Operational</span><strong className="text-lg text-foreground">{dcMetrics.operational}</strong></div>
             <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Reported capacity</span><strong className="text-lg text-foreground">{dcMetrics.reportedMw.toFixed(1)} MW</strong></div>
-            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Capacity disclosed</span><strong className="text-lg text-foreground">{dcMetrics.disclosed}/{dcMetrics.total}</strong></div>
+            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Coordinates available</span><strong className="text-lg text-foreground">{dcMetrics.withCoordinates}/{dcMetrics.total}</strong></div>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_0.8fr] gap-4">
@@ -239,6 +242,7 @@ const Stats = () => {
             </div>
           </div>
           <p className="mt-3 text-[10px] text-muted-foreground">Inventory status is evidence-aware. “Capacity n/d” means the facility exists in the index but no facility-level MW value has been confirmed yet; it is not treated as zero.</p>
+          <p className="mt-2 text-[10px] text-muted-foreground">Location inventory: <a className="underline hover:text-foreground" href="https://github.com/Ringmast4r/Global-Data-Center-Map" target="_blank" rel="noopener noreferrer">Data centers (c) Ringmast4r — Global Data Center Map</a>. Coordinates are approximate where the source provides only city or market precision.</p>
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
