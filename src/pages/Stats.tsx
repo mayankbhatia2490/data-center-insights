@@ -52,7 +52,7 @@ const Stats = () => {
   const { data, isLoading } = useStats();
   const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
   const [dcSearch, setDcSearch] = useState("");
-  const [dcCountry, setDcCountry] = useState("All GCC");
+  const [dcCountry, setDcCountry] = useState("All Middle East");
   const [dcStage, setDcStage] = useState("All stages");
   const [selectedDataCenter, setSelectedDataCenter] = useState<string>();
 
@@ -88,7 +88,7 @@ const Stats = () => {
     operational: filteredDataCenters.filter((item) => item.lifecycle_stage === "operational").length,
     reportedMw: filteredDataCenters.reduce((sum, item) => sum + (item.capacity_mw || 0), 0),
     disclosed: filteredDataCenters.filter((item) => item.capacity_mw != null).length,
-    withCoordinates: filteredDataCenters.filter((item) => item.location_precision !== "market" && item.location_precision !== "undisclosed").length,
+    withCoordinates: filteredDataCenters.filter((item) => item.latitude != null && item.longitude != null).length,
   }), [filteredDataCenters]);
 
   const countryCapacity = useMemo(() => {
