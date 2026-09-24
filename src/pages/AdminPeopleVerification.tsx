@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ShieldCheck, Check, X, EyeOff, ExternalLink } from "lucide-react";
 
+// The generated Supabase types predate the verification tables; this narrow
+// compatibility cast can be removed after regenerating database types.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
 
 type ReviewItem = {
