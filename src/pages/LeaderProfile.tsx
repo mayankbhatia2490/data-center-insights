@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
-import { Users, Zap, ArrowLeft, ExternalLink, Calendar, BadgeCheck } from "lucide-react";
+import { Users, Zap, ArrowLeft, ExternalLink, Calendar, BadgeCheck, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
@@ -173,6 +173,16 @@ const LeaderProfile = () => {
                 <div className="mt-3">
                   <ClaimProfileBox personId={person.id} claimed={!!person.claimed_by} />
                 </div>
+                {person.verification_status === "verified" && (
+                  <div className="inline-flex items-center gap-1 text-[11px] text-accent mt-2">
+                    <ShieldCheck size={12} /> Evidence checked automatically · {person.verification_score}/100
+                  </div>
+                )}
+                {person.verification_status === "needs_review" && (
+                  <div className="inline-flex items-center gap-1 text-[11px] text-muted-foreground mt-2">
+                    <AlertTriangle size={12} /> Evidence awaiting editorial review
+                  </div>
+                )}
               </div>
             </div>
 
