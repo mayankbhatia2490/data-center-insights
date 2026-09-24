@@ -88,6 +88,32 @@ const Stats = () => {
     disclosed: filteredDataCenters.filter((item) => item.capacity_mw != null).length,
   }), [filteredDataCenters]);
 
+  const countryCapacity = useMemo(() => {
+    const groups = new Map<string, { name: string; facilities: number; operational: number; reportedMw: number }>();
+    filteredDataCenters.forEach((item) => {
+      const name = item.country || "Unknown";
+      const current = groups.get(name) || { name, facilities: 0, operational: 0, reportedMw: 0 };
+      current.facilities += 1;
+      current.operational += item.lifecycle_stage === "operational" ? 1 : 0;
+      current.reportedMw += item.capacity_mw || 0;
+      groups.set(name, current);
+    });
+    return [...groups.values()].sort((a, b) => b.reportedMw - a.reportedMw || b.facilities - a.facilities);
+  }, [filteredDataCenters]);
+
+  const operatorCapacity = useMemo(() => {
+    const groups = new Map<string, { name: string; facilities: number; operational: number; reportedMw: number }>();
+    filteredDataCenters.forEach((item) => {
+      const name = item.operator_name || "Operator not disclosed";
+      const current = groups.get(name) || { name, facilities: 0, operational: 0, reportedMw: 0 };
+      current.facilities += 1;
+      current.operational += item.lifecycle_stage === "operational" ? 1 : 0;
+      current.reportedMw += item.capacity_mw || 0;
+      groups.set(name, current);
+    });
+    return [...groups.values()].sort((a, b) => b.reportedMw - a.reportedMw || b.facilities - a.facilities).slice(0, 12);
+  }, [filteredDataCenters]);
+
   // Merge live DB data with static fallback
   const dbCompanies = data?.companies || [];
   const dbSegments = data?.segments || [];
@@ -213,6 +239,39 @@ const Stats = () => {
             </div>
           </div>
           <p className="mt-3 text-[10px] text-muted-foreground">Inventory status is evidence-aware. “Capacity n/d” means the facility exists in the index but no facility-level MW value has been confirmed yet; it is not treated as zero.</p>
+        </section>
+
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+          <div className="rounded-[4px] border border-border bg-card p-5">
+            <div className="mb-4"><h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-primary shrink-0" />Reported Capacity by Country</h2><p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Only facility-level capacity with a source-backed MW value.</p></div>
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={countryCapacity} layout="vertical" margin={{ top: 4, right: 18, left: 12, bottom: 4 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} unit=" MW" />
+                  <YAxis type="category" dataKey="name" width={112} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 2, fontSize: 11 }} formatter={(value: number) => [`${value.toFixed(1)} MW`, "Reported capacity"]} />
+                  <Bar dataKey="reportedMw" fill="hsl(var(--primary))" radius={[0, 3, 3, 0]} maxBarSize={24} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Facility count is shown in the map inventory; undisclosed capacity is excluded from this chart.</p>
+          </div>
+          <div className="rounded-[4px] border border-border bg-card p-5">
+            <div className="mb-4"><h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-accent shrink-0" />Reported Capacity by Operator</h2><p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Top operators in the current filtered facility set.</p></div>
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={operatorCapacity} layout="vertical" margin={{ top: 4, right: 18, left: 12, bottom: 4 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} unit=" MW" />
+                  <YAxis type="category" dataKey="name" width={120} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 2, fontSize: 11 }} formatter={(value: number) => [`${value.toFixed(1)} MW`, "Reported capacity"]} />
+                  <Bar dataKey="reportedMw" fill="hsl(var(--accent))" radius={[0, 3, 3, 0]} maxBarSize={24} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="text-[10px] text-muted-foreground">Operators with no disclosed facility-level capacity remain visible in the inventory but contribute 0 MW to this chart.</p>
+          </div>
         </section>
 
         {isLoading ? (
