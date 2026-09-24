@@ -1,7 +1,11 @@
 import Seo from "@/components/Seo";
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
 import { useStats } from "@/hooks/useIntelligence";
+import { supabase } from "@/integrations/supabase/client";
+import DataCenterMap from "@/components/DataCenterMap";
+import { gccDataCenters, type DataCenter } from "@/data/gccDataCenters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, TrendingUp, TrendingDown, Minus, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -46,6 +50,43 @@ const TrendIcon = ({ direction }: { direction?: "up" | "down" | "neutral" }) => 
 const Stats = () => {
   const { data, isLoading } = useStats();
   const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
+  const [dcSearch, setDcSearch] = useState("");
+  const [dcCountry, setDcCountry] = useState("All GCC");
+  const [dcStage, setDcStage] = useState("All stages");
+  const [selectedDataCenter, setSelectedDataCenter] = useState<string>();
+
+  // The database is authoritative when available. The curated seed keeps the
+  // map useful during first deployment and makes missingness visible rather
+  // than showing fabricated capacity numbers.
+  const { data: dbDataCenters } = useQuery({
+    queryKey: ["gcc-data-centers"],
+    queryFn: async () => {
+      // New table is added by the data-center migration; cast is temporary
+      // until Supabase types are regenerated from the live schema.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const db = supabase as any;
+      const { data: rows, error } = await db.from("data_centers").select("*").order("country").order("city").order("canonical_name");
+      if (error) return [] as DataCenter[];
+      return (rows || []) as DataCenter[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const allDataCenters = dbDataCenters && dbDataCenters.length > 0 ? dbDataCenters : gccDataCenters;
+  const filteredDataCenters = useMemo(() => allDataCenters.filter((item) => {
+    const search = dcSearch.toLowerCase().trim();
+    const matchesSearch = !search || [item.canonical_name, item.operator_name, item.city, item.country, ...(item.service_types || [])].filter(Boolean).join(" ").toLowerCase().includes(search);
+    const matchesCountry = dcCountry === "All GCC" || item.country === dcCountry;
+    const matchesStage = dcStage === "All stages" || item.lifecycle_stage === dcStage;
+    return matchesSearch && matchesCountry && matchesStage;
+  }), [allDataCenters, dcSearch, dcCountry, dcStage]);
+
+  const dcMetrics = useMemo(() => ({
+    total: filteredDataCenters.length,
+    operational: filteredDataCenters.filter((item) => item.lifecycle_stage === "operational").length,
+    reportedMw: filteredDataCenters.reduce((sum, item) => sum + (item.capacity_mw || 0), 0),
+    disclosed: filteredDataCenters.filter((item) => item.capacity_mw != null).length,
+  }), [filteredDataCenters]);
 
   // Merge live DB data with static fallback
   const dbCompanies = data?.companies || [];
@@ -133,6 +174,46 @@ const Stats = () => {
             Live industry metrics · Updated from aggregated intelligence feeds
           </p>
         </div>
+
+        {/* ─── GCC DATA-CENTER MAP & INVENTORY ───────────────────── */}
+        <section className="rounded-[4px] border border-border bg-card p-4 md:p-5 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-primary shrink-0" />GCC Data Center Map</h2>
+              <p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Search facilities by operator, market, service, lifecycle, and reported capacity.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <input value={dcSearch} onChange={(event) => setDcSearch(event.target.value)} placeholder="Search facility or operator" className="h-8 w-52 rounded-[3px] border border-border bg-background px-3 text-xs outline-none focus:border-primary" />
+              <select value={dcCountry} onChange={(event) => setDcCountry(event.target.value)} className="h-8 rounded-[3px] border border-border bg-background px-2 text-xs outline-none focus:border-primary">
+                <option>All GCC</option><option>Saudi Arabia</option><option>United Arab Emirates</option><option>Qatar</option><option>Oman</option><option>Bahrain</option><option>Kuwait</option>
+              </select>
+              <select value={dcStage} onChange={(event) => setDcStage(event.target.value)} className="h-8 rounded-[3px] border border-border bg-background px-2 text-xs outline-none focus:border-primary">
+                <option>All stages</option><option value="operational">Operational</option><option value="under_construction">Under construction</option><option value="planned">Planned</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Facilities in view</span><strong className="text-lg text-foreground">{dcMetrics.total}</strong></div>
+            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Operational</span><strong className="text-lg text-foreground">{dcMetrics.operational}</strong></div>
+            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Reported capacity</span><strong className="text-lg text-foreground">{dcMetrics.reportedMw.toFixed(1)} MW</strong></div>
+            <div className="rounded-[3px] bg-secondary/60 px-3 py-2"><span className="block text-[9px] uppercase tracking-wider text-muted-foreground">Capacity disclosed</span><strong className="text-lg text-foreground">{dcMetrics.disclosed}/{dcMetrics.total}</strong></div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_0.8fr] gap-4">
+            <div className="overflow-hidden rounded-[4px] border border-border"><DataCenterMap data={filteredDataCenters} selectedId={selectedDataCenter} onSelect={(item) => setSelectedDataCenter(item.id)} /><div className="flex flex-wrap gap-3 border-t border-border px-3 py-2 text-[10px] text-muted-foreground"><span><i className="inline-block w-2 h-2 rounded-full bg-[#27b36a] mr-1" />Operational</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#f5a623] mr-1" />Under construction</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#6f7bf7] mr-1" />Planned</span><span className="ml-auto">OpenStreetMap tiles · approximate locations where exact coordinates are restricted</span></div></div>
+            <div className="max-h-[490px] overflow-y-auto rounded-[4px] border border-border">
+              {filteredDataCenters.length === 0 ? <p className="p-5 text-sm text-muted-foreground">No facilities match these filters.</p> : filteredDataCenters.map((item) => (
+                <button key={item.id} onClick={() => setSelectedDataCenter(item.id)} className={`block w-full border-b border-border/70 p-3 text-left transition-colors last:border-0 hover:bg-secondary/50 ${selectedDataCenter === item.id ? "bg-primary/5" : ""}`}>
+                  <div className="flex items-start justify-between gap-2"><span className="text-xs font-bold text-foreground">{item.canonical_name}</span><span className={`shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${item.lifecycle_stage === "operational" ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}>{item.lifecycle_stage.replaceAll("_", " ")}</span></div>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{item.operator_name || "Operator not disclosed"} · {item.city || item.market}, {item.country}</p>
+                  <div className="mt-2 flex items-center justify-between text-[10px]"><span className="text-muted-foreground">{item.service_types?.slice(0, 3).join(" · ")}</span><strong className="text-foreground">{item.capacity_mw ? `${item.capacity_mw} MW` : "Capacity n/d"}</strong></div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="mt-3 text-[10px] text-muted-foreground">Inventory status is evidence-aware. “Capacity n/d” means the facility exists in the index but no facility-level MW value has been confirmed yet; it is not treated as zero.</p>
+        </section>
 
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
