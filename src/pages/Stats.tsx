@@ -66,8 +66,11 @@ const Stats = () => {
       // until Supabase types are regenerated from the live schema.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const db = supabase as any;
-      const { data: rows, error } = await db.from("data_centers").select("*").order("country").order("city").order("canonical_name");
-      if (error) return [] as DataCenter[];
+      const { data: rows, error } = await db.from("data_centers").select("id,canonical_name,operator_name,listing_type,parent_id,lifecycle_stage,service_types,country,market,city,address,latitude,longitude,location_precision,capacity_mw,capacity_basis,capacity_status,whitespace_sqm,year_operational,pue,tier_design,site_code,verification_status,verification_score,first_seen_at,last_verified_at,created_at,updated_at,external_id,external_parent_id,company_id,profile_url,website_url,capacity_type,address_details,postal,state,total_building_size,ecosystem_stats").order("country").order("city").order("canonical_name");
+      if (error) {
+        console.error("Unable to load data-center inventory; using static fallback.", error);
+        return [] as DataCenter[];
+      }
       return (rows || []) as DataCenter[];
     },
     staleTime: 5 * 60 * 1000,
