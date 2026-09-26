@@ -49,6 +49,6 @@ export function useEvents() {
       if (error) throw error;
       return data as Event[];
     },
-    refetchInterval: 30 * 60 * 1000,
+    refetchInterval: 24 * 60 * 60 * 1000,
   });
 }
