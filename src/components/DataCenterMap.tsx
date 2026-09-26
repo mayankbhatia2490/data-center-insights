@@ -40,7 +40,8 @@ const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
     if (!map || !layer) return;
     layer.clearLayers();
     const points: L.LatLngExpression[] = [];
-    data.forEach((item) => {
+    const mappableData = data.filter((item) => Number.isFinite(Number(item.latitude)) && Number.isFinite(Number(item.longitude)));
+    mappableData.forEach((item) => {
       points.push([item.latitude, item.longitude]);
       const color = lifecycleColor[item.lifecycle_stage];
       const marker = L.circleMarker([item.latitude, item.longitude], {
@@ -56,8 +57,8 @@ const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
     });
     if (points.length > 1 && !selectedId) map.fitBounds(L.latLngBounds(points), { padding: [24, 24], maxZoom: 7 });
     if (selectedId) {
-      const selected = data.find((item) => item.id === selectedId);
-      if (selected) map.flyTo([selected.latitude, selected.longitude], Math.max(map.getZoom(), 7), { duration: 0.5 });
+      const selected = mappableData.find((item) => item.id === selectedId);
+      if (selected) map.flyTo([Number(selected.latitude), Number(selected.longitude)], Math.max(map.getZoom(), 7), { duration: 0.5 });
     }
   }, [data, selectedId, onSelect]);
 
