@@ -176,6 +176,247 @@ export type Database = {
         }
         Relationships: []
       }
+      data_center_review_queue: {
+        Row: {
+          created_at: string
+          data_center_id: string
+          id: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          source_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          data_center_id: string
+          id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          source_id?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          data_center_id?: string
+          id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          source_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_center_review_queue_data_center_id_fkey"
+            columns: ["data_center_id"]
+            isOneToOne: false
+            referencedRelation: "data_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_center_review_queue_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "data_center_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_center_sources: {
+        Row: {
+          automated_score: number
+          checked_at: string | null
+          created_at: string
+          data_center_id: string
+          evidence_excerpt: string | null
+          id: string
+          observed_capacity_mw: number | null
+          observed_lifecycle_stage: string | null
+          review_status: string
+          source_name: string
+          source_title: string | null
+          source_type: string
+          source_url: string | null
+        }
+        Insert: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name: string
+          source_title?: string | null
+          source_type: string
+          source_url?: string | null
+        }
+        Update: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id?: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name?: string
+          source_title?: string | null
+          source_type?: string
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_center_sources_data_center_id_fkey"
+            columns: ["data_center_id"]
+            isOneToOne: false
+            referencedRelation: "data_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_centers: {
+        Row: {
+          address: string | null
+          address_details: string | null
+          canonical_name: string
+          capacity_basis: string | null
+          capacity_mw: number | null
+          capacity_status: string
+          capacity_type: string | null
+          city: string | null
+          company_id: string | null
+          country: string
+          created_at: string
+          ecosystem_stats: Json
+          external_id: string | null
+          external_parent_id: string | null
+          first_seen_at: string
+          id: string
+          last_verified_at: string | null
+          latitude: number | null
+          lifecycle_stage: string
+          listing_type: string
+          location_precision: string
+          longitude: number | null
+          market: string | null
+          operator_name: string | null
+          parent_id: string | null
+          postal: string | null
+          profile_url: string | null
+          pue: number | null
+          service_types: string[]
+          site_code: string | null
+          state: string | null
+          tier_design: string | null
+          total_building_size: number | null
+          updated_at: string
+          verification_score: number
+          verification_status: string
+          website_url: string | null
+          whitespace_sqm: number | null
+          year_operational: number | null
+        }
+        Insert: {
+          address?: string | null
+          address_details?: string | null
+          canonical_name: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          capacity_type?: string | null
+          city?: string | null
+          company_id?: string | null
+          country: string
+          created_at?: string
+          ecosystem_stats?: Json
+          external_id?: string | null
+          external_parent_id?: string | null
+          first_seen_at?: string
+          id?: string
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          operator_name?: string | null
+          parent_id?: string | null
+          postal?: string | null
+          profile_url?: string | null
+          pue?: number | null
+          service_types?: string[]
+          site_code?: string | null
+          state?: string | null
+          tier_design?: string | null
+          total_building_size?: number | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          website_url?: string | null
+          whitespace_sqm?: number | null
+          year_operational?: number | null
+        }
+        Update: {
+          address?: string | null
+          address_details?: string | null
+          canonical_name?: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          capacity_type?: string | null
+          city?: string | null
+          company_id?: string | null
+          country?: string
+          created_at?: string
+          ecosystem_stats?: Json
+          external_id?: string | null
+          external_parent_id?: string | null
+          first_seen_at?: string
+          id?: string
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          operator_name?: string | null
+          parent_id?: string | null
+          postal?: string | null
+          profile_url?: string | null
+          pue?: number | null
+          service_types?: string[]
+          site_code?: string | null
+          state?: string | null
+          tier_design?: string | null
+          total_building_size?: number | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          website_url?: string | null
+          whitespace_sqm?: number | null
+          year_operational?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "data_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dc_capacity_stats: {
         Row: {
           growth_rate_pct: number | null
@@ -434,6 +675,7 @@ export type Database = {
           importance_score: number | null
           known_as: string | null
           last_mentioned: string | null
+          last_verified_at: string | null
           mention_count: number | null
           name: string
           organization: string | null
@@ -441,6 +683,9 @@ export type Database = {
           roles: Json | null
           title: string | null
           updated_at: string | null
+          verification_notes: string | null
+          verification_score: number
+          verification_status: string
         }
         Insert: {
           bio?: string | null
@@ -453,6 +698,7 @@ export type Database = {
           importance_score?: number | null
           known_as?: string | null
           last_mentioned?: string | null
+          last_verified_at?: string | null
           mention_count?: number | null
           name: string
           organization?: string | null
@@ -460,6 +706,9 @@ export type Database = {
           roles?: Json | null
           title?: string | null
           updated_at?: string | null
+          verification_notes?: string | null
+          verification_score?: number
+          verification_status?: string
         }
         Update: {
           bio?: string | null
@@ -472,6 +721,7 @@ export type Database = {
           importance_score?: number | null
           known_as?: string | null
           last_mentioned?: string | null
+          last_verified_at?: string | null
           mention_count?: number | null
           name?: string
           organization?: string | null
@@ -479,6 +729,9 @@ export type Database = {
           roles?: Json | null
           title?: string | null
           updated_at?: string | null
+          verification_notes?: string | null
+          verification_score?: number
+          verification_status?: string
         }
         Relationships: []
       }
@@ -589,6 +842,179 @@ export type Database = {
           },
           {
             foreignKeyName: "people_lists_items_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_verification_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_type: string
+          created_at: string
+          detail: Json
+          from_status: string | null
+          id: string
+          person_id: string
+          score: number | null
+          to_status: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_type: string
+          created_at?: string
+          detail?: Json
+          from_status?: string | null
+          id?: string
+          person_id: string
+          score?: number | null
+          to_status?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_type?: string
+          created_at?: string
+          detail?: Json
+          from_status?: string | null
+          id?: string
+          person_id?: string
+          score?: number | null
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "people_verification_audit_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_verification_queue: {
+        Row: {
+          created_at: string
+          id: string
+          person_id: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          source_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          person_id: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          source_id?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          person_id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          source_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "people_verification_queue_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "people_verification_queue_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "people_verification_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_verification_sources: {
+        Row: {
+          article_id: string | null
+          automated_result: string
+          automated_score: number
+          checked_at: string | null
+          checks: Json
+          created_at: string
+          evidence_excerpt: string | null
+          http_status: number | null
+          id: string
+          observed_name: string | null
+          observed_organization: string | null
+          observed_title: string | null
+          person_id: string
+          source_name: string | null
+          source_published_at: string | null
+          source_title: string | null
+          source_url: string
+        }
+        Insert: {
+          article_id?: string | null
+          automated_result?: string
+          automated_score?: number
+          checked_at?: string | null
+          checks?: Json
+          created_at?: string
+          evidence_excerpt?: string | null
+          http_status?: number | null
+          id?: string
+          observed_name?: string | null
+          observed_organization?: string | null
+          observed_title?: string | null
+          person_id: string
+          source_name?: string | null
+          source_published_at?: string | null
+          source_title?: string | null
+          source_url: string
+        }
+        Update: {
+          article_id?: string | null
+          automated_result?: string
+          automated_score?: number
+          checked_at?: string | null
+          checks?: Json
+          created_at?: string
+          evidence_excerpt?: string | null
+          http_status?: number | null
+          id?: string
+          observed_name?: string | null
+          observed_organization?: string | null
+          observed_title?: string | null
+          person_id?: string
+          source_name?: string | null
+          source_published_at?: string | null
+          source_title?: string | null
+          source_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "people_verification_sources_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "people_verification_sources_person_id_fkey"
             columns: ["person_id"]
             isOneToOne: false
             referencedRelation: "people"
@@ -732,7 +1158,9 @@ export type Database = {
       }
       subscribers: {
         Row: {
+          confirmation_token: string
           confirmed: boolean
+          confirmed_at: string | null
           email: string
           id: string
           name: string | null
@@ -746,7 +1174,9 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          confirmation_token?: string
           confirmed?: boolean
+          confirmed_at?: string | null
           email: string
           id?: string
           name?: string | null
@@ -760,7 +1190,9 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          confirmation_token?: string
           confirmed?: boolean
+          confirmed_at?: string | null
           email?: string
           id?: string
           name?: string | null
@@ -785,6 +1217,7 @@ export type Database = {
           risks: Json | null
           score: number | null
           source_article_ids: string[] | null
+          updated_at: string
           week_start: string
         }
         Insert: {
@@ -796,6 +1229,7 @@ export type Database = {
           risks?: Json | null
           score?: number | null
           source_article_ids?: string[] | null
+          updated_at?: string
           week_start: string
         }
         Update: {
@@ -807,6 +1241,7 @@ export type Database = {
           risks?: Json | null
           score?: number | null
           source_article_ids?: string[] | null
+          updated_at?: string
           week_start?: string
         }
         Relationships: []
@@ -831,10 +1266,88 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      market_signals_public: {
+        Row: {
+          confidence: number | null
+          confidence_tier: string | null
+          created_at: string | null
+          id: string | null
+          locked: boolean | null
+          reason: string | null
+          region: string | null
+          source_article_ids: string[] | null
+          title: string | null
+          type: string | null
+        }
+        Insert: {
+          confidence?: never
+          confidence_tier?: never
+          created_at?: string | null
+          id?: string | null
+          locked?: never
+          reason?: never
+          region?: string | null
+          source_article_ids?: never
+          title?: string | null
+          type?: string | null
+        }
+        Update: {
+          confidence?: never
+          confidence_tier?: never
+          created_at?: string | null
+          id?: string | null
+          locked?: never
+          reason?: never
+          region?: string | null
+          source_article_ids?: never
+          title?: string | null
+          type?: string | null
+        }
+        Relationships: []
+      }
+      regional_outlook_public: {
+        Row: {
+          confidence_tier: string | null
+          demand_score: number | null
+          id: string | null
+          locked: boolean | null
+          opportunity_score: number | null
+          outlook: string | null
+          region: string | null
+          risk_score: number | null
+          source_article_ids: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          confidence_tier?: never
+          demand_score?: never
+          id?: string | null
+          locked?: never
+          opportunity_score?: never
+          outlook?: never
+          region?: string | null
+          risk_score?: never
+          source_article_ids?: never
+          updated_at?: string | null
+        }
+        Update: {
+          confidence_tier?: never
+          demand_score?: never
+          id?: string | null
+          locked?: never
+          opportunity_score?: never
+          outlook?: never
+          region?: string | null
+          risk_score?: never
+          source_article_ids?: never
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      get_cron_secret: { Args: never; Returns: string }
+      has_active_subscription: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
@@ -853,12 +1366,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -882,11 +1395,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -907,11 +1420,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -932,11 +1445,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -949,17 +1462,17 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][CompositeTypeName]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
