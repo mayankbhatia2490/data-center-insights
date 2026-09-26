@@ -11,6 +11,7 @@ export interface MarketSignal {
   created_at: string | null;
   source_article_ids?: string[] | null;
   confidence_tier?: string | null;
+  locked?: boolean | null;
 }
 
 export function useSignals(limit = 20) {
@@ -18,7 +19,7 @@ export function useSignals(limit = 20) {
     queryKey: ["market-signals", limit],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("market_signals")
+        .from("market_signals_public")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(limit);
@@ -39,6 +40,7 @@ export interface RegionalOutlook {
   updated_at: string | null;
   source_article_ids?: string[] | null;
   confidence_tier?: string | null;
+  locked?: boolean | null;
 }
 
 export function useRegionalOutlook() {
@@ -46,7 +48,7 @@ export function useRegionalOutlook() {
     queryKey: ["regional-outlook"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("regional_outlook")
+        .from("regional_outlook_public")
         .select("*")
         .order("region");
       if (error) throw error;
@@ -65,6 +67,7 @@ export interface StrategicInsight {
   created_at: string | null;
   source_article_ids?: string[] | null;
   confidence_tier?: string | null;
+  locked?: boolean | null;
 }
 
 export function useStrategicInsights(limit = 10) {
@@ -72,7 +75,7 @@ export function useStrategicInsights(limit = 10) {
     queryKey: ["strategic-insights", limit],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("strategic_insights")
+        .from("strategic_insights_public")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(limit);

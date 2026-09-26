@@ -46,9 +46,9 @@ const Index = () => {
     supabase.from("articles").select("id", { count: "exact", head: true }).then(({ count }) => {
       if (count !== null) setArticleCount(count);
     });
-    // Fetch top 3 market signals
+    // Fetch top 3 market signals (public teaser view -- headline only for non-subscribers)
     supabase
-      .from("market_signals")
+      .from("market_signals_public")
       .select("type, title, region, confidence")
       .order("created_at", { ascending: false })
       .limit(3)

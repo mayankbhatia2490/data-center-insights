@@ -1,7 +1,9 @@
 import { useRegionalOutlook } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
 import ConfidenceBadge from "@/components/ConfidenceBadge";
-import { Globe2 } from "lucide-react";
+import { Globe2, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const ScoreBar = ({ label, value, color }: { label: string; value: number | null; color: string }) => (
   <div>
@@ -17,6 +19,7 @@ const ScoreBar = ({ label, value, color }: { label: string; value: number | null
 
 const RegionalOutlookSection = () => {
   const { data: outlooks, isLoading } = useRegionalOutlook();
+  const { user } = useAuth();
 
   if (isLoading) {
     return (
@@ -43,20 +46,33 @@ const RegionalOutlookSection = () => {
         {outlooks.map((o) => (
           <div
             key={o.id}
-            className="rounded-[4px] border border-border bg-card p-4 hover:border-primary/30 transition-colors duration-200"
+            className="relative rounded-[4px] border border-border bg-card p-4 hover:border-primary/30 transition-colors duration-200 overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-foreground">{o.region}</h3>
-              <ConfidenceBadge tier={o.confidence_tier} sourceCount={o.source_article_ids?.length} />
+            <div className={o.locked ? "blur-[3px] select-none pointer-events-none" : undefined}>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-foreground">{o.region}</h3>
+                <ConfidenceBadge tier={o.confidence_tier} sourceCount={o.source_article_ids?.length} />
+              </div>
+              <p className="text-[12px] text-muted-foreground leading-relaxed mb-3 line-clamp-4">
+                {o.locked ? "Subscribe to see the full regional outlook and scores." : o.outlook}
+              </p>
+              <div className="space-y-2">
+                <ScoreBar label="Demand" value={o.demand_score} color="bg-primary" />
+                <ScoreBar label="Risk" value={o.risk_score} color="bg-destructive" />
+                <ScoreBar label="Opportunity" value={o.opportunity_score} color="bg-accent-foreground" />
+              </div>
             </div>
-            <p className="text-[12px] text-muted-foreground leading-relaxed mb-3 line-clamp-4">
-              {o.outlook}
-            </p>
-            <div className="space-y-2">
-              <ScoreBar label="Demand" value={o.demand_score} color="bg-primary" />
-              <ScoreBar label="Risk" value={o.risk_score} color="bg-destructive" />
-              <ScoreBar label="Opportunity" value={o.opportunity_score} color="bg-accent-foreground" />
-            </div>
+            {o.locked && (
+              <Link
+                to={user ? "/pricing" : "/login"}
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-card/40 text-center no-underline"
+              >
+                <Lock className="h-4 w-4 text-primary" />
+                <span className="text-[11px] font-semibold text-foreground">
+                  Subscribe to unlock
+                </span>
+              </Link>
+            )}
           </div>
         ))}
       </div>
