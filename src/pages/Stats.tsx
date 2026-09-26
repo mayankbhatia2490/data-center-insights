@@ -71,14 +71,14 @@ const Stats = () => {
         console.error("Unable to load data-center inventory; using static fallback.", error);
         return [] as DataCenter[];
       }
-      return (rows || []).map((row: any) => ({
+      return (rows || []).map((row: Record<string, unknown>) => ({
         ...row,
         service_types: Array.isArray(row.service_types) ? row.service_types : [],
         latitude: row.latitude == null ? null : Number(row.latitude),
         longitude: row.longitude == null ? null : Number(row.longitude),
         capacity_mw: row.capacity_mw == null ? null : Number(row.capacity_mw),
         lifecycle_stage: row.lifecycle_stage || "unknown",
-      })) as DataCenter[];
+      })) as unknown as DataCenter[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -128,12 +128,10 @@ const Stats = () => {
   }, [filteredDataCenters]);
 
   // Merge live DB data with static fallback
-  const dbCompanies = data?.companies || [];
-  const dbSegments = data?.segments || [];
-
   const providers: BarChartDataPoint[] = useMemo(() => {
+    const dbCompanies = data?.companies || [];
     if (dbCompanies.length > 0) {
-      return dbCompanies.map((c: any, i: number) => ({
+      return dbCompanies.map((c: { company: string; total_capacity_gw: number }, i: number) => ({
         name: c.company,
         shortName: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
         capacity: c.total_capacity_gw,
@@ -141,10 +139,11 @@ const Stats = () => {
       }));
     }
     return topProviders;
-  }, [dbCompanies]);
+  }, [data?.companies]);
 
   // Build donut charts from DB segments, falling back to static data
   const liveDonutCharts = useMemo(() => {
+    const dbSegments = data?.segments || [];
     if (dbSegments.length === 0) return donutCharts;
     const chartMap = new Map<string, { title: string; subtitle: string; segments: { name: string; value: number; color: string }[] }>();
     for (const seg of dbSegments) {
@@ -158,7 +157,7 @@ const Stats = () => {
       });
     }
     return Array.from(chartMap.values());
-  }, [dbSegments]);
+  }, [data?.segments]);
 
   const providerNames = useMemo(() => providers.map((p) => p.name), [providers]);
   const activeCompanies = selectedCompanies.size === 0 ? new Set(providerNames) : selectedCompanies;
@@ -422,7 +421,7 @@ const Stats = () => {
                         fontFamily: "Inter",
                         padding: "8px 12px",
                       }}
-                      formatter={(value: number, _: any, entry: any) => [
+                      formatter={(value: number, _name: string, entry: { payload: { fullName: string } }) => [
                         `${value} GW`,
                         entry.payload.fullName,
                       ]}

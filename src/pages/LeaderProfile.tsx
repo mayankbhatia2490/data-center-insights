@@ -68,7 +68,13 @@ const LeaderProfile = () => {
 
       // Fetch articles for these mentions
       const articleIds = (mentions || []).map((m) => m.article_id).filter(Boolean);
-      let articles: any[] = [];
+      let articles: {
+        id: string;
+        title: string;
+        source: string | null;
+        source_url: string | null;
+        published_at: string | null;
+      }[] = [];
       if (articleIds.length > 0) {
         const { data: arts } = await supabase
           .from("articles")
@@ -192,7 +198,7 @@ const LeaderProfile = () => {
               <p className="text-sm text-muted-foreground">No mentions recorded yet.</p>
             ) : (
               <div className="space-y-0">
-                {mentions.map((m: any) => (
+                {mentions.map((m) => (
                   <div
                     key={m.id}
                     className="border-b border-border py-4 flex flex-col md:flex-row md:items-start gap-3"

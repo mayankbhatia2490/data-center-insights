@@ -33,7 +33,9 @@ const Index = () => {
   // Credibility stats
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
   const [articleCount, setArticleCount] = useState<number | null>(null);
-  const [signals, setSignals] = useState<any[]>([]);
+  const [signals, setSignals] = useState<
+    { type: string | null; title: string | null; region: string | null; confidence: number | null }[]
+  >([]);
 
   useEffect(() => {
     // Fetch subscriber count
