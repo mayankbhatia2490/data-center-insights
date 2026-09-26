@@ -44,18 +44,28 @@ Deno.serve(async (req) => {
 
     if (existing) {
       return new Response(
-        JSON.stringify({ message: "You're already subscribed!", already_subscribed: true }),
+        JSON.stringify({
+          message: existing.confirmed
+            ? "You're already subscribed!"
+            : "You're already on the list — check your inbox for the confirmation email.",
+          already_subscribed: true,
+        }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Insert new subscriber
-    const { error } = await supabase.from("subscribers").insert({
-      email: email.trim().toLowerCase(),
-      name: name?.trim()?.slice(0, 100) || null,
-    });
+    // Insert new subscriber, unconfirmed until they click the emailed link
+    const { data: inserted, error } = await supabase
+      .from("subscribers")
+      .insert({
+        email: email.trim().toLowerCase(),
+        name: name?.trim()?.slice(0, 100) || null,
+        confirmed: false,
+      })
+      .select("confirmation_token")
+      .single();
 
-    if (error) {
+    if (error || !inserted) {
       console.error("Subscribe error:", error);
       return new Response(
         JSON.stringify({ error: "Failed to subscribe. Please try again." }),
@@ -63,8 +73,33 @@ Deno.serve(async (req) => {
       );
     }
 
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (resendApiKey) {
+      const siteUrl = Deno.env.get("SITE_URL") || "https://data-center-insights-fawn.vercel.app";
+      const confirmUrl = `${siteUrl}/confirm?token=${inserted.confirmation_token}`;
+      try {
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${resendApiKey}`,
+          },
+          body: JSON.stringify({
+            from: Deno.env.get("RESEND_FROM_EMAIL") || "Data Center Pulse <onboarding@resend.dev>",
+            to: [email.trim().toLowerCase()],
+            subject: "Confirm your Data Center Pulse subscription",
+            html: `<p>One more step — confirm your email to start receiving the daily briefing:</p><p><a href="${confirmUrl}">Confirm subscription</a></p><p>If you didn't request this, you can ignore this email.</p>`,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to send confirmation email:", err);
+      }
+    } else {
+      console.error("RESEND_API_KEY not configured; subscriber inserted but no confirmation email sent.");
+    }
+
     return new Response(
-      JSON.stringify({ message: "Welcome aboard! You're now subscribed.", success: true }),
+      JSON.stringify({ message: "Almost there — check your email to confirm your subscription.", success: true }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {

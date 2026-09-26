@@ -48,6 +48,20 @@ const TrendIcon = ({ direction }: { direction?: "up" | "down" | "neutral" }) => 
   return <Minus size={13} />;
 };
 
+// Labels a metric/chart as sourced-live vs. a static illustrative example,
+// placed above the content it describes rather than a single small
+// disclaimer buried below the whole dashboard.
+const DataSourceTag = ({ live }: { live: boolean }) =>
+  live ? (
+    <span className="inline-flex items-center rounded-[2px] bg-accent/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-accent">
+      Live · sourced
+    </span>
+  ) : (
+    <span className="inline-flex items-center rounded-[2px] bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-amber-600">
+      Illustrative example
+    </span>
+  );
+
 const Stats = () => {
   const { data, isLoading } = useStats();
   const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
@@ -71,14 +85,14 @@ const Stats = () => {
         console.error("Unable to load data-center inventory; using static fallback.", error);
         return [] as DataCenter[];
       }
-      return (rows || []).map((row: any) => ({
+      return (rows || []).map((row: Record<string, unknown>) => ({
         ...row,
         service_types: Array.isArray(row.service_types) ? row.service_types : [],
         latitude: row.latitude == null ? null : Number(row.latitude),
         longitude: row.longitude == null ? null : Number(row.longitude),
         capacity_mw: row.capacity_mw == null ? null : Number(row.capacity_mw),
         lifecycle_stage: row.lifecycle_stage || "unknown",
-      })) as DataCenter[];
+      })) as unknown as DataCenter[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -128,12 +142,10 @@ const Stats = () => {
   }, [filteredDataCenters]);
 
   // Merge live DB data with static fallback
-  const dbCompanies = data?.companies || [];
-  const dbSegments = data?.segments || [];
-
   const providers: BarChartDataPoint[] = useMemo(() => {
+    const dbCompanies = data?.companies || [];
     if (dbCompanies.length > 0) {
-      return dbCompanies.map((c: any, i: number) => ({
+      return dbCompanies.map((c: { company: string; total_capacity_gw: number }, i: number) => ({
         name: c.company,
         shortName: c.company?.replace(/ *\(.*\)/, "").split(" ").slice(0, 2).join(" "),
         capacity: c.total_capacity_gw,
@@ -141,10 +153,11 @@ const Stats = () => {
       }));
     }
     return topProviders;
-  }, [dbCompanies]);
+  }, [data?.companies]);
 
   // Build donut charts from DB segments, falling back to static data
   const liveDonutCharts = useMemo(() => {
+    const dbSegments = data?.segments || [];
     if (dbSegments.length === 0) return donutCharts;
     const chartMap = new Map<string, { title: string; subtitle: string; segments: { name: string; value: number; color: string }[] }>();
     for (const seg of dbSegments) {
@@ -158,7 +171,7 @@ const Stats = () => {
       });
     }
     return Array.from(chartMap.values());
-  }, [dbSegments]);
+  }, [data?.segments]);
 
   const providerNames = useMemo(() => providers.map((p) => p.name), [providers]);
   const activeCompanies = selectedCompanies.size === 0 ? new Set(providerNames) : selectedCompanies;
@@ -175,24 +188,30 @@ const Stats = () => {
 
   const filteredProviders = providers.filter((p) => activeCompanies.has(p.name));
 
-  // Live metrics from DB with fallback
+  // Live metrics from DB with fallback. isLive tracks whether this specific
+  // card is backed by a real sourced row (vs. the static illustrative
+  // placeholder in marketStats.ts), so the UI can label each one honestly
+  // rather than a single blanket claim for the whole dashboard.
   const liveMetrics = useMemo(() => {
     const cap = data?.capacity?.[0];
     const energy = data?.energy?.[0];
     const inv = data?.investment?.[0];
     return keyMetrics.map((m) => {
       if (m.label === "Global Capacity" && cap) {
-        return { ...m, value: String(cap.total_capacity_gw ?? m.value), trend: `+${cap.growth_rate_pct}%` };
+        return { ...m, value: String(cap.total_capacity_gw ?? m.value), trend: `+${cap.growth_rate_pct}%`, isLive: true };
       }
       if (m.label === "Energy Consumption" && energy) {
-        return { ...m, value: String(energy.consumption_twh ?? m.value), trend: `${energy.percent_of_electricity}%` };
+        return { ...m, value: String(energy.consumption_twh ?? m.value), trend: `${energy.percent_of_electricity}%`, isLive: true };
       }
       if (m.label === "Annual CapEx" && inv) {
-        return { ...m, value: `$${inv.total_investment_usd ?? "600"}`, trend: `+${inv.growth_pct}%` };
+        return { ...m, value: `$${inv.total_investment_usd ?? "600"}`, trend: `+${inv.growth_pct}%`, isLive: true };
       }
-      return m;
+      return { ...m, isLive: false };
     });
   }, [data]);
+
+  const isLiveProviders = (data?.companies?.length ?? 0) > 0;
+  const isLiveDonuts = (data?.segments?.length ?? 0) > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -301,9 +320,12 @@ const Stats = () => {
                   key={metric.label}
                   className="rounded-[4px] border border-border bg-card px-4 py-3"
                 >
-                  <span className="text-[9px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground block mb-1">
-                    {metric.label}
-                  </span>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-[9px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground">
+                      {metric.label}
+                    </span>
+                    <DataSourceTag live={metric.isLive} />
+                  </div>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-black text-foreground leading-none">
                       {metric.value}
@@ -342,6 +364,7 @@ const Stats = () => {
                   <h2 className="text-sm font-bold flex items-center gap-2">
                     <span className="w-[2px] h-4 bg-primary shrink-0" />
                     Top Providers by Capacity
+                    <DataSourceTag live={isLiveProviders} />
                   </h2>
                   <p className="text-[10px] text-muted-foreground ml-3 mt-0.5">
                     Total power capacity in Gigawatts (GW)
@@ -422,7 +445,7 @@ const Stats = () => {
                         fontFamily: "Inter",
                         padding: "8px 12px",
                       }}
-                      formatter={(value: number, _: any, entry: any) => [
+                      formatter={(value: number, _name: string, entry: { payload: { fullName: string } }) => [
                         `${value} GW`,
                         entry.payload.fullName,
                       ]}
@@ -448,7 +471,10 @@ const Stats = () => {
                   key={chart.title}
                   className="rounded-[4px] border border-border bg-card p-5"
                 >
-                  <h3 className="text-xs font-bold text-foreground mb-0.5">{chart.title}</h3>
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <h3 className="text-xs font-bold text-foreground">{chart.title}</h3>
+                    <DataSourceTag live={isLiveDonuts} />
+                  </div>
                   <p className="text-[10px] text-muted-foreground mb-3">{chart.subtitle}</p>
 
                   <div className="flex items-center gap-4">
@@ -510,6 +536,7 @@ const Stats = () => {
               <h2 className="text-sm font-bold flex items-center gap-2 mb-1">
                 <span className="w-[2px] h-4 bg-primary shrink-0" />
                 Annual CapEx Investment Trend
+                <DataSourceTag live={false} />
               </h2>
               <p className="text-[10px] text-muted-foreground ml-3 mb-4">
                 Global data center investment in billions USD

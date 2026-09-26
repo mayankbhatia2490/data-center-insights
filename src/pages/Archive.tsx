@@ -43,7 +43,17 @@ const Archive = () => {
 
       <main className="container py-12 max-w-3xl">
         <h1 className="text-3xl font-black mb-2">Briefing Archive</h1>
-        <p className="text-muted-foreground mb-8">Browse past daily AI-generated intelligence briefings.</p>
+        <p className="text-muted-foreground mb-2">Browse past daily AI-generated intelligence briefings.</p>
+
+        {!isLoading && digests?.length ? (
+          <p className="text-xs text-muted-foreground mb-8">
+            {digests.length} briefing{digests.length === 1 ? "" : "s"} archived · most recent{" "}
+            {new Date(digests[0].digest_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            {" · "}earliest shown{" "}
+            {new Date(digests[digests.length - 1].digest_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            . This is not a complete daily record — gaps below mark days with no briefing generated.
+          </p>
+        ) : null}
 
         {isLoading ? (
           <div className="space-y-6">
@@ -59,32 +69,51 @@ const Archive = () => {
           <p className="text-center text-muted-foreground py-12">No briefings available yet.</p>
         ) : (
           <div className="space-y-6">
-            {digests.map((digest) => (
-              <details
-                key={digest.id}
-                className="group border border-border bg-card hover:border-primary/30 transition-colors"
-              >
-                <summary className="px-6 py-4 cursor-pointer flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Calendar size={16} className="text-primary" />
-                    <span className="font-bold">
-                      {new Date(digest.digest_date).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {digest.article_count} articles analyzed
-                  </span>
-                </summary>
-                <div className="px-6 pb-6 prose prose-invert prose-sm max-w-none">
-                  <ReactMarkdown>{digest.content}</ReactMarkdown>
+            {digests.map((digest, i) => {
+              const prev = digests[i - 1];
+              const gapDays = prev
+                ? Math.round(
+                    (new Date(prev.digest_date).getTime() - new Date(digest.digest_date).getTime()) / (1000 * 60 * 60 * 24)
+                  )
+                : 0;
+              return (
+                <div key={digest.id}>
+                  {gapDays > 1 && (
+                    <div className="flex items-center gap-3 py-3 text-[11px] text-muted-foreground">
+                      <span className="h-px flex-1 bg-border" />
+                      <span>
+                        {gapDays - 1} day{gapDays - 1 === 1 ? "" : "s"} with no briefing generated (
+                        {new Date(digest.digest_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        {" – "}
+                        {new Date(prev.digest_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })})
+                      </span>
+                      <span className="h-px flex-1 bg-border" />
+                    </div>
+                  )}
+                  <details className="group border border-border bg-card hover:border-primary/30 transition-colors">
+                    <summary className="px-6 py-4 cursor-pointer flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Calendar size={16} className="text-primary" />
+                        <span className="font-bold">
+                          {new Date(digest.digest_date).toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {digest.article_count} articles analyzed
+                      </span>
+                    </summary>
+                    <div className="px-6 pb-6 prose prose-invert prose-sm max-w-none">
+                      <ReactMarkdown>{digest.content}</ReactMarkdown>
+                    </div>
+                  </details>
                 </div>
-              </details>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>

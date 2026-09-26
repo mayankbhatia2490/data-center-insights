@@ -166,7 +166,7 @@ const Sidebar = () => {
           <div className="relative">
             <div className="absolute top-[10px] left-0 right-0 h-px bg-border" />
             <div className="flex justify-between gap-2">
-              {displayEvents.map((event: any) => (
+              {displayEvents.map((event: { name: string; location: string | null; date_text: string | null }) => (
                 <div key={event.name} className="relative flex-1 pt-6 group cursor-pointer">
                   <div className="absolute top-[7px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary group-hover:scale-150 transition-transform duration-200" />
                   <div className="text-center">
