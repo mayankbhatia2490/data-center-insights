@@ -12,6 +12,7 @@ const overlap = (a: string, b: string) => { const aa = new Set(tokens(a)); const
 
 const COUNTRIES = ["United Arab Emirates", "Saudi Arabia", "Qatar", "Oman", "Bahrain", "Egypt", "Kuwait"];
 const LLM_LIFECYCLE_STAGES = ["announced", "planned", "under_construction", "operational", "on_hold", "cancelled", "unknown"];
+const LLM_COOLING_TYPES = ["air", "liquid", "hybrid", "immersion", "unknown"];
 const CONFIDENCE_SCORE: Record<string, number> = { high: 80, medium: 55, low: 30 };
 const CONFIDENCE_SEED_SCORE: Record<string, number> = { high: 40, medium: 25, low: 10 };
 
@@ -22,12 +23,19 @@ interface Candidate {
   city_region?: string | null;
   operators?: string[];
   partners?: string[];
+  epcs?: string[];
+  contractors?: string[];
+  consultants?: string[];
   lifecycle_stage?: string;
   capacity_mw?: number | null;
   full_ambition_mw?: number | null;
   power_source?: string;
   power_notes?: string | null;
+  cooling_type?: string | null;
+  cooling_notes?: string | null;
   estimated_energization?: string | null;
+  investment_usd_m?: number | null;
+  investment_notes?: string | null;
   snippet?: string;
   source_url?: string;
   confidence?: string;
@@ -39,6 +47,9 @@ interface ExistingDC {
   aliases: string[] | null;
   operator_name: string | null;
   operators: string[] | null;
+  epcs: string[] | null;
+  contractors: string[] | null;
+  consultants: string[] | null;
   city: string | null;
   lifecycle_stage: string;
   capacity_mw: number | null;
@@ -58,12 +69,19 @@ Return ONLY a valid JSON array (no markdown, no prose). Each object:
   "city_region": string|null,
   "operators": string[],
   "partners": string[],
+  "epcs": string[],
+  "contractors": string[],
+  "consultants": string[],
   "lifecycle_stage": ${LLM_LIFECYCLE_STAGES.map((s) => `"${s}"`).join("|")},
   "capacity_mw": number|null,
   "full_ambition_mw": number|null,
   "power_source": "gas"|"solar"|"nuclear"|"mixed"|"unknown",
   "power_notes": string|null,
+  "cooling_type": ${LLM_COOLING_TYPES.map((c) => `"${c}"`).join("|")}|null,
+  "cooling_notes": string|null,
   "estimated_energization": string|null,
+  "investment_usd_m": number|null,
+  "investment_notes": string|null,
   "snippet": "exact supporting sentence",
   "source_url": string,
   "confidence": "high"|"medium"|"low"
@@ -72,6 +90,8 @@ Return ONLY a valid JSON array (no markdown, no prose). Each object:
 Rules (strict):
 - Prefer IT-load / compute capacity in MW. If only total power or "gigawatt-scale" language is used, set capacity_mw to null and put the claim in power_notes.
 - If a multi-phase or multi-GW campus is mentioned, extract the nearest concrete phase as capacity_mw AND the full campus ambition as full_ambition_mw.
+- Distinguish company roles precisely: "EPC" or "Engineering, Procurement and Construction" goes in epcs. Main/general contractor or construction company goes in contractors. Design, engineering, project management (PMC), power, cooling, or sustainability consultants go in consultants. A company mentioned in multiple roles goes in every array that applies. Only include a company in operators/partners/epcs/contractors/consultants if the text clearly links it to this specific project.
+- investment_usd_m is the disclosed investment/capex figure in millions of USD (convert from other currencies/units if the text gives enough to do so); otherwise null with the raw claim in investment_notes.
 - confidence = "high" only if name, capacity, and lifecycle_stage are all explicit in the text. Otherwise "medium" or "low".
 - country must be one of the listed values; use "OTHER" for anything outside this region.
 - If nothing qualifies, return [].`;
@@ -185,7 +205,7 @@ Deno.serve(async (req) => {
     for (const candidate of candidates) {
       const { data: sameCountry, error: dcError } = await db
         .from("data_centers")
-        .select("id, canonical_name, aliases, operator_name, operators, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
+        .select("id, canonical_name, aliases, operator_name, operators, epcs, contractors, consultants, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
         .eq("country", candidate.country)
         .limit(200);
       if (dcError) throw dcError;
@@ -212,6 +232,9 @@ Deno.serve(async (req) => {
               operators: candidate.operators || [],
               operator_name: candidate.operators?.[0] || null,
               partners: candidate.partners || [],
+              epcs: candidate.epcs || [],
+              contractors: candidate.contractors || [],
+              consultants: candidate.consultants || [],
               country: candidate.country,
               city: candidate.city_region || null,
               lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -221,7 +244,11 @@ Deno.serve(async (req) => {
               capacity_status: candidate.capacity_mw != null ? (candidate.confidence === "high" ? "reported" : "estimated") : candidate.full_ambition_mw != null ? "announced" : "not_disclosed",
               power_source: candidate.power_source || "unknown",
               power_notes: candidate.power_notes || null,
+              cooling_type: LLM_COOLING_TYPES.includes(candidate.cooling_type || "") ? candidate.cooling_type : null,
+              cooling_notes: candidate.cooling_notes || null,
               estimated_energization: candidate.estimated_energization || null,
+              investment_usd_m: candidate.investment_usd_m ?? null,
+              investment_notes: candidate.investment_notes || null,
               extraction_confidence: candidate.confidence || "low",
               verification_status: "needs_review",
               verification_score: seedScore,
@@ -287,6 +314,9 @@ Deno.serve(async (req) => {
             operators: candidate.operators || [],
             operator_name: candidate.operators?.[0] || null,
             partners: candidate.partners || [],
+            epcs: candidate.epcs || [],
+            contractors: candidate.contractors || [],
+            consultants: candidate.consultants || [],
             country: candidate.country,
             city: candidate.city_region || null,
             lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -294,7 +324,11 @@ Deno.serve(async (req) => {
             full_ambition_mw: candidate.full_ambition_mw ?? null,
             capacity_status: candidate.capacity_mw != null ? "estimated" : "not_disclosed",
             power_source: candidate.power_source || "unknown",
+            cooling_type: LLM_COOLING_TYPES.includes(candidate.cooling_type || "") ? candidate.cooling_type : null,
+            cooling_notes: candidate.cooling_notes || null,
             estimated_energization: candidate.estimated_energization || null,
+            investment_usd_m: candidate.investment_usd_m ?? null,
+            investment_notes: candidate.investment_notes || null,
             extraction_confidence: candidate.confidence || "low",
             verification_status: "needs_review",
             verification_score: seedScore,
@@ -327,6 +361,9 @@ Deno.serve(async (req) => {
       const patch: Record<string, unknown> = {
         aliases: unionArrays(best.dc.aliases, candidate.aliases),
         operators: unionArrays(best.dc.operators, candidate.operators),
+        epcs: unionArrays(best.dc.epcs, candidate.epcs),
+        contractors: unionArrays(best.dc.contractors, candidate.contractors),
+        consultants: unionArrays(best.dc.consultants, candidate.consultants),
         extraction_confidence: decision.confidence,
         updated_at: new Date().toISOString(),
       };
