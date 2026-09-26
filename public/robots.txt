@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://pulsefeed-chronicle.lovable.app/sitemap.xml
+Sitemap: https://data-center-insights-fawn.vercel.app/sitemap.xml

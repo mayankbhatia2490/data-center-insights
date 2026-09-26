@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
-const SITE_URL = import.meta.env.VITE_SITE_URL || "https://pulsefeed-chronicle.lovable.app";
+// Update VITE_SITE_URL once the production domain is purchased/finalized.
+const SITE_URL = import.meta.env.VITE_SITE_URL || "https://data-center-insights-fawn.vercel.app";
 const SITE_NAME = "Data Center Pulse";
 
 interface SeoProps {
