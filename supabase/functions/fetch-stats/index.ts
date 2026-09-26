@@ -1,29 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
-
-async function callAI(
-  messages: { role: string; content: string }[],
-  apiKey: string,
-  model = "gemini-3.1-flash-lite"
-): Promise<string> {
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ model, messages }),
-  });
-  if (!res.ok) throw new Error(`AI error ${res.status}`);
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() || "";
-}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -37,7 +20,6 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const apiKey = Deno.env.get("GEMINI_API_KEY")!;
 
     // Get recent articles for context
     const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -67,7 +49,7 @@ Example: {"global_capacity_gw":35,"growth_rate_pct":12,"energy_consumption_twh":
         role: "user",
         content: `Recent industry context:\n${JSON.stringify((articles || []).slice(0, 20).map(a => a.title))}`,
       },
-    ], apiKey);
+    ]);
 
     let stats: any = null;
     try {

@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,9 +17,6 @@ Deno.serve(async (req) => {
   if (authError) return authError;
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -55,15 +53,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-3.5-flash",
-        messages: [
+    let digest: string;
+    try {
+      digest = await callAI(
+        [
           {
             role: "system",
             content: `You are a senior data center market analyst writing a morning intelligence briefing.
@@ -111,20 +104,15 @@ Focus on interpretation, not listing news.`,
             content: `Generate today's intelligence briefing from these articles:\n\n${JSON.stringify(articles)}`,
           },
         ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("AI error:", response.status, errText);
+        "gemini-3.5-flash"
+      );
+    } catch (err) {
+      console.error("AI error:", err);
       return new Response(
         JSON.stringify({ success: false, error: "AI generation failed" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    const aiData = await response.json();
-    const digest = aiData.choices?.[0]?.message?.content;
 
     if (!digest) {
       return new Response(

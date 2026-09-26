@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,9 +16,6 @@ Deno.serve(async (req) => {
   if (authError) return authError;
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
-
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -48,55 +46,35 @@ Deno.serve(async (req) => {
 
           // Backfill insight if missing
           if (!a.insight) {
-            const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${GEMINI_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                model: "gemini-3.1-flash-lite",
-                messages: [
-                  {
-                    role: "system",
-                    content: `You are an industry analyst. Explain in 1–2 sentences why this news matters to the data center industry. Focus on: investment impact, infrastructure demand, power or cooling implications, geopolitical or regulatory risk. Output ONLY the insight sentence(s), no prefix.`,
-                  },
-                  { role: "user", content: `Title: ${a.title}\nSummary: ${a.summary || ""}` },
-                ],
-              }),
-            });
-            if (res.ok) {
-              const data = await res.json();
-              const insight = data.choices?.[0]?.message?.content?.trim();
+            try {
+              const insight = await callAI([
+                {
+                  role: "system",
+                  content: `You are an industry analyst. Explain in 1–2 sentences why this news matters to the data center industry. Focus on: investment impact, infrastructure demand, power or cooling implications, geopolitical or regulatory risk. Output ONLY the insight sentence(s), no prefix.`,
+                },
+                { role: "user", content: `Title: ${a.title}\nSummary: ${a.summary || ""}` },
+              ]);
               if (insight) updates.insight = insight;
+            } catch (err) {
+              console.warn("Insight backfill failed for", a.id, err);
             }
           }
 
           // Backfill sentiment if missing
           if (!a.sentiment) {
-            const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${GEMINI_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                model: "gemini-3.1-flash-lite",
-                messages: [
-                  {
-                    role: "system",
-                    content: `You are a financial sentiment classifier for the data center industry. Classify as exactly one of: Bullish, Bearish, or Neutral. Respond with ONLY that single word.`,
-                  },
-                  { role: "user", content: `Title: ${a.title}\nSummary: ${a.summary || ""}` },
-                ],
-              }),
-            });
-            if (res.ok) {
-              const data = await res.json();
-              const raw = data.choices?.[0]?.message?.content?.trim()?.toLowerCase();
+            try {
+              const raw = (await callAI([
+                {
+                  role: "system",
+                  content: `You are a financial sentiment classifier for the data center industry. Classify as exactly one of: Bullish, Bearish, or Neutral. Respond with ONLY that single word.`,
+                },
+                { role: "user", content: `Title: ${a.title}\nSummary: ${a.summary || ""}` },
+              ])).toLowerCase();
               if (raw?.includes("bullish")) updates.sentiment = "Bullish";
               else if (raw?.includes("bearish")) updates.sentiment = "Bearish";
               else if (raw?.includes("neutral")) updates.sentiment = "Neutral";
+            } catch (err) {
+              console.warn("Sentiment backfill failed for", a.id, err);
             }
           }
 
