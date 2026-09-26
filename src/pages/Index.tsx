@@ -100,14 +100,14 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Data Center Pulse",
-            url: "https://pulsefeed-chronicle.lovable.app/",
+            url: import.meta.env.VITE_SITE_URL || "https://data-center-insights-fawn.vercel.app/",
             description: "The leading source for MENA data center news, market intelligence, and infrastructure trends.",
           },
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Data Center Pulse",
-            url: "https://pulsefeed-chronicle.lovable.app/",
+            url: import.meta.env.VITE_SITE_URL || "https://data-center-insights-fawn.vercel.app/",
           },
         ]}
       />

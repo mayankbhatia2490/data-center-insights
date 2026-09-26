@@ -68,7 +68,7 @@ const HeroSection = () => {
         <div className="flex items-center gap-4 mb-6 text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <BarChart3 size={12} className="text-primary" />
-            <span className="text-foreground font-semibold">{articleCount}</span> stories analyzed today
+            <span className="text-foreground font-semibold">{articleCount}</span> latest stories loaded
           </span>
           {latestDate && (
             <>

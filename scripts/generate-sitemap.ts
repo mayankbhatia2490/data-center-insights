@@ -10,7 +10,8 @@ try {
   // .env is optional (e.g. CI may inject env vars directly)
 }
 
-const BASE_URL = process.env.SITE_URL || "https://pulsefeed-chronicle.lovable.app";
+// Update SITE_URL once the production domain is purchased/finalized.
+const BASE_URL = process.env.SITE_URL || "https://data-center-insights-fawn.vercel.app";
 
 interface SitemapEntry {
   path: string;
