@@ -8,7 +8,7 @@ export type DataCenter = {
   latitude: number;
   longitude: number;
   location_precision: "exact" | "approximate" | "city_centroid" | "market" | "restricted" | "undisclosed";
-  lifecycle_stage: "land_banked" | "planned" | "under_construction" | "operational" | "decommissioned" | "unknown";
+  lifecycle_stage: "land_banked" | "planned" | "under_construction" | "operational" | "announced" | "on_hold" | "decommissioned" | "cancelled" | "unknown";
   service_types: string[];
   capacity_mw: number | null;
   capacity_basis: string | null;

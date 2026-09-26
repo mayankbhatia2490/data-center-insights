@@ -8,7 +8,7 @@ import DataCenterMap from "@/components/DataCenterMap";
 import type { DataCenter } from "@/data/gccDataCenters";
 import { atlasMiddleEastDataCenters } from "@/data/atlasDataCenters";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart3, TrendingUp, TrendingDown, Minus, ArrowRight } from "lucide-react";
+import { BarChart3, TrendingUp, TrendingDown, Minus, ArrowRight, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -76,17 +76,36 @@ const Stats = () => {
   const { data: dbDataCenters } = useQuery({
     queryKey: ["gcc-data-centers"],
     queryFn: async () => {
-      // New table is added by the data-center migration; cast is temporary
-      // until Supabase types are regenerated from the live schema.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const db = supabase as any;
-      const { data: rows, error } = await db.from("data_centers").select("id,canonical_name,operator_name,listing_type,parent_id,lifecycle_stage,service_types,country,market,city,address,latitude,longitude,location_precision,capacity_mw,capacity_basis,capacity_status,whitespace_sqm,year_operational,pue,tier_design,site_code,verification_status,verification_score,first_seen_at,last_verified_at,created_at,updated_at,external_id,external_parent_id,company_id,profile_url,website_url,capacity_type,address_details,postal,state,total_building_size,ecosystem_stats").order("country").order("city").order("canonical_name");
+      const { data: rows, error } = await supabase
+        .from("data_centers")
+        .select("id,canonical_name,listing_type,parent_id,lifecycle_stage,service_types,country,market,city,address,latitude,longitude,location_precision,capacity_mw,capacity_basis,capacity_status,whitespace_sqm,year_operational,pue,tier_design,site_code,verification_status,verification_score,first_seen_at,last_verified_at,created_at,updated_at,external_id,external_parent_id,company_id,profile_url,website_url,capacity_type,address_details,postal,state,total_building_size,ecosystem_stats")
+        .order("country")
+        .order("city")
+        .order("canonical_name");
       if (error) {
         console.error("Unable to load data-center inventory; using static fallback.", error);
         return [] as DataCenter[];
       }
-      return (rows || []).map((row: Record<string, unknown>) => ({
+
+      // Operator names now live in companies/data_center_companies rather
+      // than a column on data_centers; fetch them in one batched query and
+      // fold the first operator per facility back into the shape the
+      // map/list UI expects.
+      const ids = (rows || []).map((r) => r.id);
+      const { data: operatorLinks } = ids.length
+        ? await supabase.from("data_center_companies").select("data_center_id, company:companies(name)").eq("role", "operator").in("data_center_id", ids)
+        : { data: [] };
+      const operatorByDc = new Map<string, string>();
+      for (const l of operatorLinks || []) {
+        if (!operatorByDc.has(l.data_center_id) && l.company?.name) operatorByDc.set(l.data_center_id, l.company.name);
+      }
+
+      // DB columns are CHECK-constrained TEXT, not Postgres enums, so the
+      // generated types widen them to `string`; this narrows back to the
+      // literal unions the map/list UI relies on.
+      return (rows || []).map((row) => ({
         ...row,
+        operator_name: operatorByDc.get(row.id) || null,
         service_types: Array.isArray(row.service_types) ? row.service_types : [],
         latitude: row.latitude == null ? null : Number(row.latitude),
         longitude: row.longitude == null ? null : Number(row.longitude),
@@ -263,14 +282,24 @@ const Stats = () => {
             <div className="max-h-[490px] overflow-y-auto rounded-[4px] border border-border">
               {filteredDataCenters.length === 0 ? <p className="p-5 text-sm text-muted-foreground">No facilities match these filters.</p> : filteredDataCenters.map((item) => (
                 <button key={item.id} onClick={() => setSelectedDataCenter(item.id)} className={`block w-full border-b border-border/70 p-3 text-left transition-colors last:border-0 hover:bg-secondary/50 ${selectedDataCenter === item.id ? "bg-primary/5" : ""}`}>
-                  <div className="flex items-start justify-between gap-2"><span className="text-xs font-bold text-foreground">{item.canonical_name}</span><span className={`shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${item.lifecycle_stage === "operational" ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}>{item.lifecycle_stage.replaceAll("_", " ")}</span></div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-xs font-bold text-foreground flex items-center gap-1">
+                      {item.canonical_name}
+                      {item.verification_status === "verified" ? (
+                        <ShieldCheck size={11} className="text-accent shrink-0" aria-label="Verified" />
+                      ) : (
+                        <AlertTriangle size={11} className="text-muted-foreground shrink-0" aria-label="Awaiting review" />
+                      )}
+                    </span>
+                    <span className={`shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${item.lifecycle_stage === "operational" ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}>{item.lifecycle_stage.replace(/_/g, " ")}</span>
+                  </div>
                   <p className="mt-1 text-[10px] text-muted-foreground">{item.operator_name || "Operator not disclosed"} · {item.city || item.market}, {item.country}</p>
                   <div className="mt-2 flex items-center justify-between text-[10px]"><span className="text-muted-foreground">{item.service_types?.slice(0, 3).join(" · ")}</span><strong className="text-foreground">{item.capacity_mw ? `${item.capacity_mw} MW` : "Capacity n/d"}</strong></div>
                 </button>
               ))}
             </div>
           </div>
-          <p className="mt-3 text-[10px] text-muted-foreground">Inventory status is evidence-aware. “Capacity n/d” means the facility exists in the index but no facility-level MW value has been confirmed yet; it is not treated as zero.</p>
+          <p className="mt-3 text-[10px] text-muted-foreground">Inventory status is evidence-aware. “Capacity n/d” means the facility exists in the index but no facility-level MW value has been confirmed yet; it is not treated as zero. <ShieldCheck size={10} className="inline text-accent align-text-bottom" /> marks a facility whose sources passed automated verification; <AlertTriangle size={10} className="inline align-text-bottom" /> means evidence is still awaiting review.</p>
           <p className="mt-2 text-[10px] text-muted-foreground">Location inventory: <a className="underline hover:text-foreground" href="https://github.com/Ringmast4r/Global-Data-Center-Map" target="_blank" rel="noopener noreferrer">Data centers (c) Ringmast4r — Global Data Center Map</a>. Coordinates are approximate where the source provides only city or market precision.</p>
         </section>
 

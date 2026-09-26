@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireCronSecret } from "../_shared/cronAuth.ts";
 
 const headers = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
@@ -19,17 +20,22 @@ async function fetchSource(url: string) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers });
+
+  const authError = await requireCronSecret(req, headers);
+  if (authError) return authError;
+
   try {
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { data: sources, error } = await db.from("data_center_sources").select("id, data_center_id, source_url, source_name, observed_capacity_mw, observed_lifecycle_stage, data_centers(canonical_name, operator_name, country, city)").eq("review_status", "pending").limit(100);
+    const { data: sources, error } = await db.from("data_center_sources").select("id, data_center_id, source_url, source_name, observed_capacity_mw, observed_lifecycle_stage, data_centers(canonical_name, country, city, data_center_companies(role, company:companies(name)))").eq("review_status", "pending").limit(100);
     if (error) throw error;
     let checked = 0; let queued = 0; let accepted = 0;
     for (const source of sources || []) {
       if (!source.source_url) continue;
       const dc = Array.isArray(source.data_centers) ? source.data_centers[0] : source.data_centers;
+      const operatorName = (dc?.data_center_companies || []).find((l: { role: string; company: { name: string } | null }) => l.role === "operator")?.company?.name;
       const result = await fetchSource(source.source_url);
       const body = `${source.source_name}\n${result.body}`;
-      const checks = { source_reachable: result.ok, facility_name_found: has(body, dc?.canonical_name), operator_found: has(body, dc?.operator_name), city_found: has(body, dc?.city), capacity_supported: source.observed_capacity_mw != null };
+      const checks = { source_reachable: result.ok, facility_name_found: has(body, dc?.canonical_name), operator_found: has(body, operatorName), city_found: has(body, dc?.city), capacity_supported: source.observed_capacity_mw != null };
       const score = (checks.source_reachable ? 30 : 0) + (checks.facility_name_found ? 30 : 0) + (checks.operator_found ? 15 : 0) + (checks.city_found ? 10 : 0) + (checks.capacity_supported ? 15 : 0);
       const acceptedResult = score >= 75;
       await db.from("data_center_sources").update({ checked_at: new Date().toISOString(), automated_score: score, review_status: acceptedResult ? "accepted" : "pending" }).eq("id", source.id);

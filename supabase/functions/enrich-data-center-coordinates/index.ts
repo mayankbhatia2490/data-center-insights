@@ -21,8 +21,16 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers });
   try {
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { data: facilities, error } = await db.from("data_centers").select("id,canonical_name,operator_name,country,city,latitude,longitude,address").is("latitude", null).in("country", Object.keys(COUNTRY_BBOX)).limit(100);
+    const { data: facilities, error } = await db.from("data_centers").select("id,canonical_name,country,city,latitude,longitude,address").is("latitude", null).in("country", Object.keys(COUNTRY_BBOX)).limit(100);
     if (error) throw error;
+    const facilityIds = (facilities || []).map((f) => f.id);
+    const { data: operatorLinks } = facilityIds.length
+      ? await db.from("data_center_companies").select("data_center_id, company:companies(name)").eq("role", "operator").in("data_center_id", facilityIds)
+      : { data: [] };
+    const operatorByDc = new Map<string, string>();
+    for (const l of operatorLinks || []) {
+      if (!operatorByDc.has(l.data_center_id) && l.company?.name) operatorByDc.set(l.data_center_id, l.company.name);
+    }
     const byCountry = new Map<string, any[]>();
     for (const f of facilities || []) byCountry.set(f.country, [...(byCountry.get(f.country) || []), f]);
     let queried = 0, candidates = 0, enriched = 0;
@@ -30,10 +38,11 @@ Deno.serve(async (req) => {
       const payload = await queryOverpass(COUNTRY_BBOX[country]); queried++;
       const elements = Array.isArray(payload.elements) ? payload.elements : [];
       for (const f of missing) {
+        const operatorName = operatorByDc.get(f.id);
         let best: any = null; let bestScore = 0;
         for (const e of elements) {
           const t = e.tags || {}; const name = t.name || t["name:en"] || ""; const op = t.operator || t.owner || "";
-          const score = Math.min(60, overlap(f.canonical_name, name) * 20) + (f.operator_name && overlap(f.operator_name, op) > 0 ? 20 : 0) + (f.city && overlap(f.city, `${name} ${t["addr:city"] || ""}`) > 0 ? 10 : 0) + (t.telecom === "data_center" || t.man_made === "data_center" ? 10 : 0);
+          const score = Math.min(60, overlap(f.canonical_name, name) * 20) + (operatorName && overlap(operatorName, op) > 0 ? 20 : 0) + (f.city && overlap(f.city, `${name} ${t["addr:city"] || ""}`) > 0 ? 10 : 0) + (t.telecom === "data_center" || t.man_made === "data_center" ? 10 : 0);
           if (score > bestScore) bestScore = score, best = { e, name, op };
         }
         if (!best || bestScore < 60) continue;

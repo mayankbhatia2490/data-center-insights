@@ -119,6 +119,39 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          aliases: string[]
+          country: string | null
+          created_at: string
+          id: string
+          name: string
+          name_key: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          aliases?: string[]
+          country?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          name_key?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          aliases?: string[]
+          country?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          name_key?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       company_capacity: {
         Row: {
           capacity_mw: number | null
@@ -173,6 +206,276 @@ export type Database = {
           created_at?: string
           digest_date?: string
           id?: string
+        }
+        Relationships: []
+      }
+      data_center_companies: {
+        Row: {
+          company_id: string
+          created_at: string
+          data_center_id: string
+          id: string
+          role: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          data_center_id: string
+          id?: string
+          role: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          data_center_id?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_center_companies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_center_companies_data_center_id_fkey"
+            columns: ["data_center_id"]
+            isOneToOne: false
+            referencedRelation: "data_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_center_sources: {
+        Row: {
+          automated_score: number
+          checked_at: string | null
+          created_at: string
+          data_center_id: string
+          evidence_excerpt: string | null
+          id: string
+          observed_capacity_mw: number | null
+          observed_lifecycle_stage: string | null
+          review_status: string
+          source_name: string
+          source_title: string | null
+          source_type: string
+          source_url: string | null
+        }
+        Insert: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name: string
+          source_title?: string | null
+          source_type: string
+          source_url?: string | null
+        }
+        Update: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id?: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name?: string
+          source_title?: string | null
+          source_type?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      data_center_status_history: {
+        Row: {
+          changed_at: string
+          data_center_id: string
+          id: string
+          lifecycle_stage: string
+          note: string | null
+          source_id: string | null
+        }
+        Insert: {
+          changed_at?: string
+          data_center_id: string
+          id?: string
+          lifecycle_stage: string
+          note?: string | null
+          source_id?: string | null
+        }
+        Update: {
+          changed_at?: string
+          data_center_id?: string
+          id?: string
+          lifecycle_stage?: string
+          note?: string | null
+          source_id?: string | null
+        }
+        Relationships: []
+      }
+      data_centers: {
+        Row: {
+          address: string | null
+          address_details: string | null
+          aliases: string[]
+          canonical_name: string
+          capacity_basis: string | null
+          capacity_mw: number | null
+          capacity_status: string
+          capacity_type: string | null
+          city: string | null
+          company_id: string | null
+          cooling_notes: string | null
+          cooling_type: string | null
+          country: string
+          created_at: string
+          ecosystem_stats: Json
+          estimated_energization: string | null
+          external_id: string | null
+          external_parent_id: string | null
+          extraction_confidence: string | null
+          first_seen_at: string
+          full_ambition_mw: number | null
+          id: string
+          investment_notes: string | null
+          investment_usd_m: number | null
+          last_verified_at: string | null
+          latitude: number | null
+          lifecycle_stage: string
+          listing_type: string
+          location_precision: string
+          longitude: number | null
+          market: string | null
+          parent_id: string | null
+          postal: string | null
+          power_notes: string | null
+          power_source: string | null
+          profile_url: string | null
+          pue: number | null
+          risks: string[]
+          service_types: string[]
+          site_code: string | null
+          state: string | null
+          tier_design: string | null
+          total_building_size: number | null
+          updated_at: string
+          verification_score: number
+          verification_status: string
+          website_url: string | null
+          whitespace_sqm: number | null
+          year_operational: number | null
+        }
+        Insert: {
+          address?: string | null
+          address_details?: string | null
+          aliases?: string[]
+          canonical_name: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          capacity_type?: string | null
+          city?: string | null
+          company_id?: string | null
+          cooling_notes?: string | null
+          cooling_type?: string | null
+          country: string
+          created_at?: string
+          ecosystem_stats?: Json
+          estimated_energization?: string | null
+          external_id?: string | null
+          external_parent_id?: string | null
+          extraction_confidence?: string | null
+          first_seen_at?: string
+          full_ambition_mw?: number | null
+          id?: string
+          investment_notes?: string | null
+          investment_usd_m?: number | null
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          parent_id?: string | null
+          postal?: string | null
+          power_notes?: string | null
+          power_source?: string | null
+          profile_url?: string | null
+          pue?: number | null
+          risks?: string[]
+          service_types?: string[]
+          site_code?: string | null
+          state?: string | null
+          tier_design?: string | null
+          total_building_size?: number | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          website_url?: string | null
+          whitespace_sqm?: number | null
+          year_operational?: number | null
+        }
+        Update: {
+          address?: string | null
+          address_details?: string | null
+          aliases?: string[]
+          canonical_name?: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          capacity_type?: string | null
+          city?: string | null
+          company_id?: string | null
+          cooling_notes?: string | null
+          cooling_type?: string | null
+          country?: string
+          created_at?: string
+          ecosystem_stats?: Json
+          estimated_energization?: string | null
+          external_id?: string | null
+          external_parent_id?: string | null
+          extraction_confidence?: string | null
+          first_seen_at?: string
+          full_ambition_mw?: number | null
+          id?: string
+          investment_notes?: string | null
+          investment_usd_m?: number | null
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          parent_id?: string | null
+          postal?: string | null
+          power_notes?: string | null
+          power_source?: string | null
+          profile_url?: string | null
+          pue?: number | null
+          risks?: string[]
+          service_types?: string[]
+          site_code?: string | null
+          state?: string | null
+          tier_design?: string | null
+          total_building_size?: number | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          website_url?: string | null
+          whitespace_sqm?: number | null
+          year_operational?: number | null
         }
         Relationships: []
       }

@@ -12,6 +12,7 @@ const overlap = (a: string, b: string) => { const aa = new Set(tokens(a)); const
 
 const COUNTRIES = ["United Arab Emirates", "Saudi Arabia", "Qatar", "Oman", "Bahrain", "Egypt", "Kuwait"];
 const LLM_LIFECYCLE_STAGES = ["announced", "planned", "under_construction", "operational", "on_hold", "cancelled", "unknown"];
+const LLM_COOLING_TYPES = ["air", "liquid", "hybrid", "immersion", "unknown"];
 const CONFIDENCE_SCORE: Record<string, number> = { high: 80, medium: 55, low: 30 };
 const CONFIDENCE_SEED_SCORE: Record<string, number> = { high: 40, medium: 25, low: 10 };
 
@@ -22,28 +23,42 @@ interface Candidate {
   city_region?: string | null;
   operators?: string[];
   partners?: string[];
+  epcs?: string[];
+  contractors?: string[];
+  consultants?: string[];
   lifecycle_stage?: string;
   capacity_mw?: number | null;
   full_ambition_mw?: number | null;
   power_source?: string;
   power_notes?: string | null;
+  cooling_type?: string | null;
+  cooling_notes?: string | null;
   estimated_energization?: string | null;
+  investment_usd_m?: number | null;
+  investment_notes?: string | null;
   snippet?: string;
   source_url?: string;
   confidence?: string;
 }
 
+type CompanyRole = "operator" | "partner" | "epc" | "contractor" | "consultant";
+
 interface ExistingDC {
   id: string;
   canonical_name: string;
   aliases: string[] | null;
-  operator_name: string | null;
-  operators: string[] | null;
   city: string | null;
   lifecycle_stage: string;
   capacity_mw: number | null;
   verification_status: string;
   verification_score: number;
+  data_center_companies: { role: string; company: { name: string } | null }[] | null;
+}
+
+function companyNamesByRole(dc: ExistingDC, role: CompanyRole): string[] {
+  return (dc.data_center_companies || [])
+    .filter((l) => l.role === role && l.company?.name)
+    .map((l) => l.company!.name);
 }
 
 const EXTRACTION_SYSTEM = `You are a precise data-center intelligence extractor focused only on the Middle East (${COUNTRIES.join(", ")}).
@@ -58,12 +73,19 @@ Return ONLY a valid JSON array (no markdown, no prose). Each object:
   "city_region": string|null,
   "operators": string[],
   "partners": string[],
+  "epcs": string[],
+  "contractors": string[],
+  "consultants": string[],
   "lifecycle_stage": ${LLM_LIFECYCLE_STAGES.map((s) => `"${s}"`).join("|")},
   "capacity_mw": number|null,
   "full_ambition_mw": number|null,
   "power_source": "gas"|"solar"|"nuclear"|"mixed"|"unknown",
   "power_notes": string|null,
+  "cooling_type": ${LLM_COOLING_TYPES.map((c) => `"${c}"`).join("|")}|null,
+  "cooling_notes": string|null,
   "estimated_energization": string|null,
+  "investment_usd_m": number|null,
+  "investment_notes": string|null,
   "snippet": "exact supporting sentence",
   "source_url": string,
   "confidence": "high"|"medium"|"low"
@@ -72,6 +94,8 @@ Return ONLY a valid JSON array (no markdown, no prose). Each object:
 Rules (strict):
 - Prefer IT-load / compute capacity in MW. If only total power or "gigawatt-scale" language is used, set capacity_mw to null and put the claim in power_notes.
 - If a multi-phase or multi-GW campus is mentioned, extract the nearest concrete phase as capacity_mw AND the full campus ambition as full_ambition_mw.
+- Distinguish company roles precisely: "EPC" or "Engineering, Procurement and Construction" goes in epcs. Main/general contractor or construction company goes in contractors. Design, engineering, project management (PMC), power, cooling, or sustainability consultants go in consultants. A company mentioned in multiple roles goes in every array that applies. Only include a company in operators/partners/epcs/contractors/consultants if the text clearly links it to this specific project.
+- investment_usd_m is the disclosed investment/capex figure in millions of USD (convert from other currencies/units if the text gives enough to do so); otherwise null with the raw claim in investment_notes.
 - confidence = "high" only if name, capacity, and lifecycle_stage are all explicit in the text. Otherwise "medium" or "low".
 - country must be one of the listed values; use "OTHER" for anything outside this region.
 - If nothing qualifies, return [].`;
@@ -122,7 +146,7 @@ function scoreMatch(candidate: Candidate, existing: ExistingDC): number {
   const nameScore = Math.min(55, nameOverlap * 18);
 
   const candidateOperators = candidate.operators || [];
-  const existingOperators = [existing.operator_name, ...(existing.operators || [])].filter(Boolean) as string[];
+  const existingOperators = companyNamesByRole(existing, "operator");
   const operatorScore = candidateOperators.some((op) => existingOperators.some((eo) => overlap(op, eo) > 0)) ? 20 : 0;
 
   const cityScore = candidate.city_region && existing.city && overlap(candidate.city_region, existing.city) > 0 ? 10 : 0;
@@ -147,6 +171,37 @@ function sourceNameFromUrl(url?: string): string {
 
 function unionArrays(a: string[] | null | undefined, b: string[] | undefined): string[] {
   return [...new Set([...(a || []), ...(b || [])].filter(Boolean))];
+}
+
+// Resolves each extracted company name to a companies row (get-or-create on
+// name_key, so casing differences collapse to one company) and links it to
+// this data_center with the given role. This is now the only place company
+// involvement is recorded - the legacy operator_name/operators/partners/
+// epcs/contractors/consultants columns on data_centers have been dropped.
+async function syncCompanyLinks(
+  // deno-lint-ignore no-explicit-any
+  db: any,
+  dataCenterId: string,
+  roleNames: Record<CompanyRole, string[]>
+) {
+  for (const role of Object.keys(roleNames) as CompanyRole[]) {
+    const names = [...new Set(roleNames[role].map((n) => n.trim()).filter(Boolean))];
+    for (const name of names) {
+      const { data: company, error: companyError } = await db
+        .from("companies")
+        .upsert({ name }, { onConflict: "name_key" })
+        .select("id")
+        .single();
+      if (companyError || !company) { console.error("company upsert error", companyError); continue; }
+      const { error: linkError } = await db
+        .from("data_center_companies")
+        .upsert(
+          { data_center_id: dataCenterId, company_id: company.id, role },
+          { onConflict: "data_center_id,company_id,role" }
+        );
+      if (linkError) console.error("company link error", linkError);
+    }
+  }
 }
 
 Deno.serve(async (req) => {
@@ -185,7 +240,7 @@ Deno.serve(async (req) => {
     for (const candidate of candidates) {
       const { data: sameCountry, error: dcError } = await db
         .from("data_centers")
-        .select("id, canonical_name, aliases, operator_name, operators, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
+        .select("id, canonical_name, aliases, city, lifecycle_stage, capacity_mw, verification_status, verification_score, data_center_companies(role, company:companies(name))")
         .eq("country", candidate.country)
         .limit(200);
       if (dcError) throw dcError;
@@ -209,9 +264,6 @@ Deno.serve(async (req) => {
             {
               canonical_name: candidate.name,
               aliases: candidate.aliases || [],
-              operators: candidate.operators || [],
-              operator_name: candidate.operators?.[0] || null,
-              partners: candidate.partners || [],
               country: candidate.country,
               city: candidate.city_region || null,
               lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -221,7 +273,11 @@ Deno.serve(async (req) => {
               capacity_status: candidate.capacity_mw != null ? (candidate.confidence === "high" ? "reported" : "estimated") : candidate.full_ambition_mw != null ? "announced" : "not_disclosed",
               power_source: candidate.power_source || "unknown",
               power_notes: candidate.power_notes || null,
+              cooling_type: LLM_COOLING_TYPES.includes(candidate.cooling_type || "") ? candidate.cooling_type : null,
+              cooling_notes: candidate.cooling_notes || null,
               estimated_energization: candidate.estimated_energization || null,
+              investment_usd_m: candidate.investment_usd_m ?? null,
+              investment_notes: candidate.investment_notes || null,
               extraction_confidence: candidate.confidence || "low",
               verification_status: "needs_review",
               verification_score: seedScore,
@@ -244,6 +300,13 @@ Deno.serve(async (req) => {
             automated_score: confidenceScore,
             review_status: "pending",
           });
+          await syncCompanyLinks(db, inserted.id, {
+            operator: candidate.operators || [],
+            partner: candidate.partners || [],
+            epc: candidate.epcs || [],
+            contractor: candidate.contractors || [],
+            consultant: candidate.consultants || [],
+          });
           created++;
         }
         continue;
@@ -258,7 +321,7 @@ Deno.serve(async (req) => {
           content: JSON.stringify({
             existing: {
               name: best.dc.canonical_name,
-              operator: best.dc.operator_name,
+              operator: companyNamesByRole(best.dc, "operator")[0] || null,
               city: best.dc.city,
               lifecycle_stage: best.dc.lifecycle_stage,
               capacity_mw: best.dc.capacity_mw,
@@ -280,13 +343,10 @@ Deno.serve(async (req) => {
         // canonical_name (append operator/city to disambiguate).
         const disambiguated = candidate.operators?.[0] ? `${candidate.name} (${candidate.operators[0]})` : candidate.name;
         const seedScore = CONFIDENCE_SEED_SCORE[candidate.confidence || "low"] ?? 10;
-        const { error: insertError } = await db.from("data_centers").upsert(
+        const { data: disambiguatedInserted, error: insertError } = await db.from("data_centers").upsert(
           {
             canonical_name: disambiguated,
             aliases: candidate.aliases || [],
-            operators: candidate.operators || [],
-            operator_name: candidate.operators?.[0] || null,
-            partners: candidate.partners || [],
             country: candidate.country,
             city: candidate.city_region || null,
             lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -294,15 +354,28 @@ Deno.serve(async (req) => {
             full_ambition_mw: candidate.full_ambition_mw ?? null,
             capacity_status: candidate.capacity_mw != null ? "estimated" : "not_disclosed",
             power_source: candidate.power_source || "unknown",
+            cooling_type: LLM_COOLING_TYPES.includes(candidate.cooling_type || "") ? candidate.cooling_type : null,
+            cooling_notes: candidate.cooling_notes || null,
             estimated_energization: candidate.estimated_energization || null,
+            investment_usd_m: candidate.investment_usd_m ?? null,
+            investment_notes: candidate.investment_notes || null,
             extraction_confidence: candidate.confidence || "low",
             verification_status: "needs_review",
             verification_score: seedScore,
             location_precision: "undisclosed",
           },
           { onConflict: "canonical_name,country", ignoreDuplicates: true }
-        );
+        ).select("id").maybeSingle();
         if (!insertError) created++;
+        if (disambiguatedInserted?.id) {
+          await syncCompanyLinks(db, disambiguatedInserted.id, {
+            operator: candidate.operators || [],
+            partner: candidate.partners || [],
+            epc: candidate.epcs || [],
+            contractor: candidate.contractors || [],
+            consultant: candidate.consultants || [],
+          });
+        }
         continue;
       }
 
@@ -326,7 +399,6 @@ Deno.serve(async (req) => {
 
       const patch: Record<string, unknown> = {
         aliases: unionArrays(best.dc.aliases, candidate.aliases),
-        operators: unionArrays(best.dc.operators, candidate.operators),
         extraction_confidence: decision.confidence,
         updated_at: new Date().toISOString(),
       };
@@ -365,6 +437,16 @@ Deno.serve(async (req) => {
           note: decision.reason || null,
         });
       }
+      // Additive: the join table accumulates company links across mentions,
+      // so this only needs the names surfaced by this candidate - it doesn't
+      // need to re-union against best.dc's existing links.
+      await syncCompanyLinks(db, best.dc.id, {
+        operator: candidate.operators || [],
+        partner: candidate.partners || [],
+        epc: candidate.epcs || [],
+        contractor: candidate.contractors || [],
+        consultant: candidate.consultants || [],
+      });
       updated++;
     }
 
