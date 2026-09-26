@@ -30,19 +30,24 @@ const stageLabel: Record<string, string> = {
   unknown: "Unknown",
 };
 
-const CompanyRoleGroup = ({ label, names }: { label: string; names: string[] }) => {
-  if (!names || names.length === 0) return null;
+interface CompanyLink {
+  id: string;
+  name: string;
+}
+
+const CompanyRoleGroup = ({ label, companies }: { label: string; companies: CompanyLink[] }) => {
+  if (!companies || companies.length === 0) return null;
   return (
     <div>
       <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">{label}</div>
       <div className="flex flex-wrap gap-1.5">
-        {names.map((name) => (
+        {companies.map((company) => (
           <Link
-            key={name}
-            to={`/companies/${encodeURIComponent(name)}`}
+            key={company.id}
+            to={`/companies/${company.id}`}
             className="text-xs font-medium text-foreground bg-secondary hover:bg-primary/10 hover:text-primary transition-colors px-2.5 py-1 rounded-[4px] no-underline"
           >
-            {name}
+            {company.name}
           </Link>
         ))}
       </div>
@@ -77,7 +82,12 @@ const DataCenterProfile = () => {
         .order("created_at", { ascending: false })
         .limit(20);
 
-      return { dc, history: history || [], sources: sources || [] };
+      const { data: companyLinks } = await supabase
+        .from("data_center_companies")
+        .select("role, company:companies(id, name)")
+        .eq("data_center_id", id!);
+
+      return { dc, history: history || [], sources: sources || [], companyLinks: companyLinks || [] };
     },
     enabled: !!id,
   });
@@ -85,10 +95,9 @@ const DataCenterProfile = () => {
   const dc = data?.dc;
   const history = data?.history || [];
   const sources = data?.sources || [];
-
-  const operatorNames = Array.from(
-    new Set([dc?.operator_name, ...(dc?.operators || [])].filter(Boolean) as string[])
-  );
+  const companyLinks = (data?.companyLinks || []) as unknown as { role: string; company: CompanyLink }[];
+  const companiesByRole = (role: string) => companyLinks.filter((l) => l.role === role).map((l) => l.company);
+  const hasAnyCompanies = companyLinks.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -205,19 +214,15 @@ const DataCenterProfile = () => {
             {/* Companies Involved */}
             <h2 className="text-lg font-bold text-foreground mb-4">Companies Involved</h2>
             <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              <CompanyRoleGroup label="Operator" names={operatorNames} />
-              <CompanyRoleGroup label="EPC" names={dc.epcs || []} />
-              <CompanyRoleGroup label="Contractors" names={dc.contractors || []} />
-              <CompanyRoleGroup label="Consultants" names={dc.consultants || []} />
-              <CompanyRoleGroup label="Partners" names={dc.partners || []} />
+              <CompanyRoleGroup label="Operator" companies={companiesByRole("operator")} />
+              <CompanyRoleGroup label="EPC" companies={companiesByRole("epc")} />
+              <CompanyRoleGroup label="Contractors" companies={companiesByRole("contractor")} />
+              <CompanyRoleGroup label="Consultants" companies={companiesByRole("consultant")} />
+              <CompanyRoleGroup label="Partners" companies={companiesByRole("partner")} />
             </div>
-            {operatorNames.length === 0 &&
-              (dc.epcs || []).length === 0 &&
-              (dc.contractors || []).length === 0 &&
-              (dc.consultants || []).length === 0 &&
-              (dc.partners || []).length === 0 && (
-                <p className="text-sm text-muted-foreground mb-8">No companies recorded for this project yet.</p>
-              )}
+            {!hasAnyCompanies && (
+              <p className="text-sm text-muted-foreground mb-8">No companies recorded for this project yet.</p>
+            )}
 
             {/* Status History */}
             <h2 className="text-lg font-bold text-foreground mb-4">Status History</h2>

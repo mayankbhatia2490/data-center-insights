@@ -19,28 +19,28 @@ const stageLabel: Record<string, string> = {
   unknown: "Unknown",
 };
 
-interface DataCenterRow {
-  id: string;
-  canonical_name: string;
-  operator_name: string | null;
-  operators: string[];
-  partners: string[];
-  epcs: string[];
-  contractors: string[];
-  consultants: string[];
-  country: string;
-  city: string | null;
-  lifecycle_stage: string;
-  capacity_mw: number | null;
+const roleLabel: Record<string, string> = {
+  operator: "Projects as Operator",
+  partner: "Projects as Partner",
+  epc: "Projects as EPC",
+  contractor: "Projects as Contractor",
+  consultant: "Projects as Consultant",
+};
+const roleOrder = ["operator", "epc", "contractor", "consultant", "partner"];
+
+interface ProjectLink {
+  role: string;
+  data_center: {
+    id: string;
+    canonical_name: string;
+    country: string;
+    city: string | null;
+    lifecycle_stage: string;
+    capacity_mw: number | null;
+  };
 }
 
-const matches = (name: string, value: string | null | undefined) =>
-  (value || "").trim().toLowerCase() === name.trim().toLowerCase();
-
-const matchesArray = (name: string, values: string[] | null | undefined) =>
-  (values || []).some((v) => matches(name, v));
-
-const ProjectRoleTable = ({ label, projects }: { label: string; projects: DataCenterRow[] }) => {
+const ProjectRoleTable = ({ label, projects }: { label: string; projects: ProjectLink["data_center"][] }) => {
   if (projects.length === 0) return null;
   return (
     <div className="mb-8">
@@ -87,42 +87,49 @@ const ProjectRoleTable = ({ label, projects }: { label: string; projects: DataCe
 };
 
 const CompanyProfile = () => {
-  const { name } = useParams<{ name: string }>();
-  const companyName = decodeURIComponent(name || "");
+  const { id } = useParams<{ id: string }>();
 
-  const { data: dataCenters, isLoading } = useQuery({
-    queryKey: ["company-projects", companyName],
+  const { data, isLoading } = useQuery({
+    queryKey: ["company-profile", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("data_centers")
-        .select("id, canonical_name, operator_name, operators, partners, epcs, contractors, consultants, country, city, lifecycle_stage, capacity_mw")
-        .limit(1000);
+      const { data: company, error } = await supabase
+        .from("companies")
+        .select("id, name, aliases, website_url, country")
+        .eq("id", id!)
+        .maybeSingle();
       if (error) throw error;
-      return (data || []) as DataCenterRow[];
+      if (!company) return { company: null, links: [] as ProjectLink[] };
+
+      const { data: links, error: linksError } = await supabase
+        .from("data_center_companies")
+        .select("role, data_center:data_centers(id, canonical_name, country, city, lifecycle_stage, capacity_mw)")
+        .eq("company_id", id!);
+      if (linksError) throw linksError;
+
+      return { company, links: (links || []) as unknown as ProjectLink[] };
     },
-    enabled: !!companyName,
+    enabled: !!id,
   });
 
-  const asOperator = (dataCenters || []).filter(
-    (dc) => matches(companyName, dc.operator_name) || matchesArray(companyName, dc.operators)
-  );
-  const asEpc = (dataCenters || []).filter((dc) => matchesArray(companyName, dc.epcs));
-  const asContractor = (dataCenters || []).filter((dc) => matchesArray(companyName, dc.contractors));
-  const asConsultant = (dataCenters || []).filter((dc) => matchesArray(companyName, dc.consultants));
-  const asPartner = (dataCenters || []).filter((dc) => matchesArray(companyName, dc.partners));
-
-  const totalProjects = new Set(
-    [...asOperator, ...asEpc, ...asContractor, ...asConsultant, ...asPartner].map((dc) => dc.id)
-  ).size;
+  const company = data?.company;
+  const links = data?.links || [];
+  const byRole = (role: string) => links.filter((l) => l.role === role).map((l) => l.data_center);
+  const totalProjects = new Set(links.map((l) => l.data_center.id)).size;
 
   return (
     <div className="min-h-screen bg-background">
-      {companyName && (
+      {company && (
         <Seo
-          title={`${companyName} — Data Center Pulse`}
-          description={`${companyName} — data center projects tracked across the Middle East, by role (operator, EPC, contractor, consultant, partner).`}
-          path={`/companies/${encodeURIComponent(companyName)}`}
+          title={`${company.name} — Data Center Pulse`}
+          description={`${company.name} — data center projects tracked across the Middle East, by role (operator, EPC, contractor, consultant, partner).`}
+          path={`/companies/${company.id}`}
           type="profile"
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: company.name,
+            url: company.website_url || undefined,
+          }}
         />
       )}
       <Header />
@@ -142,13 +149,10 @@ const CompanyProfile = () => {
               ))}
             </div>
           </div>
-        ) : totalProjects === 0 ? (
+        ) : !company ? (
           <div className="text-center py-12">
             <Factory size={40} className="mx-auto mb-3 text-muted-foreground/30" />
-            <p className="text-lg font-semibold text-muted-foreground">No tracked projects for "{companyName}"</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              This company hasn't been linked to any project on Data Center Pulse yet.
-            </p>
+            <p className="text-lg font-semibold text-muted-foreground">Company not found</p>
           </div>
         ) : (
           <>
@@ -157,18 +161,30 @@ const CompanyProfile = () => {
                 <Factory size={28} className="text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight text-foreground">{companyName}</h1>
+                <h1 className="text-2xl font-black tracking-tight text-foreground">{company.name}</h1>
                 <p className="text-sm text-muted-foreground">
                   {totalProjects} tracked project{totalProjects !== 1 ? "s" : ""} across Data Center Pulse
                 </p>
+                {company.website_url && (
+                  <a
+                    href={company.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline"
+                  >
+                    {company.website_url}
+                  </a>
+                )}
               </div>
             </div>
 
-            <ProjectRoleTable label="Projects as Operator" projects={asOperator} />
-            <ProjectRoleTable label="Projects as EPC" projects={asEpc} />
-            <ProjectRoleTable label="Projects as Contractor" projects={asContractor} />
-            <ProjectRoleTable label="Projects as Consultant" projects={asConsultant} />
-            <ProjectRoleTable label="Projects as Partner" projects={asPartner} />
+            {totalProjects === 0 ? (
+              <p className="text-sm text-muted-foreground">No tracked projects for this company yet.</p>
+            ) : (
+              roleOrder.map((role) => (
+                <ProjectRoleTable key={role} label={roleLabel[role]} projects={byRole(role)} />
+              ))
+            )}
           </>
         )}
       </main>

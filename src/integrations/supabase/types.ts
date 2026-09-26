@@ -119,6 +119,39 @@ export type Database = {
         }
         Relationships: []
       }
+      companies: {
+        Row: {
+          aliases: string[]
+          country: string | null
+          created_at: string
+          id: string
+          name: string
+          name_key: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          aliases?: string[]
+          country?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          name_key?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          aliases?: string[]
+          country?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          name_key?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       company_capacity: {
         Row: {
           capacity_mw: number | null
@@ -175,6 +208,45 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      data_center_companies: {
+        Row: {
+          company_id: string
+          created_at: string
+          data_center_id: string
+          id: string
+          role: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          data_center_id: string
+          id?: string
+          role: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          data_center_id?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_center_companies_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_center_companies_data_center_id_fkey"
+            columns: ["data_center_id"]
+            isOneToOne: false
+            referencedRelation: "data_centers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       data_center_sources: {
         Row: {

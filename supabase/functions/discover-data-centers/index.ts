@@ -47,6 +47,7 @@ interface ExistingDC {
   aliases: string[] | null;
   operator_name: string | null;
   operators: string[] | null;
+  partners: string[] | null;
   epcs: string[] | null;
   contractors: string[] | null;
   consultants: string[] | null;
@@ -56,6 +57,8 @@ interface ExistingDC {
   verification_status: string;
   verification_score: number;
 }
+
+type CompanyRole = "operator" | "partner" | "epc" | "contractor" | "consultant";
 
 const EXTRACTION_SYSTEM = `You are a precise data-center intelligence extractor focused only on the Middle East (${COUNTRIES.join(", ")}).
 
@@ -169,6 +172,37 @@ function unionArrays(a: string[] | null | undefined, b: string[] | undefined): s
   return [...new Set([...(a || []), ...(b || [])].filter(Boolean))];
 }
 
+// Mirrors the current company-name state (post-insert or post-merge) into
+// the normalized companies / data_center_companies tables, alongside the
+// legacy text-array columns other consumers (Stats map, this function's own
+// fuzzy matching) still read. Get-or-create on companies.name_key so the
+// same company across projects resolves to one row regardless of casing.
+async function syncCompanyLinks(
+  // deno-lint-ignore no-explicit-any
+  db: any,
+  dataCenterId: string,
+  roleNames: Record<CompanyRole, string[]>
+) {
+  for (const role of Object.keys(roleNames) as CompanyRole[]) {
+    const names = [...new Set(roleNames[role].map((n) => n.trim()).filter(Boolean))];
+    for (const name of names) {
+      const { data: company, error: companyError } = await db
+        .from("companies")
+        .upsert({ name }, { onConflict: "name_key" })
+        .select("id")
+        .single();
+      if (companyError || !company) { console.error("company upsert error", companyError); continue; }
+      const { error: linkError } = await db
+        .from("data_center_companies")
+        .upsert(
+          { data_center_id: dataCenterId, company_id: company.id, role },
+          { onConflict: "data_center_id,company_id,role" }
+        );
+      if (linkError) console.error("company link error", linkError);
+    }
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers });
 
@@ -205,7 +239,7 @@ Deno.serve(async (req) => {
     for (const candidate of candidates) {
       const { data: sameCountry, error: dcError } = await db
         .from("data_centers")
-        .select("id, canonical_name, aliases, operator_name, operators, epcs, contractors, consultants, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
+        .select("id, canonical_name, aliases, operator_name, operators, partners, epcs, contractors, consultants, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
         .eq("country", candidate.country)
         .limit(200);
       if (dcError) throw dcError;
@@ -271,6 +305,13 @@ Deno.serve(async (req) => {
             automated_score: confidenceScore,
             review_status: "pending",
           });
+          await syncCompanyLinks(db, inserted.id, {
+            operator: candidate.operators || [],
+            partner: candidate.partners || [],
+            epc: candidate.epcs || [],
+            contractor: candidate.contractors || [],
+            consultant: candidate.consultants || [],
+          });
           created++;
         }
         continue;
@@ -307,7 +348,7 @@ Deno.serve(async (req) => {
         // canonical_name (append operator/city to disambiguate).
         const disambiguated = candidate.operators?.[0] ? `${candidate.name} (${candidate.operators[0]})` : candidate.name;
         const seedScore = CONFIDENCE_SEED_SCORE[candidate.confidence || "low"] ?? 10;
-        const { error: insertError } = await db.from("data_centers").upsert(
+        const { data: disambiguatedInserted, error: insertError } = await db.from("data_centers").upsert(
           {
             canonical_name: disambiguated,
             aliases: candidate.aliases || [],
@@ -335,8 +376,17 @@ Deno.serve(async (req) => {
             location_precision: "undisclosed",
           },
           { onConflict: "canonical_name,country", ignoreDuplicates: true }
-        );
+        ).select("id").maybeSingle();
         if (!insertError) created++;
+        if (disambiguatedInserted?.id) {
+          await syncCompanyLinks(db, disambiguatedInserted.id, {
+            operator: candidate.operators || [],
+            partner: candidate.partners || [],
+            epc: candidate.epcs || [],
+            contractor: candidate.contractors || [],
+            consultant: candidate.consultants || [],
+          });
+        }
         continue;
       }
 
@@ -361,6 +411,7 @@ Deno.serve(async (req) => {
       const patch: Record<string, unknown> = {
         aliases: unionArrays(best.dc.aliases, candidate.aliases),
         operators: unionArrays(best.dc.operators, candidate.operators),
+        partners: unionArrays(best.dc.partners, candidate.partners),
         epcs: unionArrays(best.dc.epcs, candidate.epcs),
         contractors: unionArrays(best.dc.contractors, candidate.contractors),
         consultants: unionArrays(best.dc.consultants, candidate.consultants),
@@ -402,6 +453,13 @@ Deno.serve(async (req) => {
           note: decision.reason || null,
         });
       }
+      await syncCompanyLinks(db, best.dc.id, {
+        operator: patch.operators as string[],
+        partner: patch.partners as string[],
+        epc: patch.epcs as string[],
+        contractor: patch.contractors as string[],
+        consultant: patch.consultants as string[],
+      });
       updated++;
     }
 
