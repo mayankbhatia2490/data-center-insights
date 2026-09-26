@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -54,45 +55,30 @@ Deno.serve(async (req) => {
           .join("\n");
 
         try {
-          const aiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${geminiApiKey}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: "gemini-3.1-flash-lite",
-              messages: [
-                {
-                  role: "system",
-                  content: `You extract US stock ticker symbols from news headlines about the data center, cloud, AI infrastructure, and tech industry.
+          let text = await callAI([
+            {
+              role: "system",
+              content: `You extract US stock ticker symbols from news headlines about the data center, cloud, AI infrastructure, and tech industry.
 
-Return ONLY a JSON array of objects with "symbol" and "name" fields. 
+Return ONLY a JSON array of objects with "symbol" and "name" fields.
 - Only include publicly traded US stocks (NYSE/NASDAQ)
 - Maximum 8 stocks total
 - Always include EQIX (Equinix), DLR (Digital Realty), NVDA (NVIDIA) as baseline
 - Add up to 5 more stocks mentioned or strongly implied in the headlines
 - Common mappings: Microsoft=MSFT, Google/Alphabet=GOOGL, Amazon/AWS=AMZN, Meta=META, Vertiv=VRT, Arista=ANET, Dell=DELL, AMD=AMD, Intel=INTC, Broadcom=AVGO, Schneider Electric=SBGSY, CyrusOne=CONE, CoreWeave=CRWV, Super Micro=SMCI, Celestica=CLS, Applied Digital=APLD
 - Return raw JSON array, no markdown`,
-                },
-                { role: "user", content: headlines },
-              ],
-            }),
-          });
-
-          if (aiRes.ok) {
-            const aiData = await aiRes.json();
-            let text = aiData.choices?.[0]?.message?.content || "[]";
-            text = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-            try {
-              const extracted = JSON.parse(text);
-              if (Array.isArray(extracted) && extracted.length > 0) {
-                symbolsToFetch = extracted.slice(0, 8);
-                console.log("AI-extracted symbols:", symbolsToFetch.map((s: any) => s.symbol).join(", "));
-              }
-            } catch {
-              console.error("Failed to parse AI stock response:", text.slice(0, 200));
+            },
+            { role: "user", content: headlines },
+          ]);
+          text = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+          try {
+            const extracted = JSON.parse(text);
+            if (Array.isArray(extracted) && extracted.length > 0) {
+              symbolsToFetch = extracted.slice(0, 8);
+              console.log("AI-extracted symbols:", symbolsToFetch.map((s: any) => s.symbol).join(", "));
             }
+          } catch {
+            console.error("Failed to parse AI stock response:", text.slice(0, 200));
           }
         } catch (e) {
           console.error("AI extraction error:", e);

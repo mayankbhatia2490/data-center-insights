@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,44 +8,25 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// --- AI Helper: OpenAI-compatible completions ---
-async function callAI(
-  messages: { role: string; content: string }[],
-  apiKey: string,
-  model = "gemini-3.1-flash-lite"
-): Promise<string> {
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ model, messages }),
-  });
-  if (!res.ok) throw new Error(`AI error ${res.status}`);
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() || "";
-}
-
 // --- AI Summarization ---
-async function aiSummarize(title: string, rawSummary: string, apiKey: string): Promise<string> {
+async function aiSummarize(title: string, rawSummary: string): Promise<string> {
   try {
     return await callAI([
       { role: "system", content: "You are a news summarizer for data center industry professionals. Write a concise 1-2 sentence summary of the article. Be factual and informative. Do not use markdown." },
       { role: "user", content: `Article title: ${title}\n\nRaw description: ${rawSummary}` },
-    ], apiKey);
+    ]);
   } catch {
     return rawSummary;
   }
 }
 
 // --- AI Sentiment Analysis ---
-async function aiSentiment(title: string, summary: string, apiKey: string): Promise<string | null> {
+async function aiSentiment(title: string, summary: string): Promise<string | null> {
   try {
     const raw = await callAI([
       { role: "system", content: "You are a financial sentiment classifier for the data center industry. Classify the article as exactly one of: Bullish, Bearish, or Neutral. Respond with ONLY that single word." },
       { role: "user", content: `Title: ${title}\nSummary: ${summary}` },
-    ], apiKey);
+    ]);
     if (raw?.toLowerCase().includes("bullish")) return "Bullish";
     if (raw?.toLowerCase().includes("bearish")) return "Bearish";
     if (raw?.toLowerCase().includes("neutral")) return "Neutral";
@@ -55,7 +37,7 @@ async function aiSentiment(title: string, summary: string, apiKey: string): Prom
 }
 
 // --- AI Insight Generation ---
-async function aiInsight(title: string, summary: string, source: string, apiKey: string): Promise<{ insight: string | null; source_excerpt: string | null }> {
+async function aiInsight(title: string, summary: string, source: string): Promise<{ insight: string | null; source_excerpt: string | null }> {
   try {
     const raw = await callAI([
       {
@@ -63,7 +45,7 @@ async function aiInsight(title: string, summary: string, source: string, apiKey:
         content: `You are a senior data center analyst. Given the title, summary and source below, produce 1-2 concise sentences explaining WHY this news matters to infrastructure investors or operators. Focus on investment impact, capacity demand, energy/cooling, regulatory or geopolitical risk. Output ONLY valid JSON: {"insight": "...", "source_excerpt": "..."}. The source_excerpt should be a key quote or fact from the summary (max 50 words).`,
       },
       { role: "user", content: `Title: ${title}\nSource: ${source}\nSummary: ${summary}` },
-    ], apiKey);
+    ]);
     try {
       const match = raw.match(/\{[\s\S]*\}/);
       if (match) return JSON.parse(match[0]);
@@ -75,7 +57,7 @@ async function aiInsight(title: string, summary: string, source: string, apiKey:
 }
 
 // --- AI People Extraction ---
-async function aiExtractPeople(title: string, summary: string, apiKey: string): Promise<any[]> {
+async function aiExtractPeople(title: string, summary: string): Promise<any[]> {
   try {
     const raw = await callAI([
       {
@@ -94,7 +76,7 @@ Extract up to 6 people who are relevant (executives, ministers, regulators, inve
 Return ONLY a valid JSON array. If no people found, return [].`,
       },
       { role: "user", content: `Article title: ${title}\nSummary: ${summary}` },
-    ], apiKey);
+    ]);
     const match = raw.match(/\[[\s\S]*\]/);
     if (match) return JSON.parse(match[0]);
     return [];
@@ -112,7 +94,7 @@ function isMenaArticle(title: string, summary: string): boolean {
   return MENA_KEYWORDS.some((kw) => text.includes(kw));
 }
 
-async function aiQualityFilter(articles: any[], apiKey: string): Promise<any[]> {
+async function aiQualityFilter(articles: any[]): Promise<any[]> {
   if (articles.length === 0) return [];
   const batchSize = 15;
   const scored: any[] = [];
@@ -142,7 +124,7 @@ ACCEPT (score 6-10): M&A deals with values, new facility announcements with MW/l
 Respond with ONLY a JSON array of scores in order, e.g. [8, 3, 7, 5, 9]. No explanation.`,
         },
         { role: "user", content: articleList },
-      ], apiKey);
+      ]);
 
       const match = raw.match(/\[[\d\s,]+\]/);
       if (match) {
@@ -439,7 +421,7 @@ Deno.serve(async (req) => {
     // Quality Gate
     if (geminiApiKey && allArticles.length > 0) {
       const beforeCount = allArticles.length;
-      allArticles = await aiQualityFilter(allArticles, geminiApiKey);
+      allArticles = await aiQualityFilter(allArticles);
       console.log(`Quality gate: ${beforeCount} → ${allArticles.length} articles passed`);
     }
 
@@ -452,7 +434,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(needsSummary.length, 20); i += 5) {
         const batch = needsSummary.slice(i, i + 5);
         const summaries = await Promise.allSettled(
-          batch.map((a) => aiSummarize(a.title, a.summary || a.title, geminiApiKey))
+          batch.map((a) => aiSummarize(a.title, a.summary || a.title))
         );
         summaries.forEach((result, j) => {
           if (result.status === "fulfilled") batch[j].summary = result.value;
@@ -464,7 +446,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(allArticles.length, 30); i += 5) {
         const batch = allArticles.slice(i, i + 5);
         const sentiments = await Promise.allSettled(
-          batch.map((a) => aiSentiment(a.title, a.summary || a.title, geminiApiKey))
+          batch.map((a) => aiSentiment(a.title, a.summary || a.title))
         );
         sentiments.forEach((result, j) => {
           if (result.status === "fulfilled" && result.value) batch[j].sentiment = result.value;
@@ -476,7 +458,7 @@ Deno.serve(async (req) => {
       for (let i = 0; i < Math.min(allArticles.length, 20); i += 5) {
         const batch = allArticles.slice(i, i + 5);
         const insights = await Promise.allSettled(
-          batch.map((a) => aiInsight(a.title, a.summary || "", a.source || "", geminiApiKey))
+          batch.map((a) => aiInsight(a.title, a.summary || "", a.source || ""))
         );
         insights.forEach((result, j) => {
           if (result.status === "fulfilled") {
@@ -526,7 +508,7 @@ Deno.serve(async (req) => {
       // steps above, to avoid tripping Gemini rate limits on large ingestion batches)
       if (geminiApiKey && inserted <= 20) {
         try {
-          const people = await aiExtractPeople(article.title, article.summary || "", geminiApiKey);
+          const people = await aiExtractPeople(article.title, article.summary || "");
           if (people.length > 0) {
             await upsertPeople(supabase, insertedArticle.id, article.published_at, people);
             peopleExtracted += people.filter((p: any) => (p.confidence ?? 0) >= 0.6).length;

@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -60,14 +61,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
-    if (!geminiApiKey) {
-      return new Response(
-        JSON.stringify({ success: false, error: "GEMINI_API_KEY not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -99,35 +92,23 @@ Deno.serve(async (req) => {
       .map((r: any) => `Title: ${r.title}\nURL: ${r.url}\nDescription: ${r.description || ""}`)
       .join("\n---\n");
 
-    const aiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${geminiApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-3.1-flash-lite",
-        messages: [
-          {
-            role: "system",
-            content: "Extract upcoming data center industry events from the provided search results. Return ONLY a JSON array of events with fields: name, location, date (e.g. 'Oct 14-18'), url. Include only real, confirmed events happening in 2026 or later. Maximum 6 events. Return raw JSON array, no markdown.",
-          },
-          { role: "user", content: context },
-        ],
-      }),
-    });
-
-    if (!aiRes.ok) {
-      console.error("AI extraction failed:", aiRes.status);
+    let eventsText: string;
+    try {
+      eventsText = await callAI([
+        {
+          role: "system",
+          content: "Extract upcoming data center industry events from the provided search results. Return ONLY a JSON array of events with fields: name, location, date (e.g. 'Oct 14-18'), url. Include only real, confirmed events happening in 2026 or later. Maximum 6 events. Return raw JSON array, no markdown.",
+        },
+        { role: "user", content: context },
+      ]);
+    } catch (err) {
+      console.error("AI extraction failed:", err);
       return new Response(
         JSON.stringify({ success: false, error: "AI extraction failed" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const aiData = await aiRes.json();
-    let eventsText = aiData.choices?.[0]?.message?.content || "[]";
-    
     // Clean markdown fences if present
     eventsText = eventsText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     

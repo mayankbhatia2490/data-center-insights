@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { callAI } from "../_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,9 +16,6 @@ Deno.serve(async (req) => {
   if (authError) return authError;
 
   try {
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
-
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -40,15 +38,8 @@ Deno.serve(async (req) => {
 
     const sourceArticleIds = articles.map((a) => a.id);
 
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-3.5-flash",
-        messages: [
+    const raw = await callAI(
+      [
           {
             role: "system",
             content: `You are creating the "Data Center Pulse Index".
@@ -73,12 +64,8 @@ Return ONLY valid JSON:
             content: `Generate the weekly Pulse Index from these ${articles.length} articles:\n\n${JSON.stringify(articles)}`,
           },
         ],
-      }),
-    });
-
-    if (!res.ok) throw new Error(`AI error ${res.status}`);
-    const aiData = await res.json();
-    const raw = aiData.choices?.[0]?.message?.content?.trim() || "";
+      "gemini-3.5-flash"
+    );
 
     let result: { score: number; drivers: string[]; risks: string[]; outlook: string };
     try {
