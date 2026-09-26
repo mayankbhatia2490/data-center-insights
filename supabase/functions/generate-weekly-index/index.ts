@@ -84,7 +84,9 @@ Return ONLY valid JSON:
     const diff = now.getDate() - day + (day === 0 ? -6 : 1);
     const weekStart = new Date(now.setDate(diff)).toISOString().split("T")[0];
 
-    // Upsert for this week
+    // Upsert for this week. Runs daily now, so most days land on an
+    // existing week_start row -- updated_at is set explicitly here since
+    // it's how health-check tells "still running" from "stalled".
     const { error } = await supabase
       .from("weekly_index")
       .upsert(
@@ -95,6 +97,7 @@ Return ONLY valid JSON:
           risks: result.risks,
           outlook: result.outlook,
           source_article_ids: sourceArticleIds,
+          updated_at: new Date().toISOString(),
         },
         { onConflict: "week_start" }
       );
@@ -108,6 +111,7 @@ Return ONLY valid JSON:
         risks: result.risks,
         outlook: result.outlook,
         source_article_ids: sourceArticleIds,
+        updated_at: new Date().toISOString(),
       });
     }
 
