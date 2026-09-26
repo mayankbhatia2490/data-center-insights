@@ -41,24 +41,25 @@ interface Candidate {
   confidence?: string;
 }
 
+type CompanyRole = "operator" | "partner" | "epc" | "contractor" | "consultant";
+
 interface ExistingDC {
   id: string;
   canonical_name: string;
   aliases: string[] | null;
-  operator_name: string | null;
-  operators: string[] | null;
-  partners: string[] | null;
-  epcs: string[] | null;
-  contractors: string[] | null;
-  consultants: string[] | null;
   city: string | null;
   lifecycle_stage: string;
   capacity_mw: number | null;
   verification_status: string;
   verification_score: number;
+  data_center_companies: { role: string; company: { name: string } | null }[] | null;
 }
 
-type CompanyRole = "operator" | "partner" | "epc" | "contractor" | "consultant";
+function companyNamesByRole(dc: ExistingDC, role: CompanyRole): string[] {
+  return (dc.data_center_companies || [])
+    .filter((l) => l.role === role && l.company?.name)
+    .map((l) => l.company!.name);
+}
 
 const EXTRACTION_SYSTEM = `You are a precise data-center intelligence extractor focused only on the Middle East (${COUNTRIES.join(", ")}).
 
@@ -145,7 +146,7 @@ function scoreMatch(candidate: Candidate, existing: ExistingDC): number {
   const nameScore = Math.min(55, nameOverlap * 18);
 
   const candidateOperators = candidate.operators || [];
-  const existingOperators = [existing.operator_name, ...(existing.operators || [])].filter(Boolean) as string[];
+  const existingOperators = companyNamesByRole(existing, "operator");
   const operatorScore = candidateOperators.some((op) => existingOperators.some((eo) => overlap(op, eo) > 0)) ? 20 : 0;
 
   const cityScore = candidate.city_region && existing.city && overlap(candidate.city_region, existing.city) > 0 ? 10 : 0;
@@ -172,11 +173,11 @@ function unionArrays(a: string[] | null | undefined, b: string[] | undefined): s
   return [...new Set([...(a || []), ...(b || [])].filter(Boolean))];
 }
 
-// Mirrors the current company-name state (post-insert or post-merge) into
-// the normalized companies / data_center_companies tables, alongside the
-// legacy text-array columns other consumers (Stats map, this function's own
-// fuzzy matching) still read. Get-or-create on companies.name_key so the
-// same company across projects resolves to one row regardless of casing.
+// Resolves each extracted company name to a companies row (get-or-create on
+// name_key, so casing differences collapse to one company) and links it to
+// this data_center with the given role. This is now the only place company
+// involvement is recorded - the legacy operator_name/operators/partners/
+// epcs/contractors/consultants columns on data_centers have been dropped.
 async function syncCompanyLinks(
   // deno-lint-ignore no-explicit-any
   db: any,
@@ -239,7 +240,7 @@ Deno.serve(async (req) => {
     for (const candidate of candidates) {
       const { data: sameCountry, error: dcError } = await db
         .from("data_centers")
-        .select("id, canonical_name, aliases, operator_name, operators, partners, epcs, contractors, consultants, city, lifecycle_stage, capacity_mw, verification_status, verification_score")
+        .select("id, canonical_name, aliases, city, lifecycle_stage, capacity_mw, verification_status, verification_score, data_center_companies(role, company:companies(name))")
         .eq("country", candidate.country)
         .limit(200);
       if (dcError) throw dcError;
@@ -263,12 +264,6 @@ Deno.serve(async (req) => {
             {
               canonical_name: candidate.name,
               aliases: candidate.aliases || [],
-              operators: candidate.operators || [],
-              operator_name: candidate.operators?.[0] || null,
-              partners: candidate.partners || [],
-              epcs: candidate.epcs || [],
-              contractors: candidate.contractors || [],
-              consultants: candidate.consultants || [],
               country: candidate.country,
               city: candidate.city_region || null,
               lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -326,7 +321,7 @@ Deno.serve(async (req) => {
           content: JSON.stringify({
             existing: {
               name: best.dc.canonical_name,
-              operator: best.dc.operator_name,
+              operator: companyNamesByRole(best.dc, "operator")[0] || null,
               city: best.dc.city,
               lifecycle_stage: best.dc.lifecycle_stage,
               capacity_mw: best.dc.capacity_mw,
@@ -352,12 +347,6 @@ Deno.serve(async (req) => {
           {
             canonical_name: disambiguated,
             aliases: candidate.aliases || [],
-            operators: candidate.operators || [],
-            operator_name: candidate.operators?.[0] || null,
-            partners: candidate.partners || [],
-            epcs: candidate.epcs || [],
-            contractors: candidate.contractors || [],
-            consultants: candidate.consultants || [],
             country: candidate.country,
             city: candidate.city_region || null,
             lifecycle_stage: LLM_LIFECYCLE_STAGES.includes(candidate.lifecycle_stage || "") ? candidate.lifecycle_stage : "unknown",
@@ -410,11 +399,6 @@ Deno.serve(async (req) => {
 
       const patch: Record<string, unknown> = {
         aliases: unionArrays(best.dc.aliases, candidate.aliases),
-        operators: unionArrays(best.dc.operators, candidate.operators),
-        partners: unionArrays(best.dc.partners, candidate.partners),
-        epcs: unionArrays(best.dc.epcs, candidate.epcs),
-        contractors: unionArrays(best.dc.contractors, candidate.contractors),
-        consultants: unionArrays(best.dc.consultants, candidate.consultants),
         extraction_confidence: decision.confidence,
         updated_at: new Date().toISOString(),
       };
@@ -453,12 +437,15 @@ Deno.serve(async (req) => {
           note: decision.reason || null,
         });
       }
+      // Additive: the join table accumulates company links across mentions,
+      // so this only needs the names surfaced by this candidate - it doesn't
+      // need to re-union against best.dc's existing links.
       await syncCompanyLinks(db, best.dc.id, {
-        operator: patch.operators as string[],
-        partner: patch.partners as string[],
-        epc: patch.epcs as string[],
-        contractor: patch.contractors as string[],
-        consultant: patch.consultants as string[],
+        operator: candidate.operators || [],
+        partner: candidate.partners || [],
+        epc: candidate.epcs || [],
+        contractor: candidate.contractors || [],
+        consultant: candidate.consultants || [],
       });
       updated++;
     }

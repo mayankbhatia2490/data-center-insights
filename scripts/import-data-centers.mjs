@@ -95,11 +95,11 @@ for (const row of rows) {
   const longitude = number(first(row, ["Longitude", "lon", "lng", "__longitude"]));
   const capacity = number(first(row, ["Fully Built-Out Power (MW)", "Fully Built Out Power", "Capacity MW", "capacity_mw"]));
   const externalId = clean(first(row, ["Data Center ID", "ID", "external_id"]));
+  const operatorName = clean(first(row, ["Company Name", "Operator", "operator_name"]));
   const rowData = {
     canonical_name: name,
     external_id: externalId,
     external_parent_id: clean(first(row, ["Parent ID", "parent_id", "external_parent_id"])),
-    operator_name: clean(first(row, ["Company Name", "Operator", "operator_name"])),
     company_id: clean(first(row, ["Company ID", "company_id"])),
     profile_url: clean(first(row, ["URL to data center profile", "Profile URL", "profile_url"])),
     website_url: clean(first(row, ["URL to website", "Website URL", "website_url"])),
@@ -152,6 +152,15 @@ for (const row of rows) {
     review_status: "pending",
   });
   if (sourceError) throw new Error(`${name} source: ${sourceError.message}`);
+  if (operatorName) {
+    const { data: company, error: companyError } = await db.from("companies").upsert({ name: operatorName }, { onConflict: "name_key" }).select("id").single();
+    if (companyError) throw new Error(`${name} company: ${companyError.message}`);
+    const { error: linkError } = await db.from("data_center_companies").upsert(
+      { data_center_id: facility.id, company_id: company.id, role: "operator" },
+      { onConflict: "data_center_id,company_id,role" }
+    );
+    if (linkError) throw new Error(`${name} company link: ${linkError.message}`);
+  }
   imported += 1;
 }
 

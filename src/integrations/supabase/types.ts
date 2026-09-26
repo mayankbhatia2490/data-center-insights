@@ -335,14 +335,11 @@ export type Database = {
           capacity_type: string | null
           city: string | null
           company_id: string | null
-          consultants: string[]
-          contractors: string[]
           cooling_notes: string | null
           cooling_type: string | null
           country: string
           created_at: string
           ecosystem_stats: Json
-          epcs: string[]
           estimated_energization: string | null
           external_id: string | null
           external_parent_id: string | null
@@ -359,10 +356,7 @@ export type Database = {
           location_precision: string
           longitude: number | null
           market: string | null
-          operator_name: string | null
-          operators: string[]
           parent_id: string | null
-          partners: string[]
           postal: string | null
           power_notes: string | null
           power_source: string | null
@@ -392,14 +386,11 @@ export type Database = {
           capacity_type?: string | null
           city?: string | null
           company_id?: string | null
-          consultants?: string[]
-          contractors?: string[]
           cooling_notes?: string | null
           cooling_type?: string | null
           country: string
           created_at?: string
           ecosystem_stats?: Json
-          epcs?: string[]
           estimated_energization?: string | null
           external_id?: string | null
           external_parent_id?: string | null
@@ -416,10 +407,7 @@ export type Database = {
           location_precision?: string
           longitude?: number | null
           market?: string | null
-          operator_name?: string | null
-          operators?: string[]
           parent_id?: string | null
-          partners?: string[]
           postal?: string | null
           power_notes?: string | null
           power_source?: string | null
@@ -449,14 +437,11 @@ export type Database = {
           capacity_type?: string | null
           city?: string | null
           company_id?: string | null
-          consultants?: string[]
-          contractors?: string[]
           cooling_notes?: string | null
           cooling_type?: string | null
           country?: string
           created_at?: string
           ecosystem_stats?: Json
-          epcs?: string[]
           estimated_energization?: string | null
           external_id?: string | null
           external_parent_id?: string | null
@@ -473,10 +458,7 @@ export type Database = {
           location_precision?: string
           longitude?: number | null
           market?: string | null
-          operator_name?: string | null
-          operators?: string[]
           parent_id?: string | null
-          partners?: string[]
           postal?: string | null
           power_notes?: string | null
           power_source?: string | null

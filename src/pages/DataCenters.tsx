@@ -34,11 +34,14 @@ const DataCenters = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("data_centers")
-        .select("id, canonical_name, operator_name, operators, country, city, lifecycle_stage, capacity_mw, full_ambition_mw, verification_status")
+        .select("id, canonical_name, country, city, lifecycle_stage, capacity_mw, full_ambition_mw, verification_status, data_center_companies(role, company:companies(name))")
         .order("capacity_mw", { ascending: false, nullsFirst: false })
         .limit(500);
       if (error) throw error;
-      return data;
+      return (data || []).map((dc) => ({
+        ...dc,
+        operator_name: dc.data_center_companies.find((l) => l.role === "operator")?.company?.name || null,
+      }));
     },
   });
 

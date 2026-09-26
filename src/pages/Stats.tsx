@@ -78,7 +78,7 @@ const Stats = () => {
     queryFn: async () => {
       const { data: rows, error } = await supabase
         .from("data_centers")
-        .select("id,canonical_name,operator_name,listing_type,parent_id,lifecycle_stage,service_types,country,market,city,address,latitude,longitude,location_precision,capacity_mw,capacity_basis,capacity_status,whitespace_sqm,year_operational,pue,tier_design,site_code,verification_status,verification_score,first_seen_at,last_verified_at,created_at,updated_at,external_id,external_parent_id,company_id,profile_url,website_url,capacity_type,address_details,postal,state,total_building_size,ecosystem_stats")
+        .select("id,canonical_name,listing_type,parent_id,lifecycle_stage,service_types,country,market,city,address,latitude,longitude,location_precision,capacity_mw,capacity_basis,capacity_status,whitespace_sqm,year_operational,pue,tier_design,site_code,verification_status,verification_score,first_seen_at,last_verified_at,created_at,updated_at,external_id,external_parent_id,company_id,profile_url,website_url,capacity_type,address_details,postal,state,total_building_size,ecosystem_stats")
         .order("country")
         .order("city")
         .order("canonical_name");
@@ -86,11 +86,26 @@ const Stats = () => {
         console.error("Unable to load data-center inventory; using static fallback.", error);
         return [] as DataCenter[];
       }
+
+      // Operator names now live in companies/data_center_companies rather
+      // than a column on data_centers; fetch them in one batched query and
+      // fold the first operator per facility back into the shape the
+      // map/list UI expects.
+      const ids = (rows || []).map((r) => r.id);
+      const { data: operatorLinks } = ids.length
+        ? await supabase.from("data_center_companies").select("data_center_id, company:companies(name)").eq("role", "operator").in("data_center_id", ids)
+        : { data: [] };
+      const operatorByDc = new Map<string, string>();
+      for (const l of operatorLinks || []) {
+        if (!operatorByDc.has(l.data_center_id) && l.company?.name) operatorByDc.set(l.data_center_id, l.company.name);
+      }
+
       // DB columns are CHECK-constrained TEXT, not Postgres enums, so the
       // generated types widen them to `string`; this narrows back to the
       // literal unions the map/list UI relies on.
       return (rows || []).map((row) => ({
         ...row,
+        operator_name: operatorByDc.get(row.id) || null,
         service_types: Array.isArray(row.service_types) ? row.service_types : [],
         latitude: row.latitude == null ? null : Number(row.latitude),
         longitude: row.longitude == null ? null : Number(row.longitude),
