@@ -12,6 +12,9 @@ import Confirm from "./pages/Confirm";
 import Archive from "./pages/Archive";
 import Leaders from "./pages/Leaders";
 import LeaderProfile from "./pages/LeaderProfile";
+import DataCenters from "./pages/DataCenters";
+import DataCenterProfile from "./pages/DataCenterProfile";
+import CompanyProfile from "./pages/CompanyProfile";
 import Stats from "./pages/Stats";
 import Intelligence from "./pages/Intelligence";
 import Insights from "./pages/Insights";
@@ -38,6 +41,9 @@ const App = () => (
             <Route path="/archive" element={<Archive />} />
             <Route path="/leaders" element={<Leaders />} />
             <Route path="/leaders/:id" element={<LeaderProfile />} />
+            <Route path="/data-centers" element={<DataCenters />} />
+            <Route path="/data-centers/:id" element={<DataCenterProfile />} />
+            <Route path="/companies/:name" element={<CompanyProfile />} />
             <Route path="/stats" element={<Stats />} />
             <Route path="/intelligence" element={<Intelligence />} />
             <Route path="/insights" element={<Insights />} />

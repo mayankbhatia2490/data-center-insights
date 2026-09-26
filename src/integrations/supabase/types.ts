@@ -176,6 +176,222 @@ export type Database = {
         }
         Relationships: []
       }
+      data_center_sources: {
+        Row: {
+          automated_score: number
+          checked_at: string | null
+          created_at: string
+          data_center_id: string
+          evidence_excerpt: string | null
+          id: string
+          observed_capacity_mw: number | null
+          observed_lifecycle_stage: string | null
+          review_status: string
+          source_name: string
+          source_title: string | null
+          source_type: string
+          source_url: string | null
+        }
+        Insert: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name: string
+          source_title?: string | null
+          source_type: string
+          source_url?: string | null
+        }
+        Update: {
+          automated_score?: number
+          checked_at?: string | null
+          created_at?: string
+          data_center_id?: string
+          evidence_excerpt?: string | null
+          id?: string
+          observed_capacity_mw?: number | null
+          observed_lifecycle_stage?: string | null
+          review_status?: string
+          source_name?: string
+          source_title?: string | null
+          source_type?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      data_center_status_history: {
+        Row: {
+          changed_at: string
+          data_center_id: string
+          id: string
+          lifecycle_stage: string
+          note: string | null
+          source_id: string | null
+        }
+        Insert: {
+          changed_at?: string
+          data_center_id: string
+          id?: string
+          lifecycle_stage: string
+          note?: string | null
+          source_id?: string | null
+        }
+        Update: {
+          changed_at?: string
+          data_center_id?: string
+          id?: string
+          lifecycle_stage?: string
+          note?: string | null
+          source_id?: string | null
+        }
+        Relationships: []
+      }
+      data_centers: {
+        Row: {
+          address: string | null
+          aliases: string[]
+          canonical_name: string
+          capacity_basis: string | null
+          capacity_mw: number | null
+          capacity_status: string
+          city: string | null
+          consultants: string[]
+          contractors: string[]
+          cooling_notes: string | null
+          cooling_type: string | null
+          country: string
+          created_at: string
+          epcs: string[]
+          estimated_energization: string | null
+          extraction_confidence: string | null
+          first_seen_at: string
+          full_ambition_mw: number | null
+          id: string
+          investment_notes: string | null
+          investment_usd_m: number | null
+          last_verified_at: string | null
+          latitude: number | null
+          lifecycle_stage: string
+          listing_type: string
+          location_precision: string
+          longitude: number | null
+          market: string | null
+          operator_name: string | null
+          operators: string[]
+          parent_id: string | null
+          partners: string[]
+          power_notes: string | null
+          power_source: string | null
+          pue: number | null
+          risks: string[]
+          service_types: string[]
+          site_code: string | null
+          tier_design: string | null
+          updated_at: string
+          verification_score: number
+          verification_status: string
+          whitespace_sqm: number | null
+          year_operational: number | null
+        }
+        Insert: {
+          address?: string | null
+          aliases?: string[]
+          canonical_name: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          city?: string | null
+          consultants?: string[]
+          contractors?: string[]
+          cooling_notes?: string | null
+          cooling_type?: string | null
+          country: string
+          created_at?: string
+          epcs?: string[]
+          estimated_energization?: string | null
+          extraction_confidence?: string | null
+          first_seen_at?: string
+          full_ambition_mw?: number | null
+          id?: string
+          investment_notes?: string | null
+          investment_usd_m?: number | null
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          operator_name?: string | null
+          operators?: string[]
+          parent_id?: string | null
+          partners?: string[]
+          power_notes?: string | null
+          power_source?: string | null
+          pue?: number | null
+          risks?: string[]
+          service_types?: string[]
+          site_code?: string | null
+          tier_design?: string | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          whitespace_sqm?: number | null
+          year_operational?: number | null
+        }
+        Update: {
+          address?: string | null
+          aliases?: string[]
+          canonical_name?: string
+          capacity_basis?: string | null
+          capacity_mw?: number | null
+          capacity_status?: string
+          city?: string | null
+          consultants?: string[]
+          contractors?: string[]
+          cooling_notes?: string | null
+          cooling_type?: string | null
+          country?: string
+          created_at?: string
+          epcs?: string[]
+          estimated_energization?: string | null
+          extraction_confidence?: string | null
+          first_seen_at?: string
+          full_ambition_mw?: number | null
+          id?: string
+          investment_notes?: string | null
+          investment_usd_m?: number | null
+          last_verified_at?: string | null
+          latitude?: number | null
+          lifecycle_stage?: string
+          listing_type?: string
+          location_precision?: string
+          longitude?: number | null
+          market?: string | null
+          operator_name?: string | null
+          operators?: string[]
+          parent_id?: string | null
+          partners?: string[]
+          power_notes?: string | null
+          power_source?: string | null
+          pue?: number | null
+          risks?: string[]
+          service_types?: string[]
+          site_code?: string | null
+          tier_design?: string | null
+          updated_at?: string
+          verification_score?: number
+          verification_status?: string
+          whitespace_sqm?: number | null
+          year_operational?: number | null
+        }
+        Relationships: []
+      }
       dc_capacity_stats: {
         Row: {
           growth_rate_pct: number | null

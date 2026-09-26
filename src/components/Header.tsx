@@ -21,6 +21,7 @@ const navLinks = [
   { label: "Intelligence", filter: null, href: "/intelligence" },
   { label: "Insights", filter: null, href: "/insights" },
   { label: "Leaders", filter: null, href: "/leaders" },
+  { label: "Data Centers", filter: null, href: "/data-centers" },
 ];
 
 const tickerHeadlines = [

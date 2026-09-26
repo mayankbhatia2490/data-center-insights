@@ -27,6 +27,7 @@ const staticEntries: SitemapEntry[] = [
   { path: "/stats", changefreq: "weekly", priority: "0.8" },
   { path: "/leaders", changefreq: "weekly", priority: "0.7" },
   { path: "/archive", changefreq: "daily", priority: "0.7" },
+  { path: "/data-centers", changefreq: "weekly", priority: "0.7" },
 ];
 
 async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
@@ -46,6 +47,28 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
 
   return data.map((person) => ({
     path: `/leaders/${person.id}`,
+    changefreq: "weekly",
+    priority: "0.5",
+  }));
+}
+
+async function fetchDataCenterEntries(): Promise<SitemapEntry[]> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    console.warn("sitemap: VITE_SUPABASE_URL/VITE_SUPABASE_PUBLISHABLE_KEY not set, skipping dynamic data center URLs");
+    return [];
+  }
+
+  const supabase = createClient(url, key);
+  const { data, error } = await supabase.from("data_centers").select("id").limit(1000);
+  if (error || !data) {
+    console.warn("sitemap: failed to fetch data centers for dynamic URLs:", error?.message);
+    return [];
+  }
+
+  return data.map((dc) => ({
+    path: `/data-centers/${dc.id}`,
     changefreq: "weekly",
     priority: "0.5",
   }));
@@ -73,7 +96,9 @@ function generateSitemap(entries: SitemapEntry[]) {
 }
 
 const leaderEntries = await fetchLeaderEntries();
-const entries = [...staticEntries, ...leaderEntries];
+const dataCenterEntries = await fetchDataCenterEntries();
+const dynamicEntries = [...leaderEntries, ...dataCenterEntries];
+const entries = [...staticEntries, ...dynamicEntries];
 
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
-console.log(`sitemap.xml written (${entries.length} entries, ${leaderEntries.length} dynamic)`);
+console.log(`sitemap.xml written (${entries.length} entries, ${dynamicEntries.length} dynamic)`);
