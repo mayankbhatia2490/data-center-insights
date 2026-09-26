@@ -254,20 +254,26 @@ export type Database = {
       data_centers: {
         Row: {
           address: string | null
+          address_details: string | null
           aliases: string[]
           canonical_name: string
           capacity_basis: string | null
           capacity_mw: number | null
           capacity_status: string
+          capacity_type: string | null
           city: string | null
+          company_id: string | null
           consultants: string[]
           contractors: string[]
           cooling_notes: string | null
           cooling_type: string | null
           country: string
           created_at: string
+          ecosystem_stats: Json
           epcs: string[]
           estimated_energization: string | null
+          external_id: string | null
+          external_parent_id: string | null
           extraction_confidence: string | null
           first_seen_at: string
           full_ambition_mw: number | null
@@ -285,35 +291,46 @@ export type Database = {
           operators: string[]
           parent_id: string | null
           partners: string[]
+          postal: string | null
           power_notes: string | null
           power_source: string | null
+          profile_url: string | null
           pue: number | null
           risks: string[]
           service_types: string[]
           site_code: string | null
+          state: string | null
           tier_design: string | null
+          total_building_size: number | null
           updated_at: string
           verification_score: number
           verification_status: string
+          website_url: string | null
           whitespace_sqm: number | null
           year_operational: number | null
         }
         Insert: {
           address?: string | null
+          address_details?: string | null
           aliases?: string[]
           canonical_name: string
           capacity_basis?: string | null
           capacity_mw?: number | null
           capacity_status?: string
+          capacity_type?: string | null
           city?: string | null
+          company_id?: string | null
           consultants?: string[]
           contractors?: string[]
           cooling_notes?: string | null
           cooling_type?: string | null
           country: string
           created_at?: string
+          ecosystem_stats?: Json
           epcs?: string[]
           estimated_energization?: string | null
+          external_id?: string | null
+          external_parent_id?: string | null
           extraction_confidence?: string | null
           first_seen_at?: string
           full_ambition_mw?: number | null
@@ -331,35 +348,46 @@ export type Database = {
           operators?: string[]
           parent_id?: string | null
           partners?: string[]
+          postal?: string | null
           power_notes?: string | null
           power_source?: string | null
+          profile_url?: string | null
           pue?: number | null
           risks?: string[]
           service_types?: string[]
           site_code?: string | null
+          state?: string | null
           tier_design?: string | null
+          total_building_size?: number | null
           updated_at?: string
           verification_score?: number
           verification_status?: string
+          website_url?: string | null
           whitespace_sqm?: number | null
           year_operational?: number | null
         }
         Update: {
           address?: string | null
+          address_details?: string | null
           aliases?: string[]
           canonical_name?: string
           capacity_basis?: string | null
           capacity_mw?: number | null
           capacity_status?: string
+          capacity_type?: string | null
           city?: string | null
+          company_id?: string | null
           consultants?: string[]
           contractors?: string[]
           cooling_notes?: string | null
           cooling_type?: string | null
           country?: string
           created_at?: string
+          ecosystem_stats?: Json
           epcs?: string[]
           estimated_energization?: string | null
+          external_id?: string | null
+          external_parent_id?: string | null
           extraction_confidence?: string | null
           first_seen_at?: string
           full_ambition_mw?: number | null
@@ -377,16 +405,21 @@ export type Database = {
           operators?: string[]
           parent_id?: string | null
           partners?: string[]
+          postal?: string | null
           power_notes?: string | null
           power_source?: string | null
+          profile_url?: string | null
           pue?: number | null
           risks?: string[]
           service_types?: string[]
           site_code?: string | null
+          state?: string | null
           tier_design?: string | null
+          total_building_size?: number | null
           updated_at?: string
           verification_score?: number
           verification_status?: string
+          website_url?: string | null
           whitespace_sqm?: number | null
           year_operational?: number | null
         }

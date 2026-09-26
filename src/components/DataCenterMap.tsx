@@ -9,12 +9,15 @@ const lifecycleColor: Record<DataCenter["lifecycle_stage"], string> = {
   operational: "#27b36a",
   under_construction: "#f5a623",
   planned: "#6f7bf7",
+  announced: "#6f7bf7",
+  on_hold: "#f5a623",
   land_banked: "#9ca3af",
   decommissioned: "#ef5350",
+  cancelled: "#ef5350",
   unknown: "#8b95a5",
 };
 
-const formatStage = (stage: string) => stage.replaceAll("_", " ");
+const formatStage = (stage: string) => stage.replace(/_/g, " ");
 
 const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -53,7 +56,10 @@ const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
         fillColor: color,
         fillOpacity: 0.9,
       });
-      marker.bindPopup(`<strong>${item.canonical_name}</strong><br/>${item.operator_name || "Operator not disclosed"}<br/><span style="text-transform:capitalize">${formatStage(item.lifecycle_stage)}</span><br/>${item.capacity_mw ? `${item.capacity_mw} MW reported` : "Capacity not disclosed"}`);
+      const verificationLabel = item.verification_status === "verified"
+        ? `Verified · ${item.verification_score}/100`
+        : "Evidence awaiting review";
+      marker.bindPopup(`<strong>${item.canonical_name}</strong><br/>${item.operator_name || "Operator not disclosed"}<br/><span style="text-transform:capitalize">${formatStage(item.lifecycle_stage)}</span><br/>${item.capacity_mw ? `${item.capacity_mw} MW reported` : "Capacity not disclosed"}<br/><span style="font-size:11px;opacity:0.75">${verificationLabel}</span>`);
       marker.on("click", () => onSelect(item));
       marker.addTo(layer);
     });

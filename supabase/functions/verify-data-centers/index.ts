@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireCronSecret } from "../_shared/cronAuth.ts";
 
 const headers = { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
 
@@ -19,6 +20,10 @@ async function fetchSource(url: string) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers });
+
+  const authError = await requireCronSecret(req, headers);
+  if (authError) return authError;
+
   try {
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: sources, error } = await db.from("data_center_sources").select("id, data_center_id, source_url, source_name, observed_capacity_mw, observed_lifecycle_stage, data_centers(canonical_name, operator_name, country, city)").eq("review_status", "pending").limit(100);
