@@ -42,9 +42,11 @@ const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
     const points: L.LatLngExpression[] = [];
     const mappableData = data.filter((item) => Number.isFinite(Number(item.latitude)) && Number.isFinite(Number(item.longitude)));
     mappableData.forEach((item) => {
-      points.push([item.latitude, item.longitude]);
+      const latitude = Number(item.latitude);
+      const longitude = Number(item.longitude);
+      points.push([latitude, longitude]);
       const color = lifecycleColor[item.lifecycle_stage];
-      const marker = L.circleMarker([item.latitude, item.longitude], {
+      const marker = L.circleMarker([latitude, longitude], {
         radius: item.id === selectedId ? 10 : 7,
         color: item.id === selectedId ? "#111827" : color,
         weight: item.id === selectedId ? 3 : 2,

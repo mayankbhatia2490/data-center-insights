@@ -71,7 +71,14 @@ const Stats = () => {
         console.error("Unable to load data-center inventory; using static fallback.", error);
         return [] as DataCenter[];
       }
-      return (rows || []) as DataCenter[];
+      return (rows || []).map((row: any) => ({
+        ...row,
+        service_types: Array.isArray(row.service_types) ? row.service_types : [],
+        latitude: row.latitude == null ? null : Number(row.latitude),
+        longitude: row.longitude == null ? null : Number(row.longitude),
+        capacity_mw: row.capacity_mw == null ? null : Number(row.capacity_mw),
+        lifecycle_stage: row.lifecycle_stage || "unknown",
+      })) as DataCenter[];
     },
     staleTime: 5 * 60 * 1000,
   });
