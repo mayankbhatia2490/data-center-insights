@@ -54,6 +54,12 @@ const CHECKS: Check[] = [
   { functionName: "regional-outlook", table: "regional_outlook", minRows: 1, requiredFields: ["outlook"], freshnessColumn: "updated_at", maxAgeHours: 48 },
   { functionName: "strategic-insights", table: "strategic_insights", minRows: 1, requiredFields: ["insight"], freshnessColumn: "created_at", maxAgeHours: 48 },
   { functionName: "word-cloud", table: "word_cloud", minRows: 1, requiredFields: ["word"], freshnessColumn: "last_updated", maxAgeHours: 30 },
+  // discover-data-centers runs daily but legitimately produces zero rows on
+  // days with no qualifying ME articles, so this checks the function is
+  // still executing (via its source-evidence writes) rather than that it
+  // always finds something; 168h (7 days) tolerates a genuinely quiet week.
+  { functionName: "discover-data-centers", table: "data_center_sources", minRows: 1, requiredFields: ["source_name"], freshnessColumn: "created_at", maxAgeHours: 168 },
+  { functionName: "generate-dc-changelog", table: "data_center_weekly_briefs", minRows: 1, requiredFields: ["markdown"], freshnessColumn: "created_at", maxAgeHours: 192 },
 ];
 
 Deno.serve(async (req) => {

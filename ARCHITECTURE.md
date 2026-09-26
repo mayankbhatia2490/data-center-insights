@@ -95,6 +95,8 @@ src/integrations/supabase/client.ts
 | `regional-outlook` | Cron | `0 6 * * 1` (weekly Mon) | `gemini-3.1-flash-lite` | Per-region market outlook (UAE, Saudi, EU, US, Asia) |
 | `word-cloud` | Cron | `0 1 * * *` (daily 01:00) | `gemini-3.1-flash-lite` | AI keyword extraction for trending topics |
 | `generate-weekly-index` | Cron | `0 8 * * 1` (weekly Mon) | `gemini-3.5-flash` | Weekly Pulse Index score (-100 to +100) |
+| `discover-data-centers` | Cron | `30 4 * * *` (daily 04:30) | `gemini-3.1-flash-lite` | Extracts ME data-center project mentions from recent articles, fuzzy-matches them against `data_centers`, and calls an LLM merge-decision step (same project? update/ignore/create?) before writing |
+| `generate-dc-changelog` | Cron | `30 8 * * 1` (weekly Mon) | `gemini-3.5-flash` | Weekly markdown delta (new/updated facilities, country MW totals) written to `data_center_weekly_briefs` |
 | `compute-trending` | Cron | — (duplicate of weekly-index) | `gemini-3.5-flash` | Weekly index (legacy) |
 | `backfill-insights` | Manual | — | `gemini-3.1-flash-lite` | Backfill missing insights & sentiment on articles |
 | `news-chat` | On-demand | — | `gemini-3.5-flash` | Streaming AI chatbot with news context |
@@ -177,3 +179,21 @@ Every AI-calling function was switched from `https://ai.gateway.lovable.dev/v1/c
 - **Database**: Run `database_export.sql` against your Supabase project
 - **Cron Jobs**: Update URLs in `database_export.sql` cron section and run against your DB
 - **Secrets**: Set all env vars from `.env.example` as Supabase secrets
+
+---
+
+## 6. Data Center Merge Pipeline
+
+`data_centers` is the single source of truth for facility/project inventory (not `company_capacity`, which backs the unrelated global market-stats ticker). Two functions keep it current:
+
+**`discover-data-centers`** (daily) — for each ME-relevant project mention found in recent articles:
+1. Fuzzy-matches the mention against existing `data_centers` rows in the same country (name/alias token overlap + operator overlap + city + capacity closeness, same scoring shape as `enrich-data-center-coordinates`).
+2. On a plausible match (score ≥ 55), asks the model a second, narrower question — is this the *same* project, and if so what changed — rather than trusting the fuzzy score alone.
+3. Applies the decision: `update` patches the existing row (and logs a `data_center_status_history` row if `lifecycle_stage` changed), `create_new` inserts a fresh facility, `ignore` writes nothing.
+4. **Never downgrades a `verified` record with a `low`-confidence mention** — such mentions are recorded as pending evidence in `data_center_sources` for `verify-data-centers` to check, but don't touch the row's fields.
+
+Every write also inserts a `data_center_sources` row with `review_status: 'pending'`, so the existing nightly `verify-data-centers` job fact-checks it the same way it checks manually-seeded evidence — there's one verification path, not two.
+
+`lifecycle_stage` values reachable by the LLM: `announced | planned | under_construction | operational | on_hold | cancelled | unknown`. `land_banked` and `decommissioned` are curation-only and never set by the pipeline.
+
+**`generate-dc-changelog`** (weekly, Monday) — aggregates current country/stage MW totals plus facilities created or updated in the last 7 days, and asks the model for a short factual markdown delta, stored in `data_center_weekly_briefs` (one row per `week_start`, upserted so a re-run is idempotent).

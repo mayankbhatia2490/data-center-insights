@@ -71,3 +71,9 @@ verify_jwt = false
 
 [functions.debug-people-extract]
 verify_jwt = false
+
+[functions.discover-data-centers]
+verify_jwt = false
+
+[functions.generate-dc-changelog]
+verify_jwt = false
