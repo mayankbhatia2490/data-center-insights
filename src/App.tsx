@@ -8,6 +8,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
+import Confirm from "./pages/Confirm";
 import Archive from "./pages/Archive";
 import Leaders from "./pages/Leaders";
 import LeaderProfile from "./pages/LeaderProfile";
@@ -33,6 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            <Route path="/confirm" element={<Confirm />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/leaders" element={<Leaders />} />
             <Route path="/leaders/:id" element={<LeaderProfile />} />

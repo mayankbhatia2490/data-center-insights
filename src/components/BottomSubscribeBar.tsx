@@ -56,7 +56,7 @@ const BottomSubscribeBar = () => {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-[hsl(213,52%,25%)] border-t border-border flex items-center justify-center gap-2">
         <CheckCircle className="h-4 w-4 text-accent" />
-        <span className="text-sm font-medium text-accent">You're in — check your inbox.</span>
+        <span className="text-sm font-medium text-accent">Almost there — check your email to confirm.</span>
       </div>
     );
   }
@@ -80,19 +80,24 @@ const BottomSubscribeBar = () => {
         <span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">
           Join <span className="text-foreground font-semibold">5,000+</span> data center professionals
         </span>
-        <form onSubmit={handleSubscribe} className="flex items-center gap-2 flex-1 max-w-md ml-auto">
-          <Input
-            type="email"
-            placeholder="Work email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="h-8 text-xs bg-secondary border-border flex-1 rounded-[4px]"
-          />
-          <Button type="submit" size="sm" className="h-8 text-xs px-4 font-bold shrink-0 rounded-[4px]" disabled={isLoading}>
-            {isLoading ? "..." : "Subscribe Free"}
-          </Button>
-        </form>
+        <div className="flex flex-col gap-0.5 flex-1 max-w-md ml-auto">
+          <form onSubmit={handleSubscribe} className="flex items-center gap-2">
+            <Input
+              type="email"
+              placeholder="Work email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="h-8 text-xs bg-secondary border-border flex-1 rounded-[4px]"
+            />
+            <Button type="submit" size="sm" className="h-8 text-xs px-4 font-bold shrink-0 rounded-[4px]" disabled={isLoading}>
+              {isLoading ? "..." : "Subscribe Free"}
+            </Button>
+          </form>
+          <span className="hidden md:block text-[9px] text-muted-foreground leading-tight">
+            We'll email a confirmation link. One daily briefing, unsubscribe anytime.
+          </span>
+        </div>
         <button
           onClick={() => setMinimized(true)}
           className="text-muted-foreground hover:text-foreground text-lg leading-none ml-2 shrink-0"

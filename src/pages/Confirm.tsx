@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Zap, CheckCircle, AlertCircle } from "lucide-react";
 
-const Unsubscribe = () => {
+const Confirm = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -11,14 +11,14 @@ const Unsubscribe = () => {
   useEffect(() => {
     if (!token) {
       setStatus("error");
-      setMessage("Invalid unsubscribe link.");
+      setMessage("Invalid confirmation link.");
       return;
     }
 
-    const doUnsubscribe = async () => {
+    const doConfirm = async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/unsubscribe?token=${token}`,
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/confirm?token=${token}`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
@@ -26,21 +26,15 @@ const Unsubscribe = () => {
           }
         );
         const result = await res.json();
-
-        if (result.success) {
-          setStatus("success");
-          setMessage("You've been unsubscribed successfully.");
-        } else {
-          setStatus("success");
-          setMessage(result.message || "You've been unsubscribed.");
-        }
+        setStatus(result.success ? "success" : "error");
+        setMessage(result.message || (result.success ? "Subscription confirmed." : "Something went wrong."));
       } catch {
         setStatus("error");
         setMessage("Something went wrong. Please try again.");
       }
     };
 
-    doUnsubscribe();
+    doConfirm();
   }, [token]);
 
   return (
@@ -48,18 +42,18 @@ const Unsubscribe = () => {
       <div className="max-w-md w-full text-center">
         <div className="mb-6">
           <Zap className="h-8 w-8 text-primary mx-auto mb-2" />
-          <h1 className="text-lg font-bold">Unsubscribe from Data Center Pulse</h1>
+          <h1 className="text-lg font-bold">Confirm your subscription</h1>
         </div>
 
         {status === "loading" && (
-          <p className="text-muted-foreground">Processing your request...</p>
+          <p className="text-muted-foreground">Confirming your subscription...</p>
         )}
 
         {status === "success" && (
           <div className="space-y-4">
             <CheckCircle className="h-12 w-12 text-accent mx-auto" />
             <p className="text-lg font-semibold">{message}</p>
-            <p className="text-sm text-muted-foreground">We're sorry to see you go.</p>
+            <p className="text-sm text-muted-foreground">You'll receive the daily briefing every morning.</p>
             <Link to="/" className="text-primary text-sm hover:underline block mt-4">
               ← Back to Data Center Pulse
             </Link>
@@ -80,4 +74,4 @@ const Unsubscribe = () => {
   );
 };
 
-export default Unsubscribe;
+export default Confirm;

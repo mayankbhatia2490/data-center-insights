@@ -17,15 +17,15 @@ export const useSubscribe = () => {
 
       if (data?.already_subscribed) {
         toast({
-          title: "Already subscribed!",
-          description: "You're already on the list. Check your inbox.",
+          title: "Already on the list",
+          description: data.message || "Check your inbox for the confirmation email.",
         });
         return { success: true, alreadySubscribed: true };
       }
 
       toast({
-        title: "Welcome aboard! ⚡",
-        description: "You'll receive the daily briefing every morning.",
+        title: "Almost there ⚡",
+        description: "Check your email to confirm your subscription.",
       });
       return { success: true, alreadySubscribed: false };
     } catch (err) {
