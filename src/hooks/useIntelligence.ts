@@ -67,6 +67,7 @@ export interface StrategicInsight {
   created_at: string | null;
   source_article_ids?: string[] | null;
   confidence_tier?: string | null;
+  locked?: boolean | null;
 }
 
 export function useStrategicInsights(limit = 10) {
@@ -74,7 +75,7 @@ export function useStrategicInsights(limit = 10) {
     queryKey: ["strategic-insights", limit],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("strategic_insights")
+        .from("strategic_insights_public")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(limit);

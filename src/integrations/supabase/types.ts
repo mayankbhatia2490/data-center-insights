@@ -1344,6 +1344,42 @@ export type Database = {
         }
         Relationships: []
       }
+      strategic_insights_public: {
+        Row: {
+          confidence_tier: string | null
+          created_at: string | null
+          horizon: string | null
+          id: string | null
+          insight: string | null
+          locked: boolean | null
+          region: string | null
+          sector: string | null
+          source_article_ids: string[] | null
+        }
+        Insert: {
+          confidence_tier?: never
+          created_at?: string | null
+          horizon?: string | null
+          id?: string | null
+          insight?: never
+          locked?: never
+          region?: string | null
+          sector?: string | null
+          source_article_ids?: never
+        }
+        Update: {
+          confidence_tier?: never
+          created_at?: string | null
+          horizon?: string | null
+          id?: string | null
+          insight?: never
+          locked?: never
+          region?: string | null
+          sector?: string | null
+          source_article_ids?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_cron_secret: { Args: never; Returns: string }

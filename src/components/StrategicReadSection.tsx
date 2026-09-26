@@ -1,7 +1,9 @@
 import { useStrategicInsights } from "@/hooks/useIntelligence";
 import { Skeleton } from "@/components/ui/skeleton";
 import ConfidenceBadge from "@/components/ConfidenceBadge";
-import { Compass } from "lucide-react";
+import { Compass, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const horizonLabel: Record<string, string> = {
   "short-term": "Short-term",
@@ -11,6 +13,7 @@ const horizonLabel: Record<string, string> = {
 
 const StrategicReadSection = () => {
   const { data: insights, isLoading } = useStrategicInsights(8);
+  const { user } = useAuth();
 
   if (isLoading) {
     return (
@@ -40,27 +43,42 @@ const StrategicReadSection = () => {
         {insights.map((i) => (
           <div
             key={i.id}
-            className="rounded-[4px] border border-border bg-card p-4 hover:border-primary/30 transition-colors duration-200"
+            className="relative rounded-[4px] border border-border bg-card p-4 hover:border-primary/30 transition-colors duration-200 overflow-hidden"
           >
-            <div className="flex items-center gap-2 mb-2">
-              {i.sector && (
-                <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] px-2 py-0.5 rounded-[2px] bg-primary/10 text-primary">
-                  {i.sector}
-                </span>
-              )}
-              {i.region && <span className="text-[10px] text-muted-foreground">{i.region}</span>}
-              {i.horizon && (
-                <span className="text-[10px] text-muted-foreground">
-                  {horizonLabel[i.horizon] || i.horizon}
-                </span>
-              )}
-              <ConfidenceBadge
-                tier={i.confidence_tier}
-                sourceCount={i.source_article_ids?.length}
-                className="ml-auto"
-              />
+            <div className={i.locked ? "blur-[3px] select-none pointer-events-none" : undefined}>
+              <div className="flex items-center gap-2 mb-2">
+                {i.sector && (
+                  <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] px-2 py-0.5 rounded-[2px] bg-primary/10 text-primary">
+                    {i.sector}
+                  </span>
+                )}
+                {i.region && <span className="text-[10px] text-muted-foreground">{i.region}</span>}
+                {i.horizon && (
+                  <span className="text-[10px] text-muted-foreground">
+                    {horizonLabel[i.horizon] || i.horizon}
+                  </span>
+                )}
+                <ConfidenceBadge
+                  tier={i.confidence_tier}
+                  sourceCount={i.source_article_ids?.length}
+                  className="ml-auto"
+                />
+              </div>
+              <p className="text-[13px] text-foreground leading-relaxed">
+                {i.locked ? "Subscribe to read this week's full strategic read." : i.insight}
+              </p>
             </div>
-            <p className="text-[13px] text-foreground leading-relaxed">{i.insight}</p>
+            {i.locked && (
+              <Link
+                to={user ? "/pricing" : "/login"}
+                className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-card/40 text-center no-underline"
+              >
+                <Lock className="h-4 w-4 text-primary" />
+                <span className="text-[11px] font-semibold text-foreground">
+                  Subscribe to unlock
+                </span>
+              </Link>
+            )}
           </div>
         ))}
       </div>
