@@ -85,6 +85,6 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ ok: true, discovered, trusted_candidates: trusted }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("GDELT discovery failed:", error);
-    return new Response(JSON.stringify({ ok: false, error: String(error) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ok: false, error: String(error) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

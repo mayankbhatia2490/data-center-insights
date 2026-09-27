@@ -73,6 +73,15 @@ An article is published only when:
 
 If the AI quality gate or meaning pass fails, the run fails closed and publishes zero new articles from that run.
 
+### Candidate lifecycle
+
+Every `news_candidates` row ends in a terminal status so the queue never grows unbounded and the same rejected story is never re-scored (and re-billed to the AI gate) on every run:
+
+- `discovered` — awaiting the next `fetch-news` run.
+- `published` — an article now exists for this candidate (either inserted by this run, or it turned out to duplicate an already-published `source_url`).
+- `rejected` — failed the editorial score threshold or meaning extraction; `failure_reason` records why.
+- `expired` — still `discovered` after 14 days with no decision, swept automatically so stale or untrusted-domain candidates don't accumulate forever.
+
 ### Current schedule
 
 | Job | Frequency | Role |

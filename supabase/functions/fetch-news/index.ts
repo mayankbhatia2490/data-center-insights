@@ -57,7 +57,7 @@ function parseItems(xml: string, atom: boolean, policy: SourcePolicy): Article[]
       const host = new URL(link).hostname.toLowerCase().replace(/^www\./, "");
       if (!(host === policy.domain || host.endsWith(`.${policy.domain}`))) return [];
     } catch { return []; }
-    return [{ title, summary: summary || null, category: category(`${title} ${summary}`), source: policy.source, source_url: link, source_domain: policy.domain, source_tier: policy.tier, source_type: policy.type, source_reliability_score: policy.reliability, is_primary_source: false, published_at: date.toISOString(), original_published_at: date.toISOString(), read_time: `${Math.max(2, Math.ceil(`${title} ${summary}`.split(/\s+/).length / 200))} min read`, candidate_id: null }];
+    return [{ title, summary: summary || null, category: category(`${title} ${summary}`), source: policy.source, source_url: link, source_domain: policy.domain, source_tier: policy.tier, source_type: policy.type, source_reliability_score: policy.reliability, is_primary_source: policy.tier === 1, published_at: date.toISOString(), original_published_at: date.toISOString(), read_time: `${Math.max(2, Math.ceil(`${title} ${summary}`.split(/\s+/).length / 200))} min read`, candidate_id: null }];
   });
 }
 
@@ -82,8 +82,11 @@ async function loadTrustedCandidates(supabase: any): Promise<Article[]> {
   });
 }
 
-async function qualityGate(articles: Article[], apiKey: string): Promise<Article[]> {
+type CandidateRejection = { id: string; reason: string };
+
+async function qualityGate(articles: Article[], apiKey: string): Promise<{ approved: Article[]; rejected: CandidateRejection[] }> {
   const approved: Article[] = [];
+  const rejected: CandidateRejection[] = [];
   for (let i = 0; i < articles.length; i += 15) {
     const batch = articles.slice(i, i + 15);
     const raw = await callAI([
@@ -93,13 +96,18 @@ async function qualityGate(articles: Article[], apiKey: string): Promise<Article
     const match = raw.match(/\[[\d\s,]+\]/);
     if (!match) throw new Error("Invalid quality-gate response");
     const scores: number[] = JSON.parse(match[0]);
-    batch.forEach((article, index) => { const score = Number(scores[index] || 0); if (score >= 7) approved.push({ ...article, validation_score: score, validation_status: article.source_tier === 1 ? "validated_primary" : "validated_specialist" }); });
+    batch.forEach((article, index) => {
+      const score = Number(scores[index] || 0);
+      if (score >= 7) approved.push({ ...article, validation_score: score, validation_status: article.source_tier === 1 ? "validated_primary" : "validated_specialist" });
+      else if (article.candidate_id) rejected.push({ id: article.candidate_id, reason: `editorial_score_${score}` });
+    });
   }
-  return approved;
+  return { approved, rejected };
 }
 
-async function generateMeaning(articles: Article[], apiKey: string): Promise<Article[]> {
+async function generateMeaning(articles: Article[], apiKey: string): Promise<{ enriched: Article[]; rejected: CandidateRejection[] }> {
   const enriched: Article[] = [];
+  const rejected: CandidateRejection[] = [];
   for (let i = 0; i < articles.length; i += 8) {
     const batch = articles.slice(i, i + 8);
     const raw = await callAI([
@@ -111,13 +119,22 @@ async function generateMeaning(articles: Article[], apiKey: string): Promise<Art
     const insights = JSON.parse(match[0]);
     batch.forEach((article, index) => {
       const insight = insights[index];
-      if (!insight?.meaning || !insight?.summary || !insight?.source_excerpt) return;
+      if (!insight?.meaning || !insight?.summary || !insight?.source_excerpt) {
+        if (article.candidate_id) rejected.push({ id: article.candidate_id, reason: "meaning_extraction_incomplete" });
+        return;
+      }
       const importance = Math.max(1, Math.min(10, Number(insight.importance_score || 1)));
       const confidence = Math.max(0, Math.min(100, Math.round((Number(article.source_reliability_score || 50) * 0.6) + (Number(article.validation_score || 7) * 10 * 0.4))));
       enriched.push({ ...article, summary: String(insight.summary).slice(0, 700), meaning: String(insight.meaning).slice(0, 700), impact_summary: String(insight.impact_summary || "").slice(0, 500), claim_type: String(insight.claim_type || "other"), named_entities: Array.isArray(insight.named_entities) ? insight.named_entities.slice(0, 12) : [], sentiment: ["Bullish", "Bearish", "Neutral"].includes(insight.sentiment) ? insight.sentiment : "Neutral", source_excerpt: String(insight.source_excerpt).slice(0, 300), importance_score: importance, confidence_score: confidence });
     });
   }
-  return enriched;
+  return { enriched, rejected };
+}
+
+async function markCandidates(supabase: any, rejections: CandidateRejection[]): Promise<void> {
+  await Promise.all(rejections.map(({ id, reason }) =>
+    supabase.from("news_candidates").update({ candidate_status: "rejected", failure_reason: reason, validated_at: new Date().toISOString() }).eq("id", id)
+  ));
 }
 
 Deno.serve(async (req) => {
@@ -131,19 +148,26 @@ Deno.serve(async (req) => {
     const feedArticles = (await Promise.all(SOURCES.map(fetchSource))).flat();
     const candidateArticles = await loadTrustedCandidates(supabase);
     const unique = [...new Map([...feedArticles, ...candidateArticles].map((article) => [article.source_url, article])).values()];
-    const approved = await qualityGate(unique, apiKey);
-    const enriched = await generateMeaning(approved, apiKey);
+    const { approved, rejected: gateRejected } = await qualityGate(unique, apiKey);
+    const { enriched, rejected: meaningRejected } = await generateMeaning(approved, apiKey);
+    await markCandidates(supabase, [...gateRejected, ...meaningRejected]);
     let inserted = 0;
     for (const article of enriched) {
       const { data: existing } = await supabase.from("articles").select("id").eq("source_url", article.source_url).maybeSingle();
-      if (existing) continue;
+      if (existing) {
+        if (article.candidate_id) await supabase.from("news_candidates").update({ candidate_status: "published", article_id: existing.id, validated_at: new Date().toISOString() }).eq("id", article.candidate_id);
+        continue;
+      }
       const { data: insertedArticle, error } = await supabase.from("articles").insert({ ...article, publication_status: "published", validated_at: new Date().toISOString(), validation_notes: "Allowlisted Tier 1/2 source or trusted discovery candidate, valid URL/date, strict editorial gate, and meaning extraction passed.", corroboration_count: 0, primary_source_count: article.source_tier === 1 ? 1 : 0, corroboration_urls: [], image_url: null, insight: article.meaning }).select("id").maybeSingle();
       if (!error) {
         inserted++;
         if (article.candidate_id && insertedArticle?.id) await supabase.from("news_candidates").update({ candidate_status: "published", article_id: insertedArticle.id, validated_at: new Date().toISOString() }).eq("id", article.candidate_id);
       } else console.error("Article insert rejected:", error.message);
     }
-    return new Response(JSON.stringify({ success: true, trusted_feeds: SOURCES.length, candidates: candidateArticles.length, fetched: unique.length, editorially_approved: approved.length, meaning_enriched: enriched.length, inserted }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const expiryCutoff = new Date(Date.now() - 14 * 86_400_000).toISOString();
+    const { error: expiryError } = await supabase.from("news_candidates").update({ candidate_status: "expired" }).eq("candidate_status", "discovered").lt("discovered_at", expiryCutoff);
+    if (expiryError) console.error("Candidate expiry sweep failed:", expiryError.message);
+    return new Response(JSON.stringify({ success: true, trusted_feeds: SOURCES.length, candidates: candidateArticles.length, fetched: unique.length, editorially_approved: approved.length, meaning_enriched: enriched.length, candidates_rejected: gateRejected.length + meaningRejected.length, inserted }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("Meaning-aware news ingestion failed closed:", error);
     return new Response(JSON.stringify({ success: false, published: 0, error: String(error) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
