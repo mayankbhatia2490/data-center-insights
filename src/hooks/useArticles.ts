@@ -15,6 +15,10 @@ export interface Article {
   sentiment: string | null;
   insight: string | null;
   source_excerpt: string | null;
+  publication_status?: string | null;
+  validation_status?: string | null;
+  source_tier?: number | null;
+  source_reliability_score?: number | null;
 }
 
 export function useArticles(category?: string, limit = 20) {
@@ -24,6 +28,7 @@ export function useArticles(category?: string, limit = 20) {
       let query = supabase
         .from("articles")
         .select("*")
+        .eq("publication_status", "published")
         .order("published_at", { ascending: false })
         .limit(limit);
 
