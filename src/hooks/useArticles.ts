@@ -19,6 +19,13 @@ export interface Article {
   validation_status?: string | null;
   source_tier?: number | null;
   source_reliability_score?: number | null;
+  meaning?: string | null;
+  impact_summary?: string | null;
+  claim_type?: string | null;
+  named_entities?: string[] | null;
+  importance_score?: number | null;
+  confidence_score?: number | null;
+  corroboration_count?: number | null;
 }
 
 export function useArticles(category?: string, limit = 20) {
