@@ -105,13 +105,29 @@ async function qualityGate(articles: Article[], apiKey: string): Promise<{ appro
   return { approved, rejected };
 }
 
+// Gulf/Arabic names transliterated to English commonly include lowercase
+// connector words ("Mohammed bin Rashid Al Maktoum") that a plain
+// Capitalized-word-per-token check would wrongly reject.
+const NAME_CONNECTORS = new Set(["bin", "ibn", "bint", "al", "el", "abu", "abd", "de", "van", "der", "of"]);
+
+function looksLikePersonName(name: unknown): name is string {
+  if (typeof name !== "string") return false;
+  const trimmed = name.trim();
+  if (trimmed.length < 4 || trimmed.length > 80) return false;
+  const tokens = trimmed.split(/\s+/);
+  if (tokens.length < 2 || tokens.length > 6) return false;
+  const isCapitalized = (t: string) => /^[A-Z][a-zA-Z.'-]*$/.test(t);
+  if (!isCapitalized(tokens[0]) || !isCapitalized(tokens[tokens.length - 1])) return false;
+  return tokens.every((t) => isCapitalized(t) || NAME_CONNECTORS.has(t.toLowerCase()));
+}
+
 async function generateMeaning(articles: Article[], apiKey: string): Promise<{ enriched: Article[]; rejected: CandidateRejection[] }> {
   const enriched: Article[] = [];
   const rejected: CandidateRejection[] = [];
   for (let i = 0; i < articles.length; i += 8) {
     const batch = articles.slice(i, i + 8);
     const raw = await callAI([
-      { role: "system", content: "You are a senior Middle East data-center analyst. For every numbered article return one JSON object with: summary (one factual sentence), meaning (why it matters to operators/investors), impact_summary (capacity, power, cloud, regulation, investment, technology, or market impact), claim_type (project, investment, policy, capacity, leadership, technology, operations, market, or other), named_entities (array of company/person/place names), sentiment (Bullish, Bearish, or Neutral), source_excerpt (short fact grounded in the supplied text), and importance_score (1-10). Do not invent facts. Return only a JSON array in the same order." },
+      { role: "system", content: "You are a senior Middle East data-center analyst. For every numbered article return one JSON object with: summary (one factual sentence), meaning (why it matters to operators/investors), impact_summary (capacity, power, cloud, regulation, investment, technology, or market impact), claim_type (project, investment, policy, capacity, leadership, technology, operations, market, or other), people (array of {name, title} for specific named individuals central to the story — executives, officials, founders, appointees; never journalists, analysts quoted only for commentary, or unnamed roles), organizations (array of company/institution names), places (array of place names), sentiment (Bullish, Bearish, or Neutral), source_excerpt (short fact grounded in the supplied text), and importance_score (1-10). Do not invent facts or names not present in the text. Return only a JSON array in the same order." },
       { role: "user", content: batch.map((a, index) => `[${index}] TITLE: ${a.title}\nSOURCE: ${a.source}\nTEXT: ${a.summary || ""}`).join("\n\n") },
     ], apiKey);
     const match = raw.match(/\[[\s\S]*\]/);
@@ -125,10 +141,52 @@ async function generateMeaning(articles: Article[], apiKey: string): Promise<{ e
       }
       const importance = Math.max(1, Math.min(10, Number(insight.importance_score || 1)));
       const confidence = Math.max(0, Math.min(100, Math.round((Number(article.source_reliability_score || 50) * 0.6) + (Number(article.validation_score || 7) * 10 * 0.4))));
-      enriched.push({ ...article, summary: String(insight.summary).slice(0, 700), meaning: String(insight.meaning).slice(0, 700), impact_summary: String(insight.impact_summary || "").slice(0, 500), claim_type: String(insight.claim_type || "other"), named_entities: Array.isArray(insight.named_entities) ? insight.named_entities.slice(0, 12) : [], sentiment: ["Bullish", "Bearish", "Neutral"].includes(insight.sentiment) ? insight.sentiment : "Neutral", source_excerpt: String(insight.source_excerpt).slice(0, 300), importance_score: importance, confidence_score: confidence });
+      const people = Array.isArray(insight.people)
+        ? insight.people.filter((p: any) => p && looksLikePersonName(p.name)).slice(0, 8).map((p: any) => ({ name: String(p.name).trim(), title: typeof p.title === "string" && p.title.trim() ? p.title.trim().slice(0, 120) : null }))
+        : [];
+      const named_entities = {
+        organizations: Array.isArray(insight.organizations) ? insight.organizations.filter((x: any) => typeof x === "string").slice(0, 12) : [],
+        places: Array.isArray(insight.places) ? insight.places.filter((x: any) => typeof x === "string").slice(0, 12) : [],
+      };
+      enriched.push({ ...article, summary: String(insight.summary).slice(0, 700), meaning: String(insight.meaning).slice(0, 700), impact_summary: String(insight.impact_summary || "").slice(0, 500), claim_type: String(insight.claim_type || "other"), named_entities, people, sentiment: ["Bullish", "Bearish", "Neutral"].includes(insight.sentiment) ? insight.sentiment : "Neutral", source_excerpt: String(insight.source_excerpt).slice(0, 300), importance_score: importance, confidence_score: confidence });
     });
   }
   return { enriched, rejected };
+}
+
+async function upsertPeople(supabase: any, article: Article, articleId: string, publishedAt: string): Promise<void> {
+  const people: { name: string; title: string | null }[] = Array.isArray(article.people) ? article.people : [];
+  if (people.length === 0) return;
+  const region = article.category === "Middle East" ? "MENA" : "Global";
+  const importanceGuess = Math.round(Number(article.importance_score || 1) * 10);
+  for (const person of people) {
+    try {
+      const { data: matches } = await supabase.from("people").select("id, mention_count, importance_score, title, organization, region").ilike("name", person.name).order("mention_count", { ascending: false }).limit(1);
+      const existing = matches?.[0];
+      let personId: string;
+      if (existing) {
+        personId = existing.id;
+        await supabase.from("people").update({
+          mention_count: (existing.mention_count || 0) + 1,
+          last_mentioned: publishedAt,
+          title: existing.title || person.title,
+          region: existing.region === "MENA" ? "MENA" : region,
+          importance_score: Math.max(existing.importance_score || 0, importanceGuess),
+          updated_at: new Date().toISOString(),
+        }).eq("id", personId);
+      } else {
+        const { data: created, error: insertError } = await supabase.from("people").insert({
+          name: person.name, title: person.title, region, importance_score: importanceGuess,
+          mention_count: 1, first_mentioned: publishedAt, last_mentioned: publishedAt,
+        }).select("id").maybeSingle();
+        if (insertError || !created) { console.error("Person insert rejected:", insertError?.message); continue; }
+        personId = created.id;
+      }
+      await supabase.from("article_people").insert({ article_id: articleId, person_id: personId, role_in_article: person.title, context_excerpt: article.source_excerpt || null });
+    } catch (error) {
+      console.error(`People extraction failed for "${person.name}":`, error);
+    }
+  }
 }
 
 async function markCandidates(supabase: any, rejections: CandidateRejection[]): Promise<void> {
@@ -158,10 +216,15 @@ Deno.serve(async (req) => {
         if (article.candidate_id) await supabase.from("news_candidates").update({ candidate_status: "published", article_id: existing.id, validated_at: new Date().toISOString() }).eq("id", article.candidate_id);
         continue;
       }
-      const { data: insertedArticle, error } = await supabase.from("articles").insert({ ...article, publication_status: "published", validated_at: new Date().toISOString(), validation_notes: "Allowlisted Tier 1/2 source or trusted discovery candidate, valid URL/date, strict editorial gate, and meaning extraction passed.", corroboration_count: 0, primary_source_count: article.source_tier === 1 ? 1 : 0, corroboration_urls: [], image_url: null, insight: article.meaning }).select("id").maybeSingle();
+      // candidate_id and people are pipeline-internal fields with no matching
+      // column on `articles` — spreading them into insert() makes PostgREST
+      // reject the whole row (unknown column), so they must be stripped here.
+      const { candidate_id: _candidateId, people: _people, ...articleColumns } = article;
+      const { data: insertedArticle, error } = await supabase.from("articles").insert({ ...articleColumns, publication_status: "published", validated_at: new Date().toISOString(), validation_notes: "Allowlisted Tier 1/2 source or trusted discovery candidate, valid URL/date, strict editorial gate, and meaning extraction passed.", corroboration_count: 0, primary_source_count: article.source_tier === 1 ? 1 : 0, corroboration_urls: [], image_url: null, insight: article.meaning }).select("id").maybeSingle();
       if (!error) {
         inserted++;
         if (article.candidate_id && insertedArticle?.id) await supabase.from("news_candidates").update({ candidate_status: "published", article_id: insertedArticle.id, validated_at: new Date().toISOString() }).eq("id", article.candidate_id);
+        if (insertedArticle?.id) await upsertPeople(supabase, article, insertedArticle.id, article.published_at);
       } else console.error("Article insert rejected:", error.message);
     }
     const expiryCutoff = new Date(Date.now() - 14 * 86_400_000).toISOString();

@@ -35,7 +35,7 @@ Tier 1 sources publish information directly from the organization responsible fo
 
 Tier 1 material is labelled as an **official announcement**, not independent journalism. It may auto-publish when the URL is on an approved official domain and the content passes the date, content, and duplication checks.
 
-**Current reality:** there is no dedicated Tier 1 feed/sitemap monitor (see §5). But `discover-news-gdelt`'s `TRUSTED` map already tags eight Tier 1 domains (`news.microsoft.com`, `aws.amazon.com`, `cloud.google.com`, `blogs.oracle.com`, `meeza.net`, `khazna.ae`, `g42.ai`, `center3.com`), and `fetch-news`'s `loadTrustedCandidates` will publish a GDELT-discovered candidate from any of them once it clears the editorial and meaning gates. So Tier 1 auto-publication is live, but only for stories GDELT happens to surface for those eight domains — not a guaranteed, complete feed of their announcements.
+**Current reality:** there is no dedicated Tier 1 feed/sitemap monitor (see §5). But `discover-news-gdelt`'s `TRUSTED` map tags 18 Tier 1 domains — cloud/technology providers (`news.microsoft.com`, `aws.amazon.com`, `cloud.google.com`, `blogs.oracle.com`, `equinix.com`, `digitalrealty.com`) and Middle East operators/ecosystem companies (`meeza.net`, `khazna.ae`, `g42.ai`, `center3.com`, `core42.ai`, `eand.com`, `data-volt.com`, `morohub.com`, `gulfdatahub.ae`, `gbiinc.com`, `global.ntt`) — and `fetch-news`'s `loadTrustedCandidates` will publish a GDELT-discovered candidate from any of them once it clears the editorial and meaning gates. `discover-news-gdelt`'s `QUERIES` were also expanded to name these companies directly, so GDELT is more likely to surface their coverage. So Tier 1 auto-publication is live for all 18 domains, but only for stories GDELT happens to surface — still not a guaranteed, complete feed of their announcements (that remains §5).
 
 ### Tier 2 — Established specialist and business media — ✅ Enforced
 
@@ -50,7 +50,7 @@ The current automatic media allowlist (`SOURCES` in `supabase/functions/fetch-ne
 | Blocks & Files | `blocksandfiles.com` | RSS/XML | 82 | Active |
 | ServeTheHome | `servethehome.com` | RSS/XML | 80 | Active |
 
-`news_sources` also carries Reuters, Gulf Business, Arabian Business, MEED, and Zawya at `allowed_for_auto_publish = FALSE` — recorded for future consideration, not currently polled.
+Reuters, Gulf Business, Arabian Business, MEED, and Zawya have no direct RSS feed but are now also in `discover-news-gdelt`'s `TRUSTED` map at Tier 2, so a GDELT-discovered candidate from any of them can reach the same editorial gate as the six polled feeds above. `news_sources` reflects this (`allowed_for_auto_publish = TRUE` for all eleven Tier 2 domains) but, as with Tier 1, the registry table is documentation — the `TRUSTED` map is what actually gates candidates.
 
 Tier 2 stories are labelled as **reported by specialist media**. They are not treated as proof of capacity, investment value, project completion, or official policy unless corroborated (§7 — not yet enforced).
 
@@ -193,7 +193,7 @@ Three separate status columns exist; do not conflate them.
 
 **`news_candidates.candidate_status`** — `discovered | approved | published | pending_review | rejected | expired`. `approved` and `pending_review` are defined but unused; the live pipeline only ever transitions `discovered → published | rejected | expired`.
 
-Every published article stores: `source`, `source_url`, `source_domain`, `source_tier`, `source_type`, `source_reliability_score`, `is_primary_source`, `publication_status`, `validation_status`, `validation_score`, `corroboration_count`, `original_published_at`, `validated_at`, `validation_notes`, plus the meaning-pipeline fields `meaning`, `impact_summary`, `claim_type`, `named_entities`, `importance_score`, `confidence_score`.
+Every published article stores: `source`, `source_url`, `source_domain`, `source_tier`, `source_type`, `source_reliability_score`, `is_primary_source`, `publication_status`, `validation_status`, `validation_score`, `corroboration_count`, `original_published_at`, `validated_at`, `validation_notes`, plus the meaning-pipeline fields `meaning`, `impact_summary`, `claim_type`, `named_entities` (`{organizations: string[], places: string[]}` — people moved out to the `people`/`article_people` tables, see §14 item 9), `importance_score`, `confidence_score`.
 
 ## 9. Failure behavior — ✅ Enforced
 
@@ -225,7 +225,7 @@ The evidence-level labels below describe the intended reader-facing distinction 
 
 - **Official announcement** · **Reported by specialist media** · **Independent corroboration** · **Company-reported figure** · **Requires corroboration** · **Editorially reviewed**
 
-**Current reality:** `NewsCard.tsx` renders category, sentiment badge, and a "Why it matters" insight line, but no tier/source-type/corroboration badge — a Tier 1 primary announcement and a Tier 2 specialist-media report look identical to a reader today, even though `source_tier`/`source_type`/`validation_status` are already stored on every article. This is a real, currently-missing feature, not a completed one — `article.people` in the same component has the same problem (rendering code exists, waiting for `useArticles` to actually join and populate `people`, which it does not).
+**Current reality:** `NewsCard.tsx` renders category, sentiment badge, and a "Why it matters" insight line, but no tier/source-type/corroboration badge — a Tier 1 primary announcement and a Tier 2 specialist-media report look identical to a reader today, even though `source_tier`/`source_type`/`validation_status` are already stored on every article. This remains a real, missing feature. (The people-badge version of this problem — `article.people` rendering code with no data behind it — was fixed 2026-09-27; see §14 item 9 and §1's note on this file's own history of code/doc drift.)
 
 Never display a company press release as independent journalism once these labels exist.
 
@@ -244,15 +244,22 @@ Priority is ranked by three criteria: does it compound (more value per article o
 | 1 | `news_candidates` table for discovery results | ✅ Done | — |
 | 2 | GDELT discovery Edge Function that never publishes directly | ✅ Done | — |
 | 8 | Candidate lifecycle terminal states (`rejected`/`expired`, not stuck at `discovered` forever) | ✅ Done (added 2026-09-27) | — |
-| 9 | People/company/place entity separation, and writing mentions into the `people` table `/leaders` reads | ❌ Not started | **P1** — compounds via SEO (each person = an indexed `/leaders/:id` page, already in the sitemap), narrow/checkable AI task (name-in-article, not a fact claim), and plugs directly into already-built but unused revenue infrastructure (Stripe premium, `profile_claims` claim flow) |
-| 7 | Verification/corroboration of data-center claims — high-impact facts (capacity, investment, project status, policy, leadership) require a primary source or two independent Tier 2 sources before being treated as confirmed | ❌ Not started (§7) | **P1** — this is the site's own public promise and is currently unenforced; ties for top priority with #9, not because it drives growth but because shipping #9's higher visibility without also shipping this widens the gap between what the site claims and what it checks |
+| 9 | People/company/place entity separation, and writing mentions into the `people` table `/leaders` reads | ✅ Done (added 2026-09-27) | — |
+| 11 | Tier 1/2 allowlist expansion — 6 new Tier 2 domains (Reuters, Gulf Business, Arabian Business, MEED, Zawya) and 10 new Tier 1 domains (Core42, e&, DataVolt, Moro Hub, Gulf Data Hub, Gulf Bridge International, Equinix, Digital Realty, NTT) added to `discover-news-gdelt`'s `TRUSTED` map and `news_sources` | ✅ Done (added 2026-09-27) | — |
+| 7 | Verification/corroboration of data-center claims — high-impact facts (capacity, investment, project status, policy, leadership) require a primary source or two independent Tier 2 sources before being treated as confirmed | ❌ Not started (§7) | **P1 — next up.** This is the site's own public promise and is currently unenforced; now the top remaining priority since #9 shipped without it, which widens the gap between what the site claims and what it checks |
 | 3 | Official-source sitemap monitors for top operators/government bodies | ❌ Not started (§5) | Roadmap |
 | 4 | Primary-source validation labels in the frontend | ❌ Not started (§12) | Roadmap |
 | 5 | Human review queue for high-impact claims | ❌ Not started — `pending_review` statuses exist on all three status columns but nothing ever sets them | Roadmap |
 | 6 | Feed-health metrics and alerts for broken XML sources | ❌ Not started (§2) | Roadmap |
-| 10 | Technology-direction trend signal (cross-article, not per-article) | ❌ Not started | Roadmap — deprioritized versus #7/#9: it's linear, one-sided content rather than a compounding loop, and the AI's job (calling an industry trend) is more subjective and error-prone than either naming a person or checking a claim against a second source |
+| 10 | Technology-direction trend signal (cross-article, not per-article) | ❌ Not started | Roadmap — deprioritized versus #7: it's linear, one-sided content rather than a compounding loop, and the AI's job (calling an industry trend) is more subjective and error-prone than either naming a person or checking a claim against a second source |
 
-**Next up, in this order:** #9 (people/leaders), then #7 (verification/corroboration). Neither is being built yet — this table records the agreed priority, not a build in progress.
+**Item 9 implementation notes** (`fetch-news`'s `generateMeaning`/`upsertPeople`, `useArticles.ts`, `NewsCard.tsx`):
+- The AI extraction prompt now returns `people` (`{name, title}`, named individuals only — never journalists/analysts-for-commentary/unnamed roles), `organizations`, and `places` instead of one flat `named_entities` array. `named_entities` is now stored as `{organizations, places}`.
+- Each person mention upserts into the existing `people`/`article_people` tables (schema already existed, unused until now): matched by case-insensitive name, `mention_count` incremented, `region` set to MENA/Global from the article's own category and never downgraded once MENA, `title` set once and not overwritten by a later, possibly-noisier mention.
+- **Known limitation:** matching is by name only (no organization disambiguation), so two different real people who happen to share an exact name will be merged into one `people` row. Acceptable for v1; worth revisiting if it causes a visible mixup on `/leaders`.
+- **Also fixed in the same change:** `fetch-news`'s article insert was spreading the entire in-memory article object — including `candidate_id`, a field with no matching column on `articles` — directly into `.insert()`. PostgREST rejects unknown columns, so every insert since `ee3ea70` was very likely failing (see git blame / Edge Function logs for confirmation once deployed). Fixed by explicitly stripping pipeline-internal fields before insert.
+
+**Next up:** #7 (verification/corroboration) is the only remaining P1.
 
 ## Final rule
 

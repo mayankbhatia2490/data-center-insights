@@ -22,10 +22,11 @@ export interface Article {
   meaning?: string | null;
   impact_summary?: string | null;
   claim_type?: string | null;
-  named_entities?: string[] | null;
+  named_entities?: { organizations?: string[]; places?: string[] } | null;
   importance_score?: number | null;
   confidence_score?: number | null;
   corroboration_count?: number | null;
+  people?: { id: string; name: string }[];
 }
 
 export function useArticles(category?: string, limit = 20) {
@@ -34,7 +35,7 @@ export function useArticles(category?: string, limit = 20) {
     queryFn: async () => {
       let query = supabase
         .from("articles")
-        .select("*")
+        .select("*, article_people(people(id, name))")
         .eq("publication_status", "published")
         .order("published_at", { ascending: false })
         .limit(limit);
@@ -45,7 +46,10 @@ export function useArticles(category?: string, limit = 20) {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as Article[];
+      return (data ?? []).map((row: any) => ({
+        ...row,
+        people: (row.article_people ?? []).map((ap: any) => ap.people).filter(Boolean),
+      })) as Article[];
     },
     refetchInterval: 5 * 60 * 1000, // refetch every 5 min
   });
