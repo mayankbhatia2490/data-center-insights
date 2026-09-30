@@ -127,7 +127,7 @@ The parser (`parseItems` in `fetch-news`) supports both RSS 2.0 and Atom.
 
 ## 4. Fast discovery: GDELT — ✅ Enforced
 
-`discover-news-gdelt` runs every 30 minutes and queries the free GDELT DOC API with four queries tuned for GCC/Middle East data-center topics (see `QUERIES` in `supabase/functions/discover-news-gdelt/index.ts`). It stores results in `public.news_candidates` and never publishes directly — publication is entirely `fetch-news`'s job.
+`discover-news-gdelt` runs every 30 minutes and queries the free GDELT DOC API with five queries tuned for GCC/Middle East data-center topics (see `QUERIES` in `supabase/functions/discover-news-gdelt/index.ts`). It stores results in `public.news_candidates` and never publishes directly — publication is entirely `fetch-news`'s job.
 
 Each candidate stores: discovery source, discovered URL, canonical URL, title and summary, source domain, source tier/type/reliability when the domain is recognized (null otherwise), publication timestamp, the raw discovery payload, and candidate status.
 
