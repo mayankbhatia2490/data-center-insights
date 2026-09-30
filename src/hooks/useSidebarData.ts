@@ -41,14 +41,20 @@ export function useEvents() {
   return useQuery({
     queryKey: ["events"],
     queryFn: async () => {
+      // Upcoming/ongoing only: ended events (or single-day ones already past)
+      // must not crowd out newly fetched ones. Undated rows sort last.
+      const today = new Date().toISOString().slice(0, 10);
       const { data, error } = await supabase
         .from("events")
         .select("*")
-        .order("start_date", { ascending: true })
+        .or(
+          `end_date.gte.${today},and(end_date.is.null,start_date.gte.${today}),and(end_date.is.null,start_date.is.null)`
+        )
+        .order("start_date", { ascending: true, nullsFirst: false })
         .limit(4);
       if (error) throw error;
       return data as Event[];
     },
-    refetchInterval: 24 * 60 * 60 * 1000,
+    refetchInterval: 60 * 60 * 1000,
   });
 }
