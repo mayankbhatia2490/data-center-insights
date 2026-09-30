@@ -7,27 +7,46 @@ const corsHeaders = {
 };
 
 const TRUSTED: Record<string, { tier: 1 | 2; type: string; reliability: number }> = {
+  // Tier 2 — specialist/business media with a direct RSS feed (also polled live in fetch-news)
   "datacenterdynamics.com": { tier: 2, type: "specialist_media", reliability: 92 },
   "datacenterknowledge.com": { tier: 2, type: "specialist_media", reliability: 90 },
   "capacitymedia.com": { tier: 2, type: "specialist_media", reliability: 88 },
   "blocksandfiles.com": { tier: 2, type: "specialist_media", reliability: 82 },
   "servethehome.com": { tier: 2, type: "specialist_media", reliability: 80 },
   "theregister.com": { tier: 2, type: "established_business_media", reliability: 86 },
+  // Tier 2 — established business media, no direct feed; reached only via GDELT discovery
+  "reuters.com": { tier: 2, type: "established_business_media", reliability: 96 },
+  "gulfbusiness.com": { tier: 2, type: "established_business_media", reliability: 82 },
+  "arabianbusiness.com": { tier: 2, type: "established_business_media", reliability: 82 },
+  "meed.com": { tier: 2, type: "established_business_media", reliability: 88 },
+  "zawya.com": { tier: 2, type: "established_business_media", reliability: 84 },
+  // Tier 1 — cloud/technology provider primary sources
   "news.microsoft.com": { tier: 1, type: "primary", reliability: 98 },
   "aws.amazon.com": { tier: 1, type: "primary", reliability: 98 },
   "cloud.google.com": { tier: 1, type: "primary", reliability: 98 },
   "blogs.oracle.com": { tier: 1, type: "primary", reliability: 97 },
+  "equinix.com": { tier: 1, type: "primary", reliability: 95 },
+  "digitalrealty.com": { tier: 1, type: "primary", reliability: 95 },
+  // Tier 1 — Middle East operators and ecosystem companies
   "meeza.net": { tier: 1, type: "primary", reliability: 90 },
   "khazna.ae": { tier: 1, type: "primary", reliability: 90 },
   "g42.ai": { tier: 1, type: "primary", reliability: 90 },
   "center3.com": { tier: 1, type: "primary", reliability: 90 },
+  "core42.ai": { tier: 1, type: "primary", reliability: 90 },
+  "eand.com": { tier: 1, type: "primary", reliability: 92 },
+  "data-volt.com": { tier: 1, type: "primary", reliability: 88 },
+  "morohub.com": { tier: 1, type: "primary", reliability: 88 },
+  "gulfdatahub.ae": { tier: 1, type: "primary", reliability: 85 },
+  "gbiinc.com": { tier: 1, type: "primary", reliability: 82 },
+  "global.ntt": { tier: 1, type: "primary", reliability: 90 },
 };
 
 const QUERIES = [
   '"data center" (UAE OR Dubai OR Saudi OR Riyadh OR Qatar OR Bahrain OR Oman OR Kuwait)',
   '(hyperscale OR colocation OR "cloud region") (Middle East OR Gulf OR GCC OR Saudi OR UAE)',
-  '(Khazna OR G42 OR MEEZA OR DataVolt OR Center3) data center',
+  '(Khazna OR G42 OR MEEZA OR DataVolt OR Center3 OR Core42 OR "e&" OR "Moro Hub" OR "Gulf Data Hub") data center',
   '(data center OR datacentre) (power OR cooling OR renewable OR AI) Middle East',
+  '(Equinix OR "Digital Realty" OR NTT OR "Gulf Bridge International") (Middle East OR Gulf OR UAE OR Saudi OR Qatar)',
 ];
 
 function policyFor(hostname: string) {
@@ -85,6 +104,6 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ ok: true, discovered, trusted_candidates: trusted }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     console.error("GDELT discovery failed:", error);
-    return new Response(JSON.stringify({ ok: false, error: String(error) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ ok: false, error: String(error) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
