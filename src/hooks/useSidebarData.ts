@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { pickSidebarEvents } from "@/lib/eventRegion";
 
 export interface MarketTicker {
   id: string;
@@ -51,9 +52,10 @@ export function useEvents() {
           `end_date.gte.${today},and(end_date.is.null,start_date.gte.${today}),and(end_date.is.null,start_date.is.null)`
         )
         .order("start_date", { ascending: true, nullsFirst: false })
-        .limit(4);
+        .limit(40);
       if (error) throw error;
-      return data as Event[];
+      // Middle East bias: see pickSidebarEvents.
+      return pickSidebarEvents(data as Event[], 4, 3);
     },
     refetchInterval: 60 * 60 * 1000,
   });
