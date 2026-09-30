@@ -2,6 +2,34 @@
 
 Audited from source (every route in `src/App.tsx`, every component they render, forms, hooks, SEO files). Nothing was run in a browser, so visual/perf findings are from code, not screenshots.
 
+## 0. Rendered pass (added after the source audit)
+
+Method: headless Chromium against production (`data-center-insights-fawn.vercel.app`), 10 routes × 375px and 1440px, axe-core (WCAG 2.2 AA), network capture, screenshots. Forms were **not** submitted (would send real emails). Lighthouse was not run.
+
+**Confirmed by rendering**
+- Homepage subscriber claim renders **"0+ MENA infrastructure leaders subscribed"** (RLS blocks the anon count).
+- Every route has **serious colour-contrast failures** (axe): homepage 87 nodes desktop / 40 mobile, `/insights` 33, `/stats` 18, `/leaders` 11. `/stats` also has **critical `select-name`** (2 unlabeled selects) and **16 `svg-img-alt`** failures.
+- **Tiny text:** 141 of 257 text elements on the homepage and 484 of 638 on `/stats` are under 12px.
+- **Mobile chat panel is clipped off the left edge** (x = −29px at 375px wide). The chat button, the 48px subscribe bar and two 2px progress bars are all fixed-position; the subscribe bar covers content and the bar's "Work email" placeholder is barely legible.
+- **Horizontal scroll on mobile:** `/stats` (378px > 375) and `/leaders` (440px > 375, the table).
+- **Pulse Index renders twice on desktop home** (snapshot row and sidebar). Mobile home is 6,280px tall.
+- **"Live Market Signals" shows grey skeleton bars permanently** when there are no signals (empty array is treated as loading).
+- Home fires the same `articles` query **4 times** plus 9 other requests; `/insights` fires it twice.
+- Stats map: many facilities show `Capacity n/d` and `UNKNOWN` lifecycle (e.g. AWS Bahrain sites), 66 of 111 have coordinates. The stat tiles are grey slate with dark text, which fails contrast.
+
+**New issues found only by rendering**
+- **Duplicate canonical and og:url on every non-home page.** `index.html` hard-codes canonical `/` and Helmet adds a second one (`/stats` has both). Conflicting canonicals can make Google consolidate pages to the homepage.
+- **og:image is an expired signed URL** (Google Cloud link, expired 2026-02-21). Social previews are broken.
+- **404s return HTTP 200** with the homepage `<title>` and canonical (soft 404).
+- Home "Latest stories loaded" shows 13 while the platform card says 1,919 indexed, and the feed has only 6 visible cards. The 13 vs 1,919 gap is unexplained (recency filter?) and worth checking.
+
+**Corrections to the source-only findings below**
+- The **sitemap domain mismatch is not a live bug.** The committed `public/sitemap.xml` is stale, but `prebuild` regenerates it and the deployed sitemap is correct (369 URLs, right domain). Downgrade to housekeeping: delete the stale committed file.
+- **Fake fallback tickers/events are not firing in production.** Market Pulse and Upcoming Events show real rows. The fallback code is still a risk if the tables empty out, but it is not live today.
+- The "Job Board", "5,000+", "3 sources" and "Priority support" claims still stand (they are text in the page).
+
+**Not verified:** Lighthouse/bundle weight, form submissions, unsubscribe-on-load behaviour, premium-gated views (needs a signed-in premium user), admin pages.
+
 ## 1. What the site is
 
 A Vite + React + Supabase SPA: an AI-curated MENA data-center news feed with a daily digest, a people directory, a stats/map dashboard, and a freemium "intelligence" tier. Stack is fine. The problem is not technology, it is **focus**: the product has six different personalities (news site, newsletter landing page, market-data terminal, people CRM, SaaS paywall, AI chatbot) and each page pushes a different one.
@@ -45,7 +73,7 @@ Form-wide issues: no inline validation beyond `type="email"`; no consent/privacy
 
 1. **Fake / hard-coded numbers presented as live.** "5,000+ professionals", "3 sources · updated every 2 hours", Sidebar fallback tickers (EQIX $845.20 etc.) shown when the DB is empty, Stats illustrative charts, Header `tickerHeadlines` array (unused but contains "BREAKING: Blackstone closes $10B" invented headlines), `data/mockData.ts`. Per your own standard (no number without a source) these must go or be visibly labelled.
 2. **Subscriber count likely broken.** `Index.tsx` counts `subscribers` with the anon key, but the current RLS only lets users see their own row, so the count returns 0 → the page shows "**0+** MENA infrastructure leaders subscribed". Expose a count via a server-side view/RPC, or drop the claim.
-3. **Sitemap points to the wrong domain.** `public/sitemap.xml` lists `pulsefeed-chronicle.lovable.app`; `robots.txt` and `Seo.tsx` use `data-center-insights-fawn.vercel.app`. Google will ignore/penalize mismatched URLs. Also `Seo.tsx` itself says "update once the production domain is purchased" — buy a domain first, then fix everything once.
+3. **(Downgraded, see §0) Committed sitemap is stale.** `public/sitemap.xml` lists `pulsefeed-chronicle.lovable.app`; `robots.txt` and `Seo.tsx` use `data-center-insights-fawn.vercel.app`. Google will ignore/penalize mismatched URLs. Also `Seo.tsx` itself says "update once the production domain is purchased" — buy a domain first, then fix everything once.
 4. **Every card is an external link.** News cards, hero, ticker, trending: all `target="_blank"` to the source. Nothing keeps users on-site, so no article pages exist to rank in search. Only `/leaders/:id` is indexable long-tail content.
 5. **Homepage density.** Above the feed: progress bar ×2 (Header loading bar + reading-progress bar, both fixed top), ticker, hero, digest, 3-column snapshot — then the feed. The sidebar repeats the same data again (Pulse index appears on the homepage **twice**, trending repeats hero).
 6. **Design-system drift.** Three Google Fonts imported (Inter twice, Lora, Space Mono) but only Inter is visibly used; 49 shadcn `ui/` files exist and only ~12 are imported. `--muted-foreground` equals `--foreground` in light theme (hierarchy collapses); `--accent` is near-white, yet code uses `text-accent` for "positive/green" states (invisible on light theme). Magic colours like `hsl(213,52%,25%)` and `hsl(35,92%,60%)` bypass tokens. Light theme defined, but toggled by a `.light` class with default dark: inconsistent.
