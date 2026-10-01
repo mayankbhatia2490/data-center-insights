@@ -47,7 +47,7 @@ const Index = () => {
       if (typeof data === "number") setSubscriberCount(data);
     });
     // Fetch article count
-    supabase.from("articles").select("id", { count: "exact", head: true }).then(({ count }) => {
+    supabase.from("articles").select("id", { count: "exact", head: true }).eq("publication_status", "published").then(({ count }) => {
       if (count !== null) setArticleCount(count);
     });
     // Fetch top 3 market signals
@@ -176,7 +176,7 @@ const Index = () => {
                   <Globe className="h-3.5 w-3.5 text-primary" />
                   <span className="text-xs text-foreground">
                     {articleCount !== null
-                      ? <><strong>{articleCount.toLocaleString()}</strong> MENA articles indexed &amp; AI-analysed</>
+                      ? <><strong>{articleCount.toLocaleString()}</strong> validated MENA stories published</>
                       : <Skeleton className="h-4 w-48 inline-block" />}
                   </span>
                 </div>

@@ -19,7 +19,7 @@ What the audit found, and where it stands after SEO Phase 0 and the first databa
 | Generated Supabase types out of date | **Fixed.** Regenerated from the live schema |
 | Client-rendered SPA; content needs JavaScript | **Open.** Phase 1 (framework decision) |
 | No per-article pages; every card links out | **Open.** Phase 1 and 2 |
-| Homepage says "1,919 MENA articles indexed & AI-analysed" but only 15 stories are published (1,906 are archived or rejected) | **Open, new.** The count includes every row. Fix first in `docs/phase-1-plan.md`, Step 0 |
+| Homepage says "1,919 MENA articles indexed & AI-analysed" but only 15 stories are published (1,906 are archived or rejected) | **Fixed in code (pending merge).** Count now filters to `publication_status = 'published'`; wording is "validated MENA stories published". Phase 1 Step 0, first bullet |
 | Hard-coded "5,000+ professionals" in the subscribe bar | **Fixed.** Replaced with plain wording, no number |
 | "3 sources · updated every 2 hours" on the homepage; "Exclusive Job Board Access" in the subscribe dialog | **Fixed.** Both removed |
 | Contrast failures (axe), 11 px text, mobile chat panel clipped, sideways scroll on `/stats` and `/leaders` | **Open** (design rebuild) |

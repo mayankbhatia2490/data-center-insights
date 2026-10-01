@@ -20,7 +20,7 @@ Three consequences:
 
 1. **A framework migration is not justified yet.** The spec recommended Next.js with on-demand regeneration for thousands of pages. With about 15 stories and 111 facilities, **pre-rendering to static HTML at build time and rebuilding when the pipeline publishes** gives crawlers and AI bots the same raw HTML at a fraction of the effort and risk. Revisit Next.js when published pages pass roughly 1,000, or when pages need per-user server logic.
 2. **Content supply is the bottleneck, not rendering.** Fifteen stories in a week of publishing is the ceiling on search growth. Phase 1 therefore runs a **data-supply track** in parallel (section 6).
-3. **A live claim is wrong and should be fixed first.** The homepage says "1,919 MENA articles indexed & AI-analysed". That count (`src/pages/Index.tsx`) includes every row, archived or not; the true published number is 15. See Step 0.
+3. **A live claim is wrong and was wrong and is now fixed in code (Step 0).** The homepage says "1,919 MENA articles indexed & AI-analysed". That count (`src/pages/Index.tsx`) includes every row, archived or not; the true published number is 15. See Step 0.
 
 ## 2. Decision: how to produce crawlable HTML
 
