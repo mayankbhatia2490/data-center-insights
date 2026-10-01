@@ -25,7 +25,7 @@ What the audit found, and where it stands after SEO Phase 0 and the first databa
 | No Privacy, Terms, About/methodology, Contact pages | **Built.** Pages, shared footer and routes are in. Privacy, Terms and Contact stay `noindex` until `VITE_LEGAL_NAME`, `VITE_CONTACT_EMAIL` and `VITE_GOVERNING_LAW` are set. Needs a lawyer's review before launch |
 | Pricing says "Contact us" but the button starts checkout | **Fixed.** Checkout is off by default: price shows "By request" and the button is "Request access" (links to Contact). Setting `VITE_PREMIUM_CHECKOUT=true` and `VITE_PREMIUM_PRICE` (after Stripe is configured) switches on the real upgrade flow. "Priority support" removed |
 | Seven separate email capture points | **Open** (design rebuild) |
-| Unsubscribe fires on page load | **Open** |
+| Unsubscribe fires on page load | **Fixed in code.** The page now needs a click and sends a POST; the server function is POST-only in the repo. The function still needs deploying after this PR merges (see PR notes) |
 | Real production domain | **Open.** Needs you |
 
 Other findings from the database check (not caused by this work): three `SECURITY DEFINER` views (`market_signals_public`, `regional_outlook_public`, `strategic_insights_public`) and Supabase leaked-password protection off. Both are worth a separate review.
