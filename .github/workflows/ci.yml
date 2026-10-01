@@ -66,7 +66,9 @@ jobs:
           npx --yes http-server dist -p 4173 -s &
           npx --yes wait-on http://127.0.0.1:4173/
           STORY=$(ls dist/news | head -1)
-          FACILITY=$(find dist/data/facilities -name index.html | head -1 | sed 's#^dist##; s#index.html$##')
+          # An indexable facility, taken from the sitemap: most facility pages are noindex on purpose,
+          # and Lighthouse scores any noindex page as an SEO failure.
+          FACILITY=$(grep -o '<loc>[^<]*/data/facilities/[^<]*</loc>' dist/sitemap.xml | head -1 | sed -E 's#<loc>https?://[^/]+##; s#</loc>##')/
           {
             echo "LH_URLS<<EOF"
             echo "http://127.0.0.1:4173/"
