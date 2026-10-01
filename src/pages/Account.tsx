@@ -15,7 +15,7 @@ const Account = () => {
 
   return (
     <div className="min-h-screen bg-background pb-16">
-      <Seo title="Account — Data Center Pulse" description="Manage your Data Center Pulse account." path="/account" />
+      <Seo title="Account — Data Center Pulse" description="Manage your Data Center Pulse account." path="/account" noindex />
       <Header />
 
       <main className="container py-12 max-w-lg">

@@ -190,13 +190,15 @@ The audience is MENA, and English-only leaves reach on the table. Plan, not Phas
 
 ## 14. Rollout
 
-**Phase 0: fixes on the current app (about 1 week).**
-1. Remove the hard-coded canonical, `og:url` and `og:image` from `index.html`; let one component own them.
-2. Replace the expired `og:image` with a hosted file in `public/`.
-3. Add `noindex` to the 404 view and unknown routes; add `X-Robots-Tag: noindex` on non-production hosts.
-4. Delete the stale committed `public/sitemap.xml`; add `lastmod` to the generator.
-5. Update `llms.txt` and `robots.txt`.
-6. Buy and attach the real domain; update `SITE_URL` once and redirect the `.vercel.app` host.
+**Phase 0: fixes on the current app. Status: implemented in this PR.**
+1. Done: hard-coded canonical, `og:url` and static JSON-LD removed from `index.html`; `Seo.tsx` is the only owner of per-page tags. Verified in a browser on the production build: one canonical, one description and one `og:image` on every page, no leftover fallback tags.
+2. Done: expired `og:image` replaced by `public/og-default.png`, built from `VITE_SITE_URL`. Fallback social tags stay in `index.html` for crawlers that do not run JavaScript, marked `data-static-seo` and removed once the app loads.
+3. Done: `noindex` on `/login`, `/account`, `/confirm`, `/unsubscribe`, `/admin/*` and the 404 view. `vercel.json` now lists the real routes, so unknown URLs get Vercel's real HTTP 404 with `public/404.html` instead of a 200 homepage. Preview hosts get `X-Robots-Tag: noindex` (host pattern checked against the current preview names; confirm on the next preview deploy). Limit: `/leaders/{id}` for an id that does not exist is still a 200 until Phase 1 server rendering.
+4. Done: stale `public/sitemap.xml` removed from git and ignored (the build generates it); generator supports `lastmod` (people use `last_mentioned`).
+5. Done: `robots.txt` disallows `/admin/`. `llms.txt` is unchanged until the new routes exist (Phase 1).
+6. Not done (needs you): buy and attach the real domain, set `VITE_SITE_URL` and `SITE_URL` in Vercel and the edge-function secrets, then redirect the `.vercel.app` host.
+
+No Supabase change is required for Phase 0. The live project's migration history matches the repo (checked read-only). Phase 1 needs the slug and `updated_at` migrations in section 4.
 
 **Phase 1: foundation (2 to 4 weeks).** Decision on framework; migrations for slugs and `updated_at`; Next.js app with shared layout, tokens and fonts; static pages, home, news index; metadata and JSON-LD helpers; sitemap index; redirects; revalidation hook.
 

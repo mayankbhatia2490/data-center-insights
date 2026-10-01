@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Zap, CheckCircle, AlertCircle } from "lucide-react";
+import Seo from "@/components/Seo";
 
 const Unsubscribe = () => {
   const [searchParams] = useSearchParams();
@@ -45,6 +46,7 @@ const Unsubscribe = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Seo title="Unsubscribe — Data Center Pulse" description="Manage your Data Center Pulse subscription." path="/unsubscribe" noindex />
       <div className="max-w-md w-full text-center">
         <div className="mb-6">
           <Zap className="h-8 w-8 text-primary mx-auto mb-2" />

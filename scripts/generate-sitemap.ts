@@ -15,6 +15,7 @@ const BASE_URL = process.env.SITE_URL || "https://data-center-insights-fawn.verc
 
 interface SitemapEntry {
   path: string;
+  lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
 }
@@ -38,7 +39,7 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
   }
 
   const supabase = createClient(url, key);
-  const { data, error } = await supabase.from("people").select("id").limit(1000);
+  const { data, error } = await supabase.from("people").select("id, last_mentioned").limit(1000);
   if (error || !data) {
     console.warn("sitemap: failed to fetch people for dynamic URLs:", error?.message);
     return [];
@@ -46,6 +47,7 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
 
   return data.map((person) => ({
     path: `/leaders/${person.id}`,
+    lastmod: person.last_mentioned ? new Date(person.last_mentioned).toISOString().slice(0, 10) : undefined,
     changefreq: "weekly",
     priority: "0.5",
   }));
@@ -56,6 +58,7 @@ function generateSitemap(entries: SitemapEntry[]) {
     [
       `  <url>`,
       `    <loc>${BASE_URL}${e.path}</loc>`,
+      e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       `  </url>`,

@@ -1,5 +1,24 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/unsubscribe", "destination": "/index.html" },
+    { "source": "/confirm", "destination": "/index.html" },
+    { "source": "/archive", "destination": "/index.html" },
+    { "source": "/leaders", "destination": "/index.html" },
+    { "source": "/leaders/:id", "destination": "/index.html" },
+    { "source": "/stats", "destination": "/index.html" },
+    { "source": "/intelligence", "destination": "/index.html" },
+    { "source": "/insights", "destination": "/index.html" },
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/pricing", "destination": "/index.html" },
+    { "source": "/account", "destination": "/index.html" },
+    { "source": "/admin/claims", "destination": "/index.html" },
+    { "source": "/admin/people-verification", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "data-center-insights-(git-.+|[a-z0-9]{9}-.+)\\.vercel\\.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
   ]
 }

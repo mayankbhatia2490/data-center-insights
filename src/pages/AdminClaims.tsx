@@ -87,7 +87,7 @@ const AdminClaims = () => {
   if (!user || !isAdmin) {
     return (
       <div className="min-h-screen bg-background">
-        <Seo title="Admin — Data Center Pulse" description="Admin area." path="/admin/claims" />
+        <Seo title="Admin — Data Center Pulse" description="Admin area." path="/admin/claims" noindex />
         <Header />
         <main className="container py-12 text-center text-muted-foreground">
           <ShieldCheck size={32} className="mx-auto mb-3 opacity-30" />
@@ -100,7 +100,7 @@ const AdminClaims = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Seo title="Profile Claims — Admin" description="Review pending profile claims." path="/admin/claims" />
+      <Seo title="Profile Claims — Admin" description="Review pending profile claims." path="/admin/claims" noindex />
       <Header />
       <main className="container py-8 md:py-12">
         <div className="mb-8 flex items-center gap-3">
