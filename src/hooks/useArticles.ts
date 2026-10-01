@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Article {
@@ -29,8 +29,9 @@ export interface Article {
   people?: { id: string; name: string }[];
 }
 
-export function useArticles(category?: string, limit = 20) {
-  return useQuery({
+// Shared with the build-time pre-render (src/entry-server.tsx), which prefetches these queries.
+export const articlesQueryOptions = (category?: string, limit = 20) =>
+  queryOptions({
     queryKey: ["articles", category, limit],
     queryFn: async () => {
       let query = supabase
@@ -51,6 +52,11 @@ export function useArticles(category?: string, limit = 20) {
         people: (row.article_people ?? []).map((ap: any) => ap.people).filter(Boolean),
       })) as Article[];
     },
+  });
+
+export function useArticles(category?: string, limit = 20) {
+  return useQuery({
+    ...articlesQueryOptions(category, limit),
     refetchInterval: 5 * 60 * 1000, // refetch every 5 min
   });
 }

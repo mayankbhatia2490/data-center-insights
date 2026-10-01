@@ -1,3 +1,4 @@
+import { useHydrated } from "@/hooks/useHydrated";
 import { useState, useEffect } from "react";
 import { Menu, X, Zap, Sun, Moon, UserCircle } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
@@ -70,12 +71,11 @@ const Header = () => {
     }
   };
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  // Empty until hydrated: a pre-rendered page may be built on an earlier day.
+  const hydrated = useHydrated();
+  const today = hydrated
+    ? new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+    : "";
 
   return (
     <>

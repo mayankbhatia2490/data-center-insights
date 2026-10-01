@@ -20,7 +20,30 @@ interface SeoProps {
 const Seo = ({ title, description, path, type = "website", image, noindex = false, jsonLd }: SeoProps) => {
   const url = `${SITE_URL}${path}`;
   const img = image || DEFAULT_IMAGE;
-  const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+  // Pages without their own schema get a plain WebPage + breadcrumb so every indexable page
+  // describes itself to crawlers. Home and noindex pages keep what they pass (or nothing).
+  const defaultSchemas: Record<string, unknown>[] =
+    !jsonLd && !noindex && path !== "/"
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: title,
+            description,
+            url,
+            isPartOf: { "@type": "WebSite", name: SITE_NAME, url: `${SITE_URL}/` },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+              { "@type": "ListItem", position: 2, name: title.replace(` — ${SITE_NAME}`, ""), item: url },
+            ],
+          },
+        ]
+      : [];
+  const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : defaultSchemas;
 
   // index.html ships fallback meta tags for crawlers that do not run JavaScript
   // (link-preview bots). Once this component runs, it owns the tags, so drop the

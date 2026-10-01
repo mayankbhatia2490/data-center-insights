@@ -1,7 +1,7 @@
 import { Article } from "@/hooks/useArticles";
 import { Clock, TrendingUp, TrendingDown, Minus, Lightbulb, Users } from "lucide-react";
 import { stripHtml } from "@/lib/stripHtml";
-import { formatDistanceToNow } from "date-fns";
+import TimeAgo from "@/components/TimeAgo";
 import ShareButtons from "@/components/ShareButtons";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Link } from "react-router-dom";
@@ -54,15 +54,6 @@ const getCategoryColor = (cat: string) => {
   }
 };
 
-const formatTime = (date: string | null) => {
-  if (!date) return "";
-  try {
-    return formatDistanceToNow(new Date(date), { addSuffix: true });
-  } catch {
-    return "";
-  }
-};
-
 interface ArticlePerson {
   id: string;
   name: string;
@@ -103,7 +94,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
               {article.category}
             </span>
             <span className="text-muted-foreground text-xs flex items-center gap-1">
-              <Clock size={11} /> {formatTime(article.published_at)}
+              <Clock size={11} /> <TimeAgo date={article.published_at} />
             </span>
             {getSentimentBadge(article.sentiment)}
           </div>

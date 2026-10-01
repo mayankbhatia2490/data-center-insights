@@ -29,12 +29,10 @@ import Contact from "./pages/Contact";
 // Stats pulls in Leaflet, which touches `window` at import time, so it loads only in the browser.
 const Stats = lazy(() => import("./pages/Stats"));
 
-const queryClient = new QueryClient();
-
 // The router is injectable so the pre-render script can use StaticRouter.
 type RouterComponent = ComponentType<{ children?: ReactNode }>;
 
-const App = ({ Router = BrowserRouter }: { Router?: RouterComponent }) => (
+const App = ({ Router = BrowserRouter, queryClient }: { Router?: RouterComponent; queryClient: QueryClient }) => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
