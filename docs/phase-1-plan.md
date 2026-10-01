@@ -73,6 +73,8 @@ Not in Phase 1: Arabic, the people verification flow, Premium history and CSV, t
 
 **Status (2026-10-01):** Step 2 started. Done: build-time prefetch of the homepage queries into the pre-rendered page (React Query state is embedded and hydrated), hydration-safe relative times and header date, a default WebPage and BreadcrumbList schema for every indexable page without its own, and a homepage `<h1>` (the featured story's headline, so it changes with each build). Not done: story, news-index, tracker and facility pages.
 
+**Status update:** Step 3 built. `/news` and `/news/{slug}` are pre-rendered for every published story (15 today); the homepage, hero and cards link to them; unknown or old slugs resolve client-side through `slug_history` (a static host cannot send a true 301 from database rows); the sitemap lists published stories with `updated_at` as `lastmod`. Leader profiles are now `noindex` and out of the sitemap because no person is verified. Limits: an unknown slug returns HTTP 200 with a client-rendered 404 page (soft 404), and the story template only shows fields the data has (one-sentence summary, why it matters, source, tier, checks); corroboration is shown as "not yet checked" because the pipeline never sets it.
+
 **Step 3: story pages and news index (about 2 days).** Template from the design canvas: "In short", "At a glance" table, why it matters, derivation chain using real fields (`source`, `source_tier`, `validation_status`, `confidence_score`, `corroboration_count`, `named_entities`), people and companies, source link, related stories. NewsArticle JSON-LD. Slug redirects.
 
 **Step 4: tracker and facility pages (about 2-3 days).**

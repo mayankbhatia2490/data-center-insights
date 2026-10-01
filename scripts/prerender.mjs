@@ -9,9 +9,9 @@ const DIST = path.resolve("dist");
 const SSR = path.resolve("dist-ssr/entry-server.js");
 
 // Pages whose content does not depend on live data. Data-driven pages are added in later steps.
-const ROUTES = ["/", "/about", "/about/methodology", "/pricing", "/privacy", "/terms", "/contact"];
+const STATIC_ROUTES = ["/", "/news", "/about", "/about/methodology", "/pricing", "/privacy", "/terms", "/contact"];
 
-const { render } = await import(pathToFileURL(SSR).href);
+const { render, getPublishedSlugs } = await import(pathToFileURL(SSR).href);
 const template = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
 
 // String replacers use functions below: page HTML and JSON can contain `$` sequences.
@@ -21,8 +21,22 @@ const base = template
   .replace(/\s*<meta data-static-seo[^>]*>/g, "")
   .replace(/\s*<title>[^<]*<\/title>/, "");
 
+// Every published story gets a page. If the list cannot be fetched, ship the static pages only:
+// story URLs then fall back to the client-side route instead of failing the deploy.
+let storyRoutes = [];
+try {
+  storyRoutes = (await getPublishedSlugs()).map((slug) => `/news/${slug}`);
+} catch (e) {
+  console.warn("prerender: could not list published stories, skipping story pages:", e?.message ?? e);
+}
+const ROUTES = [...STATIC_ROUTES, ...storyRoutes];
+
 for (const route of ROUTES) {
-  const { html, helmet, state } = await render(route);
+  const { html, helmet, state, ready } = await render(route);
+  if (!ready) {
+    console.warn(`prerender: skipped ${route} (story not found at build time)`);
+    continue;
+  }
   if (!helmet) throw new Error(`No head tags rendered for ${route}`);
   const head = [helmet.title, helmet.meta, helmet.link, helmet.script].map((h) => h.toString()).join("\n    ");
   const page = base

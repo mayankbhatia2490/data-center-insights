@@ -2,7 +2,9 @@ import { useArticles, Article } from "@/hooks/useArticles";
 import { Clock, BarChart3 } from "lucide-react";
 import { stripHtml } from "@/lib/stripHtml";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
 import TimeAgo from "@/components/TimeAgo";
+import { storyPath } from "@/lib/storyMeta";
 
 const getCategoryColor = (cat: string) => {
   switch (cat) {
@@ -74,11 +76,11 @@ const HeroSection = () => {
             <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary mb-4 block">
               Featured Story
             </span>
-            <a href={featured.source_url || "#"} target="_blank" rel="noopener noreferrer" className="no-underline">
+            <Link to={featured.slug ? storyPath(featured.slug) : "/news"} className="no-underline">
               <h1 className="text-[40px] md:text-[48px] font-black leading-[1.08] tracking-[-2px] text-foreground mb-4 hover:text-primary transition-colors">
                 {featured.title}
               </h1>
-            </a>
+            </Link>
             <p className="text-[15px] leading-relaxed line-clamp-2 mb-6">
               {stripHtml(featured.summary)}
             </p>
@@ -93,11 +95,9 @@ const HeroSection = () => {
 
           <div className="lg:w-[40%] grid grid-cols-2 border-l-0 lg:border-l border-border">
             {secondaryStories.map((story, i) => (
-              <a
+              <Link
                 key={story.id}
-                href={story.source_url || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
+                to={story.slug ? storyPath(story.slug) : "/news"}
                 className={`group cursor-pointer px-4 lg:pl-6 py-4 hover:bg-secondary transition-colors duration-200 no-underline ${
                   i < 2 ? "border-b border-border" : ""
                 } ${i % 2 === 0 ? "border-r border-border" : ""}`}
@@ -109,7 +109,7 @@ const HeroSection = () => {
                   {story.title}
                 </h2>
                 <span className="text-[10px] text-muted-foreground mt-2 block"><TimeAgo date={story.published_at} /></span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
