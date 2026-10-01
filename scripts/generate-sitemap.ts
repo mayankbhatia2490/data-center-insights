@@ -3,6 +3,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { createClient } from "@supabase/supabase-js";
+import { FACILITY_COLUMNS, facilityPath, isIndexable, type Facility } from "../src/lib/facility";
 
 try {
   process.loadEnvFile(resolve(".env"));
@@ -23,6 +24,7 @@ interface SitemapEntry {
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
   { path: "/news", changefreq: "hourly", priority: "0.9" },
+  { path: "/data", changefreq: "weekly", priority: "0.9" },
   { path: "/intelligence", changefreq: "daily", priority: "0.9" },
   { path: "/insights", changefreq: "daily", priority: "0.8" },
   { path: "/pricing", changefreq: "monthly", priority: "0.6" },
@@ -92,6 +94,34 @@ async function fetchStoryEntries(): Promise<SitemapEntry[]> {
   }));
 }
 
+async function fetchFacilityEntries(): Promise<SitemapEntry[]> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return [];
+
+  const supabase = createClient(url, key);
+  const [facilities, sources] = await Promise.all([
+    supabase.from("data_centers").select(FACILITY_COLUMNS).eq("listing_type", "facility").limit(2000),
+    supabase.from("data_center_sources").select("data_center_id").limit(5000),
+  ]);
+  if (facilities.error || sources.error || !facilities.data || !sources.data) {
+    console.warn("sitemap: failed to fetch facilities:", facilities.error?.message ?? sources.error?.message);
+    return [];
+  }
+  const counts: Record<string, number> = {};
+  for (const s of sources.data) counts[s.data_center_id] = (counts[s.data_center_id] ?? 0) + 1;
+
+  // Same rule as the page itself (src/lib/facility.ts): thin records are noindex, so they stay out.
+  return (facilities.data as Facility[])
+    .filter((f) => isIndexable(f, counts[f.id] ?? 0))
+    .map((f) => ({
+      path: facilityPath(f),
+      lastmod: new Date(f.updated_at).toISOString().slice(0, 10),
+      changefreq: "monthly",
+      priority: "0.6",
+    }));
+}
+
 function generateSitemap(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
     [
@@ -115,9 +145,10 @@ function generateSitemap(entries: SitemapEntry[]) {
 }
 
 const storyEntries = await fetchStoryEntries();
+const facilityEntries = await fetchFacilityEntries();
 // Leader profiles are noindex until people are verified (LeaderProfile.tsx), so they stay out of
 // the sitemap. fetchLeaderEntries is kept for when verification ships.
-const entries = [...staticEntries, ...storyEntries];
+const entries = [...staticEntries, ...storyEntries, ...facilityEntries];
 
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
-console.log(`sitemap.xml written (${entries.length} entries: ${storyEntries.length} stories)`);
+console.log(`sitemap.xml written (${entries.length} entries: ${storyEntries.length} stories, ${facilityEntries.length} facilities)`);

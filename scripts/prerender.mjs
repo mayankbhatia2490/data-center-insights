@@ -9,9 +9,9 @@ const DIST = path.resolve("dist");
 const SSR = path.resolve("dist-ssr/entry-server.js");
 
 // Pages whose content does not depend on live data. Data-driven pages are added in later steps.
-const STATIC_ROUTES = ["/", "/news", "/about", "/about/methodology", "/pricing", "/privacy", "/terms", "/contact"];
+const STATIC_ROUTES = ["/", "/news", "/data", "/about", "/about/methodology", "/pricing", "/privacy", "/terms", "/contact"];
 
-const { render, getPublishedSlugs } = await import(pathToFileURL(SSR).href);
+const { render, getPublishedSlugs, getFacilityRoutes } = await import(pathToFileURL(SSR).href);
 const template = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
 
 // Routes that are not pre-rendered (account pages, new stories, unknown URLs) are rewritten to this
@@ -34,7 +34,13 @@ try {
 } catch (e) {
   console.warn("prerender: could not list published stories, skipping story pages:", e?.message ?? e);
 }
-const ROUTES = [...STATIC_ROUTES, ...storyRoutes];
+let facilityRoutes = [];
+try {
+  facilityRoutes = await getFacilityRoutes();
+} catch (e) {
+  console.warn("prerender: could not list facilities, skipping facility pages:", e?.message ?? e);
+}
+const ROUTES = [...STATIC_ROUTES, ...storyRoutes, ...facilityRoutes];
 
 for (const route of ROUTES) {
   const { html, helmet, state, ready } = await render(route);

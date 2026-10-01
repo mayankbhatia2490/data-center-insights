@@ -2,6 +2,8 @@
   "rewrites": [
     { "source": "/news", "destination": "/spa.html" },
     { "source": "/news/:slug", "destination": "/spa.html" },
+    { "source": "/data", "destination": "/spa.html" },
+    { "source": "/data/facilities/:country/:slug", "destination": "/spa.html" },
     { "source": "/unsubscribe", "destination": "/spa.html" },
     { "source": "/confirm", "destination": "/spa.html" },
     { "source": "/archive", "destination": "/spa.html" },

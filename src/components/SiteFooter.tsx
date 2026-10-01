@@ -11,6 +11,8 @@ const SiteFooter = () => (
         <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
       </div>
       <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+        <Link to="/news" className={linkClass}>News</Link>
+        <Link to="/data" className={linkClass}>Data Center Tracker</Link>
         <Link to="/archive" className={linkClass}>Briefing Archive</Link>
         <Link to="/leaders" className={linkClass}>Industry Leaders</Link>
         <Link to="/stats" className={linkClass}>Statistics</Link>

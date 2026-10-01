@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# The Supabase URL and publishable (anon) key are public values. Set them as repository
+# *variables* (Settings > Secrets and variables > Actions > Variables), not secrets.
+env:
+  VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Supabase variables
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then
+            echo "::error::Set repository variables VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (public values). The build pre-renders pages from live data."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # package.json's prebuild hook runs `bunx tsx`, as on Vercel.
+      - uses: oven-sh/setup-bun@v2
+
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npx tsc --noEmit -p tsconfig.app.json
+      - name: Unit tests
+        run: npm test
+      - name: Build (pre-renders pages)
+        run: npm run build
+      - name: Acceptance checks on the built site
+        run: bunx tsx scripts/check-build.ts
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  lighthouse:
+    needs: build-and-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Serve the built site and choose pages to test
+        run: |
+          npx --yes http-server dist -p 4173 -s &
+          npx --yes wait-on http://127.0.0.1:4173/
+          STORY=$(ls dist/news | head -1)
+          FACILITY=$(find dist/data/facilities -name index.html | head -1 | sed 's#^dist##; s#index.html$##')
+          {
+            echo "LH_URLS<<EOF"
+            echo "http://127.0.0.1:4173/"
+            echo "http://127.0.0.1:4173/news/$STORY/"
+            echo "http://127.0.0.1:4173/data/"
+            echo "http://127.0.0.1:4173$FACILITY"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ env.LH_URLS }}
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
