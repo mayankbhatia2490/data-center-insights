@@ -71,6 +71,8 @@ Not in Phase 1: Arabic, the people verification flow, Premium history and CSV, t
 - Only `publication_status = 'published'` stories are ever fetched for static output.
 - Refactor the few browser-only components (`Header` theme toggle, `BottomSubscribeBar`, `BookmarkButton`, `ShareButtons`, `Seo`'s effect, `use-mobile`) so they render safely on the server and activate after hydration. Leaflet map and Recharts load only in the browser.
 
+**Status (2026-10-01):** Step 2 started. Done: build-time prefetch of the homepage queries into the pre-rendered page (React Query state is embedded and hydrated), hydration-safe relative times and header date, a default WebPage and BreadcrumbList schema for every indexable page without its own, and a homepage `<h1>` (the featured story's headline, so it changes with each build). Not done: story, news-index, tracker and facility pages.
+
 **Step 3: story pages and news index (about 2 days).** Template from the design canvas: "In short", "At a glance" table, why it matters, derivation chain using real fields (`source`, `source_tier`, `validation_status`, `confidence_score`, `corroboration_count`, `named_entities`), people and companies, source link, related stories. NewsArticle JSON-LD. Slug redirects.
 
 **Step 4: tracker and facility pages (about 2-3 days).**

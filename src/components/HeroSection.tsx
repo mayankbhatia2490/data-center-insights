@@ -2,7 +2,7 @@ import { useArticles, Article } from "@/hooks/useArticles";
 import { Clock, BarChart3 } from "lucide-react";
 import { stripHtml } from "@/lib/stripHtml";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDistanceToNow } from "date-fns";
+import TimeAgo from "@/components/TimeAgo";
 
 const getCategoryColor = (cat: string) => {
   switch (cat) {
@@ -12,15 +12,6 @@ const getCategoryColor = (cat: string) => {
     case "Middle East": return "text-[hsl(35,92%,60%)]";
     case "Policy": return "text-muted-foreground";
     default: return "text-primary";
-  }
-};
-
-const formatTime = (date: string | null) => {
-  if (!date) return "";
-  try {
-    return formatDistanceToNow(new Date(date), { addSuffix: true });
-  } catch {
-    return "";
   }
 };
 
@@ -73,7 +64,7 @@ const HeroSection = () => {
           {latestDate && (
             <>
               <span className="text-border">|</span>
-              <span>Last updated {formatTime(latestDate)}</span>
+              <span>Last updated <TimeAgo date={latestDate} /></span>
             </>
           )}
         </div>
@@ -94,7 +85,7 @@ const HeroSection = () => {
             <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
               <span className="font-semibold text-foreground uppercase tracking-wider">{featured.source}</span>
               <span className="text-border">|</span>
-              <span className="flex items-center gap-1"><Clock size={11} /> {formatTime(featured.published_at)}</span>
+              <span className="flex items-center gap-1"><Clock size={11} /> <TimeAgo date={featured.published_at} /></span>
               <span className="text-border">|</span>
               <span>{featured.read_time}</span>
             </div>
@@ -117,7 +108,7 @@ const HeroSection = () => {
                 <h2 className="text-[14px] font-bold leading-snug mt-2 text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-3">
                   {story.title}
                 </h2>
-                <span className="text-[10px] text-muted-foreground mt-2 block">{formatTime(story.published_at)}</span>
+                <span className="text-[10px] text-muted-foreground mt-2 block"><TimeAgo date={story.published_at} /></span>
               </a>
             ))}
           </div>

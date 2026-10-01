@@ -1,23 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import { Zap, Calendar, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const dailyDigestQueryOptions = queryOptions({
+  queryKey: ["daily_digest"],
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("daily_digests")
+      .select("*")
+      .order("digest_date", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+});
+
 const DailyDigest = () => {
   const { data: digest, isLoading } = useQuery({
-    queryKey: ["daily_digest"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("daily_digests")
-        .select("*")
-        .order("digest_date", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
+    ...dailyDigestQueryOptions,
     refetchInterval: 30 * 60 * 1000,
   });
 
