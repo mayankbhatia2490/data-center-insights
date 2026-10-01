@@ -37,7 +37,7 @@ const Header = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [isDark, setIsDark] = useState(() => !document.documentElement.classList.contains("light"));
+  const [isDark, setIsDark] = useState(true); // dark on server and first client render; the effect below applies the saved theme
   const { subscribe, isLoading } = useSubscribe();
   const { user } = useAuth();
 
