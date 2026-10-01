@@ -109,7 +109,9 @@ Suggested success measures (targets to be set by the owner): published stories p
 
 ## 8. Decisions needed
 
-1. Approach A (pre-render) over B (Next.js) for now?
+Decided 2026-10-01: **Approach A (pre-render)**. The Step 1 spike still picks the tool.
+
+1. ~~Approach A (pre-render) over B (Next.js) for now?~~ Decided: A.
 2. Which Vercel project is production, and when is the domain attached?
 3. Re-theme to Ledger first (recommended) or new templates only?
 4. Facility indexing threshold (suggested: at least 5 of 10 key fields).
