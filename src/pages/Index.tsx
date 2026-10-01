@@ -18,6 +18,9 @@ import { useSubscribe } from "@/hooks/useSubscribe";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
+// Only show the subscriber line once the real count is large enough to be a credible social-proof signal.
+const MIN_PUBLIC_SUBSCRIBERS = 100;
+
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -38,9 +41,9 @@ const Index = () => {
   >([]);
 
   useEffect(() => {
-    // Fetch subscriber count
-    supabase.from("subscribers").select("id", { count: "exact", head: true }).then(({ count }) => {
-      if (count !== null) setSubscriberCount(count);
+    // Confirmed-subscriber count via a count-only RPC (the subscribers table is not publicly readable)
+    supabase.rpc("get_public_subscriber_count").then(({ data }) => {
+      if (typeof data === "number") setSubscriberCount(data);
     });
     // Fetch article count
     supabase.from("articles").select("id", { count: "exact", head: true }).then(({ count }) => {
@@ -160,14 +163,14 @@ const Index = () => {
             <div className="flex flex-col gap-2">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Platform Intelligence</p>
               <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Users className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-xs text-foreground">
-                    {subscriberCount !== null
-                      ? <><strong>{subscriberCount.toLocaleString()}+</strong> MENA infrastructure leaders subscribed</>
-                      : <Skeleton className="h-4 w-48 inline-block" />}
-                  </span>
-                </div>
+                {subscriberCount !== null && subscriberCount >= MIN_PUBLIC_SUBSCRIBERS && (
+                  <div className="flex items-center gap-2">
+                    <Users className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs text-foreground">
+                      <strong>{subscriberCount.toLocaleString()}+</strong> MENA infrastructure leaders subscribed
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Globe className="h-3.5 w-3.5 text-primary" />
                   <span className="text-xs text-foreground">

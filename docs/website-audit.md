@@ -2,6 +2,33 @@
 
 Audited from source (every route in `src/App.tsx`, every component they render, forms, hooks, SEO files). Nothing was run in a browser, so visual/perf findings are from code, not screenshots.
 
+## Status update (2026-10-01)
+
+What the audit found, and where it stands after SEO Phase 0 and the first database changes (this PR).
+
+| Finding | Status |
+|---|---|
+| Duplicate canonical and `og:url` tags on every non-home page | **Fixed.** One owner (`Seo.tsx`); verified one canonical per page in a browser on the production build |
+| Expired `og:image` | **Fixed.** Hosted `public/og-default.png`, built from `VITE_SITE_URL` |
+| Unknown URLs return 200 with the homepage title | **Mostly fixed.** Real 404 for unknown paths. A non-existent `/leaders/{id}` is still a 200 until server rendering (Phase 1) |
+| Login, account, confirm, unsubscribe, admin and 404 indexable | **Fixed.** `noindex` |
+| Preview URLs indexable as duplicates | **Fixed in config** (`X-Robots-Tag` on preview hosts); confirm on the next preview deploy |
+| Stale committed `sitemap.xml` | **Fixed.** Removed from git; generator adds `lastmod` |
+| Homepage shows "0+ subscribers" | **Fixed.** Count-only database function applied. The real count is 0 confirmed, so the line is hidden until it reaches 100 (`MIN_PUBLIC_SUBSCRIBERS`) |
+| No `slug` or honest `updated_at`, so no stable article/facility/person URLs | **Done in the database.** Slugs backfilled and unique for 1,921 articles, 111 facilities, 362 people; `updated_at` only moves on content changes; redirect-history table added. No page uses them yet (Phase 1) |
+| Generated Supabase types out of date | **Fixed.** Regenerated from the live schema |
+| Client-rendered SPA; content needs JavaScript | **Open.** Phase 1 (framework decision) |
+| No per-article pages; every card links out | **Open.** Phase 1 and 2 |
+| Hard-coded "5,000+ professionals" in the subscribe bar; "3 sources · updated every 2 hours"; "Exclusive Job Board Access" | **Open** |
+| Contrast failures (axe), 11 px text, mobile chat panel clipped, sideways scroll on `/stats` and `/leaders` | **Open** (design rebuild) |
+| No Privacy, Terms, About/methodology, Contact pages | **Open** |
+| Pricing says "Contact us" but the button starts checkout | **Open** |
+| Seven separate email capture points | **Open** (design rebuild) |
+| Unsubscribe fires on page load | **Open** |
+| Real production domain | **Open.** Needs you |
+
+Other findings from the database check (not caused by this work): three `SECURITY DEFINER` views (`market_signals_public`, `regional_outlook_public`, `strategic_insights_public`) and Supabase leaked-password protection off. Both are worth a separate review.
+
 ## 0. Rendered pass (added after the source audit)
 
 Method: headless Chromium against production (`data-center-insights-fawn.vercel.app`), 10 routes × 375px and 1440px, axe-core (WCAG 2.2 AA), network capture, screenshots. Forms were **not** submitted (would send real emails). Lighthouse was not run.

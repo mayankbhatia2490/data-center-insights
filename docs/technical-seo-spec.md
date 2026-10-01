@@ -65,7 +65,7 @@ Lowercase, hyphenated, no trailing slash, no tracking parameters in canonicals.
 
 Redirects (301, permanent): `/stats` to `/data`; `/insights` to `/intelligence`; `/archive` to `/briefings`; `/leaders/{uuid}` to `/leaders/{slug}`; old story ids to new slugs.
 
-Schema changes needed (migrations): `slug` (unique) on `articles`, `data_centers`, `people`, `operators` (new view or table); `updated_at` on `articles`; `slug_history` table (old slug to current id) for redirects.
+Schema changes (applied 2026-10-01, see `supabase/migrations/20261001060500_slugs_and_updated_at.sql`): `slug` on `articles`, `data_centers` and `people`; `updated_at` on `articles`; `slug_history` for redirects. `articles.slug` already contains the 8-character id suffix, so the full URL segment is `articles.slug`; facilities are unique per country; people are globally unique. `updated_at` moves only when content changes, not on pipeline bookkeeping fields. Operators still need their own slug (a view or table) before `/data/operators/{slug}`.
 
 ## 5. Rendering and caching
 
@@ -198,7 +198,7 @@ The audience is MENA, and English-only leaves reach on the table. Plan, not Phas
 5. Done: `robots.txt` disallows `/admin/`. `llms.txt` is unchanged until the new routes exist (Phase 1).
 6. Not done (needs you): buy and attach the real domain, set `VITE_SITE_URL` and `SITE_URL` in Vercel and the edge-function secrets, then redirect the `.vercel.app` host.
 
-No Supabase change is required for Phase 0. The live project's migration history matches the repo (checked read-only). Phase 1 needs the slug and `updated_at` migrations in section 4.
+No Supabase change is required for Phase 0. The live project's migration history matches the repo (checked read-only). The slug and `updated_at` migrations from section 4 are applied; Phase 1 can build on them.
 
 **Phase 1: foundation (2 to 4 weeks).** Decision on framework; migrations for slugs and `updated_at`; Next.js app with shared layout, tokens and fonts; static pages, home, news index; metadata and JSON-LD helpers; sitemap index; redirects; revalidation hook.
 
