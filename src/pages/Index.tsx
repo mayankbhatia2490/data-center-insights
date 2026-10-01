@@ -1,4 +1,5 @@
 import Seo from "@/components/Seo";
+import SiteFooter from "@/components/SiteFooter";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -17,6 +18,9 @@ import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+
+// Only show the subscriber line once the real count is large enough to be a credible social-proof signal.
+const MIN_PUBLIC_SUBSCRIBERS = 100;
 
 const Index = () => {
   const [visibleCount, setVisibleCount] = useState(6);
@@ -38,9 +42,9 @@ const Index = () => {
   >([]);
 
   useEffect(() => {
-    // Fetch subscriber count
-    supabase.from("subscribers").select("id", { count: "exact", head: true }).then(({ count }) => {
-      if (count !== null) setSubscriberCount(count);
+    // Confirmed-subscriber count via a count-only RPC (the subscribers table is not publicly readable)
+    supabase.rpc("get_public_subscriber_count").then(({ data }) => {
+      if (typeof data === "number") setSubscriberCount(data);
     });
     // Fetch article count
     supabase.from("articles").select("id", { count: "exact", head: true }).then(({ count }) => {
@@ -160,26 +164,20 @@ const Index = () => {
             <div className="flex flex-col gap-2">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Platform Intelligence</p>
               <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Users className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-xs text-foreground">
-                    {subscriberCount !== null
-                      ? <><strong>{subscriberCount.toLocaleString()}+</strong> MENA infrastructure leaders subscribed</>
-                      : <Skeleton className="h-4 w-48 inline-block" />}
-                  </span>
-                </div>
+                {subscriberCount !== null && subscriberCount >= MIN_PUBLIC_SUBSCRIBERS && (
+                  <div className="flex items-center gap-2">
+                    <Users className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs text-foreground">
+                      <strong>{subscriberCount.toLocaleString()}+</strong> MENA infrastructure leaders subscribed
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Globe className="h-3.5 w-3.5 text-primary" />
                   <span className="text-xs text-foreground">
                     {articleCount !== null
                       ? <><strong>{articleCount.toLocaleString()}</strong> MENA articles indexed &amp; AI-analysed</>
                       : <Skeleton className="h-4 w-48 inline-block" />}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="h-3.5 w-3.5 text-accent" />
-                  <span className="text-xs text-foreground">
-                    <strong>3 sources</strong> · updated every 2 hours
                   </span>
                 </div>
               </div>
@@ -255,20 +253,7 @@ const Index = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="container flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
-          <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Briefing Archive</Link>
-            <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Industry Leaders</Link>
-            <Link to="/stats" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Statistics</Link>
-            <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <BottomSubscribeBar />
       <NewsChatbot />

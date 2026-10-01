@@ -1,4 +1,5 @@
 import Seo from "@/components/Seo";
+import SiteFooter from "@/components/SiteFooter";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useParams, Link } from "react-router-dom";
@@ -238,15 +239,7 @@ const LeaderProfile = () => {
         )}
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="container flex items-center justify-between py-6">
-          <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
-          </div>
-          <span className="text-xs text-muted-foreground">© 2026 Data Center Pulse</span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

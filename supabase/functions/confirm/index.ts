@@ -4,11 +4,21 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Confirming changes data, so it must be an explicit POST. A GET (link scanner, preview or crawler)
+  // must never confirm a subscription: that would defeat double opt-in.
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ success: false, error: "Use POST to confirm" }),
+      { status: 405, headers: { ...corsHeaders, Allow: "POST, OPTIONS", "Content-Type": "application/json" } }
+    );
   }
 
   try {

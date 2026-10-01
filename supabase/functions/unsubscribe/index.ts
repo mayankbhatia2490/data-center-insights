@@ -4,11 +4,21 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Unsubscribing deletes data, so it must be an explicit POST. A GET (link scanner, preview or crawler)
+  // must never change anything.
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Use POST to unsubscribe" }),
+      { status: 405, headers: { ...corsHeaders, Allow: "POST, OPTIONS", "Content-Type": "application/json" } }
+    );
   }
 
   try {

@@ -33,6 +33,7 @@ const Login = () => {
         title="Sign In — Data Center Pulse"
         description="Sign in to Data Center Pulse to manage your subscription and claim your executive profile."
         path="/login"
+        noindex
       />
       <div className="max-w-md w-full">
         <div className="mb-6 text-center">

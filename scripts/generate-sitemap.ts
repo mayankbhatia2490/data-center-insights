@@ -15,6 +15,7 @@ const BASE_URL = process.env.SITE_URL || "https://data-center-insights-fawn.verc
 
 interface SitemapEntry {
   path: string;
+  lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
 }
@@ -27,7 +28,19 @@ const staticEntries: SitemapEntry[] = [
   { path: "/stats", changefreq: "weekly", priority: "0.8" },
   { path: "/leaders", changefreq: "weekly", priority: "0.7" },
   { path: "/archive", changefreq: "daily", priority: "0.7" },
+  { path: "/about", changefreq: "monthly", priority: "0.5" },
+  { path: "/about/methodology", changefreq: "monthly", priority: "0.5" },
 ];
+
+// Privacy, Terms and Contact are noindex until the operator details are set (src/config/site.ts),
+// so they only enter the sitemap once configured.
+if (process.env.VITE_LEGAL_NAME && process.env.VITE_CONTACT_EMAIL && process.env.VITE_GOVERNING_LAW) {
+  staticEntries.push(
+    { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+    { path: "/terms", changefreq: "yearly", priority: "0.3" },
+    { path: "/contact", changefreq: "yearly", priority: "0.3" },
+  );
+}
 
 async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
   const url = process.env.VITE_SUPABASE_URL;
@@ -38,7 +51,7 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
   }
 
   const supabase = createClient(url, key);
-  const { data, error } = await supabase.from("people").select("id").limit(1000);
+  const { data, error } = await supabase.from("people").select("id, last_mentioned").limit(1000);
   if (error || !data) {
     console.warn("sitemap: failed to fetch people for dynamic URLs:", error?.message);
     return [];
@@ -46,6 +59,7 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
 
   return data.map((person) => ({
     path: `/leaders/${person.id}`,
+    lastmod: person.last_mentioned ? new Date(person.last_mentioned).toISOString().slice(0, 10) : undefined,
     changefreq: "weekly",
     priority: "0.5",
   }));
@@ -56,6 +70,7 @@ function generateSitemap(entries: SitemapEntry[]) {
     [
       `  <url>`,
       `    <loc>${BASE_URL}${e.path}</loc>`,
+      e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       `  </url>`,

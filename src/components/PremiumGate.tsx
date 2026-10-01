@@ -4,6 +4,7 @@ import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { PREMIUM } from "@/config/site";
 
 interface PremiumGateProps {
   children: ReactNode;
@@ -32,13 +33,19 @@ const PremiumGate = ({
       <Lock className="h-8 w-8 text-primary mx-auto" />
       <h3 className="font-bold text-lg">{title}</h3>
       <p className="text-sm text-muted-foreground max-w-md mx-auto">{description}</p>
-      {user ? (
-        <Button asChild>
-          <Link to="/pricing">Upgrade to Premium</Link>
-        </Button>
+      {PREMIUM.checkoutEnabled ? (
+        user ? (
+          <Button asChild>
+            <Link to="/pricing">Upgrade to Premium</Link>
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link to="/login">Sign in to upgrade</Link>
+          </Button>
+        )
       ) : (
         <Button asChild>
-          <Link to="/login">Sign in to upgrade</Link>
+          <Link to="/pricing">See Premium</Link>
         </Button>
       )}
     </div>

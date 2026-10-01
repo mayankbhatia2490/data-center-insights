@@ -101,12 +101,12 @@ const AdminPeopleVerification = () => {
   }
 
   if (!user || !isAdmin) {
-    return <div className="min-h-screen bg-background"><Seo title="People Verification — Admin" description="Admin review queue." path="/admin/people-verification" /><Header /><main className="container py-12 text-center text-muted-foreground"><ShieldCheck size={32} className="mx-auto mb-3 opacity-30" /><p className="text-lg font-semibold">Not authorized</p><p className="text-sm mt-1">This page is restricted to admin accounts.</p></main></div>;
+    return <div className="min-h-screen bg-background"><Seo title="People Verification — Admin" description="Admin review queue." path="/admin/people-verification" noindex /><Header /><main className="container py-12 text-center text-muted-foreground"><ShieldCheck size={32} className="mx-auto mb-3 opacity-30" /><p className="text-lg font-semibold">Not authorized</p><p className="text-sm mt-1">This page is restricted to admin accounts.</p></main></div>;
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Seo title="People Verification — Admin" description="Review automated evidence for leader profiles." path="/admin/people-verification" />
+      <Seo title="People Verification — Admin" description="Review automated evidence for leader profiles." path="/admin/people-verification" noindex />
       <Header />
       <main className="container py-8 md:py-12 max-w-5xl">
         <div className="mb-8 flex items-center gap-3">

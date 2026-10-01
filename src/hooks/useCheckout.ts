@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,6 +30,14 @@ export const useCheckout = () => {
       }
     } catch (err) {
       console.error("Checkout error:", err);
+      if (err instanceof FunctionsHttpError && err.context.status === 501) {
+        toast({
+          title: "Upgrade not available yet",
+          description: "Premium billing is not switched on yet. Please contact us to request access.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: "Couldn't start checkout",
         description: "Please try again in a moment.",
