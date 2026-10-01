@@ -49,10 +49,11 @@ export const articlesQueryOptions = (category?: string, limit = 20) =>
 
       const { data, error } = await query;
       if (error) throw error;
-      return (data ?? []).map((row: any) => ({
+      type Row = { article_people?: { people: { id: string; name: string } | null }[] };
+      return (data ?? []).map((row) => ({
         ...row,
-        people: (row.article_people ?? []).map((ap: any) => ap.people).filter(Boolean),
-      })) as Article[];
+        people: ((row as Row).article_people ?? []).map((ap) => ap.people).filter(Boolean),
+      })) as unknown as Article[];
     },
   });
 

@@ -18,16 +18,11 @@ const navLinks = [
   { label: "Global News", filter: "All", href: "/#news" },
   { label: "Middle East Focus", filter: "Middle East", href: "/#news" },
   { label: "Sustainability", filter: "Sustainability", href: "/#news" },
+  { label: "Tracker", filter: null, href: "/data" },
   { label: "Statistics", filter: null, href: "/stats" },
   { label: "Intelligence", filter: null, href: "/intelligence" },
   { label: "Insights", filter: null, href: "/insights" },
   { label: "Leaders", filter: null, href: "/leaders" },
-];
-
-const tickerHeadlines = [
-  "BREAKING: Blackstone closes $10B European data center deal",
-  "NVIDIA unveils next-gen liquid cooling for AI racks",
-  "AWS commits $7.8B to Saudi Arabia infrastructure",
 ];
 
 const Header = () => {
