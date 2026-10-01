@@ -229,10 +229,6 @@ const Header = () => {
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   Market Analysis & REIT Tracking
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Exclusive Job Board Access
-                </li>
               </ul>
               <Input
                 type="email"

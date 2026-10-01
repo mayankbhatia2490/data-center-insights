@@ -20,7 +20,7 @@ What the audit found, and where it stands after SEO Phase 0 and the first databa
 | Client-rendered SPA; content needs JavaScript | **Open.** Phase 1 (framework decision) |
 | No per-article pages; every card links out | **Open.** Phase 1 and 2 |
 | Hard-coded "5,000+ professionals" in the subscribe bar | **Fixed.** Replaced with plain wording, no number |
-| "3 sources · updated every 2 hours" on the homepage; "Exclusive Job Board Access" in the subscribe dialog | **Open** |
+| "3 sources · updated every 2 hours" on the homepage; "Exclusive Job Board Access" in the subscribe dialog | **Fixed.** Both removed |
 | Contrast failures (axe), 11 px text, mobile chat panel clipped, sideways scroll on `/stats` and `/leaders` | **Open** (design rebuild) |
 | No Privacy, Terms, About/methodology, Contact pages | **Open** |
 | Pricing says "Contact us" but the button starts checkout | **Open** |

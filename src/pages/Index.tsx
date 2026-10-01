@@ -179,12 +179,6 @@ const Index = () => {
                       : <Skeleton className="h-4 w-48 inline-block" />}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="h-3.5 w-3.5 text-accent" />
-                  <span className="text-xs text-foreground">
-                    <strong>3 sources</strong> · updated every 2 hours
-                  </span>
-                </div>
               </div>
             </div>
 
