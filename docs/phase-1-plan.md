@@ -75,6 +75,8 @@ Not in Phase 1: Arabic, the people verification flow, Premium history and CSV, t
 
 **Status update:** Step 3 built. `/news` and `/news/{slug}` are pre-rendered for every published story (15 today); the homepage, hero and cards link to them; unknown or old slugs resolve client-side through `slug_history` (a static host cannot send a true 301 from database rows); the sitemap lists published stories with `updated_at` as `lastmod`. Leader profiles are now `noindex` and out of the sitemap because no person is verified. Limits: an unknown slug returns HTTP 200 with a client-rendered 404 page (soft 404), and the story template only shows fields the data has (one-sentence summary, why it matters, source, tier, checks); corroboration is shown as "not yet checked" because the pipeline never sets it.
 
+**Fix (2026-10-01):** after PRs #19 and #20, `index.html` became the pre-rendered homepage, so every route that is not pre-rendered (`/stats`, `/leaders`, `/login`, `/unsubscribe`, unknown story URLs) was served homepage HTML and a homepage canonical before JavaScript ran. The build now also writes an empty `dist/spa.html` and every rewrite in `vercel.json` points to it.
+
 **Step 3: story pages and news index (about 2 days).** Template from the design canvas: "In short", "At a glance" table, why it matters, derivation chain using real fields (`source`, `source_tier`, `validation_status`, `confidence_score`, `corroboration_count`, `named_entities`), people and companies, source link, related stories. NewsArticle JSON-LD. Slug redirects.
 
 **Step 4: tracker and facility pages (about 2-3 days).**

@@ -23,9 +23,22 @@ const Row = ({ label, children }: { label: string; children: React.ReactNode }) 
 
 const Story = () => {
   const { slug = "" } = useParams();
-  const { data, isLoading } = useStory(slug);
+  const { data, isLoading, isError } = useStory(slug);
   const { data: latest } = useArticles(undefined, 50);
 
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Seo title={`Story unavailable — ${SITE_NAME}`} description="This story could not be loaded." path={storyPath(slug)} noindex />
+        <Header />
+        <main className="container max-w-3xl py-16 text-center">
+          <h1 className="text-2xl font-bold mb-2">We couldn’t load this story</h1>
+          <p className="text-muted-foreground mb-4">Check your connection and try again.</p>
+          <Link to="/news" className="text-primary underline">Back to the news</Link>
+        </main>
+      </div>
+    );
+  }
   if (isLoading || !data) {
     return (
       <div className="min-h-screen bg-background">
