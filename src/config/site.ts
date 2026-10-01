@@ -16,3 +16,11 @@ export const SITE = {
 
 export const isLegalConfigured = Boolean(SITE.legalName && SITE.contactEmail && SITE.governingLaw);
 export const operatorName = SITE.legalName || SITE.name;
+
+// Premium plan presentation. Checkout is off until billing is really configured, so the pricing page
+// never offers a button that fails. To switch it on: set the Stripe secrets on the edge functions
+// (see .env.example), then set VITE_PREMIUM_CHECKOUT=true and VITE_PREMIUM_PRICE (e.g. "$29 / month").
+export const PREMIUM = {
+  checkoutEnabled: env.VITE_PREMIUM_CHECKOUT === "true",
+  priceLabel: (env.VITE_PREMIUM_PRICE as string | undefined)?.trim() || "",
+};

@@ -6,6 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCheckout } from "@/hooks/useCheckout";
 import { Link } from "react-router-dom";
+import SiteFooter from "@/components/SiteFooter";
+import { PREMIUM } from "@/config/site";
 
 const FREE_FEATURES = [
   "Daily AI-curated MENA data center digest",
@@ -18,7 +20,6 @@ const PREMIUM_FEATURES = [
   "Market Signals — emerging risk & opportunity alerts",
   "Regional outlook & capacity tracking",
   "Weekly strategic insights digest",
-  "Priority support",
 ];
 
 const Pricing = () => {
@@ -67,7 +68,7 @@ const Pricing = () => {
             <h2 className="font-bold text-xl mb-1 flex items-center gap-2">
               <Zap className="h-5 w-5 text-primary" /> Premium
             </h2>
-            <p className="text-3xl font-black mb-4">Contact us</p>
+            <p className="text-3xl font-black mb-4">{PREMIUM.priceLabel || "By request"}</p>
             <ul className="space-y-2 mb-6">
               {PREMIUM_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
@@ -80,10 +81,24 @@ const Pricing = () => {
               <Button className="w-full" disabled>
                 Current plan
               </Button>
+            ) : !PREMIUM.checkoutEnabled ? (
+              <>
+                <Button asChild className="w-full">
+                  <Link to="/contact">Request access</Link>
+                </Button>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Premium is being rolled out. Tell us what you need and we will get back to you.
+                </p>
+              </>
             ) : user ? (
-              <Button className="w-full" onClick={startCheckout} disabled={isLoading}>
-                {isLoading ? "Redirecting..." : "Upgrade to Premium"}
-              </Button>
+              <>
+                <Button className="w-full" onClick={startCheckout} disabled={isLoading}>
+                  {isLoading ? "Redirecting..." : "Upgrade to Premium"}
+                </Button>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Billing terms are shown at checkout. See the <Link to="/terms" className="underline">terms</Link>.
+                </p>
+              </>
             ) : (
               <Button asChild className="w-full">
                 <Link to="/login">Sign in to upgrade</Link>
@@ -92,6 +107,7 @@ const Pricing = () => {
           </div>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 };

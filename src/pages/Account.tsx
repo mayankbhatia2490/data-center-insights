@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { PREMIUM } from "@/config/site";
 
 const Account = () => {
   const { user, isLoading: authLoading, signOut } = useAuth();
@@ -38,7 +39,7 @@ const Account = () => {
               )}
               {!isPremium && (
                 <Button asChild size="sm" className="mt-4">
-                  <Link to="/pricing">Upgrade to Premium</Link>
+                  <Link to="/pricing">{PREMIUM.checkoutEnabled ? "Upgrade to Premium" : "See Premium"}</Link>
                 </Button>
               )}
             </div>
