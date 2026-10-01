@@ -35,6 +35,14 @@ Three consequences:
 
 **Recommendation: A**, with a half-day spike first to pick the tool (an established React Router static-site generator such as `vite-react-ssg`, or a small custom script using React's server renderer and `StaticRouter`). I have not tested either against this codebase, so the spike decides.
 
+**Spike result (2026-10-01): custom script passes locally.** Used React's `renderToString` with `StaticRouter` and a small `scripts/prerender.mjs` instead of a framework plugin, because the app only needed four small changes: an injectable router in `App.tsx`, a browser-only `localStorage` guard in the Supabase client, a server-safe initial theme state in `Header`, and a lazy-loaded Stats page (Leaflet touches `window` at import). Measured on `/`, `/about`, `/about/methodology`, `/pricing` (checked over a static file server, not Vercel):
+- Raw HTML contains the `<h1>` and body text on `/about`, `/pricing`, `/about/methodology`. **`/` has no `<h1>` at all** (a real gap to fix in Step 3).
+- Browser hydration: no React errors or warnings; exactly one `<title>`, description and canonical per page after load.
+- JSON-LD: present on `/` (2 blocks), **absent on the other pre-rendered pages**; per-template schema is Step 3 work.
+- Full `npm run build` takes about 11 seconds.
+- Only the public Supabase URL and publishable key are read at build; no secret is involved.
+- Not yet verified: how Vercel serves `/about` (static file vs the explicit rewrite in `vercel.json`). The PR preview will show it.
+
 **Spike exit criteria** (all must pass or we pick B): raw HTML for `/` and `/about` contains the `<h1>` and body text; no React hydration warnings; one canonical and one JSON-LD block per page; build under 3 minutes; Supabase data fetched at build with no secret exposed.
 
 ## 3. Scope
@@ -109,10 +117,10 @@ Suggested success measures (targets to be set by the owner): published stories p
 
 ## 8. Decisions needed
 
-Decided 2026-10-01: **Approach A (pre-render)**. The Step 1 spike still picks the tool.
+Decided 2026-10-01: **Approach A (pre-render)**. Production Vercel project: **`mayankbhatia2490s-projects/data-center-insights`**; the `smms-projects-178b03ca` project is to be disabled by the owner. Still to confirm: that the production domain alias sits on the chosen project.
 
 1. ~~Approach A (pre-render) over B (Next.js) for now?~~ Decided: A.
-2. Which Vercel project is production, and when is the domain attached?
+2. ~~Which Vercel project is production?~~ Decided (above). Domain attachment date still open.
 3. Re-theme to Ledger first (recommended) or new templates only?
 4. Facility indexing threshold (suggested: at least 5 of 10 key fields).
 5. Rebuild cadence (on publish plus daily).

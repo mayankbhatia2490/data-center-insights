@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense, type ComponentType, type ReactNode } from "react";
 import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -12,7 +13,6 @@ import Confirm from "./pages/Confirm";
 import Archive from "./pages/Archive";
 import Leaders from "./pages/Leaders";
 import LeaderProfile from "./pages/LeaderProfile";
-import Stats from "./pages/Stats";
 import Intelligence from "./pages/Intelligence";
 import Insights from "./pages/Insights";
 import Login from "./pages/Login";
@@ -26,16 +26,22 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 
+// Stats pulls in Leaflet, which touches `window` at import time, so it loads only in the browser.
+const Stats = lazy(() => import("./pages/Stats"));
+
 const queryClient = new QueryClient();
 
-const App = () => (
+// The router is injectable so the pre-render script can use StaticRouter.
+type RouterComponent = ComponentType<{ children?: ReactNode }>;
+
+const App = ({ Router = BrowserRouter }: { Router?: RouterComponent }) => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
         <Analytics />
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
@@ -43,7 +49,7 @@ const App = () => (
             <Route path="/archive" element={<Archive />} />
             <Route path="/leaders" element={<Leaders />} />
             <Route path="/leaders/:id" element={<LeaderProfile />} />
-            <Route path="/stats" element={<Stats />} />
+            <Route path="/stats" element={<Suspense fallback={null}><Stats /></Suspense>} />
             <Route path="/intelligence" element={<Intelligence />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/login" element={<Login />} />
@@ -59,7 +65,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
+        </Router>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
