@@ -14,6 +14,11 @@ const STATIC_ROUTES = ["/", "/news", "/about", "/about/methodology", "/pricing",
 const { render, getPublishedSlugs } = await import(pathToFileURL(SSR).href);
 const template = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
 
+// Routes that are not pre-rendered (account pages, new stories, unknown URLs) are rewritten to this
+// empty app shell by vercel.json. It must not be index.html: that file becomes the pre-rendered
+// homepage, which would show homepage content and a homepage canonical on every other route.
+fs.writeFileSync(path.join(DIST, "spa.html"), template);
+
 // String replacers use functions below: page HTML and JSON can contain `$` sequences.
 // Seo.tsx owns title, description, canonical, og and twitter tags; drop the static fallbacks
 // (and the default <title>) so each page has exactly one of each.
