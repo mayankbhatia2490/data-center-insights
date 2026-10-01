@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/config/site";
 
-// Update VITE_SITE_URL once the production domain is purchased/finalized.
-const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://data-center-insights-fawn.vercel.app").replace(/\/$/, "");
 const SITE_NAME = "Data Center Pulse";
 const DEFAULT_IMAGE = `${SITE_URL}/og-default.png`;
 

@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface Article {
   id: string;
+  slug?: string;
+  updated_at?: string;
   title: string;
   summary: string | null;
   category: string | null;

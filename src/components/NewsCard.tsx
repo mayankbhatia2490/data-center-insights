@@ -2,6 +2,7 @@ import { Article } from "@/hooks/useArticles";
 import { Clock, TrendingUp, TrendingDown, Minus, Lightbulb, Users } from "lucide-react";
 import { stripHtml } from "@/lib/stripHtml";
 import TimeAgo from "@/components/TimeAgo";
+import { storyPath } from "@/lib/storyMeta";
 import ShareButtons from "@/components/ShareButtons";
 import BookmarkButton from "@/components/BookmarkButton";
 import { Link } from "react-router-dom";
@@ -65,10 +66,8 @@ interface ExtendedArticle extends Article {
 
 const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFirst?: boolean }) => {
   return (
-    <a
-      href={article.source_url || "#"}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to={article.slug ? storyPath(article.slug) : "/news"}
       className={`group flex flex-col md:flex-row gap-6 px-6 py-6 border-b border-border border-l-[3px] ${getCategoryBorder(article.category || "")} hover:bg-secondary transition-colors duration-200 cursor-pointer no-underline`}
     >
       {article.image_url && (
@@ -140,7 +139,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 

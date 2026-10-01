@@ -24,3 +24,6 @@ export const PREMIUM = {
   checkoutEnabled: env.VITE_PREMIUM_CHECKOUT === "true",
   priceLabel: (env.VITE_PREMIUM_PRICE as string | undefined)?.trim() || "",
 };
+
+// Update VITE_SITE_URL once the production domain is purchased/finalized.
+export const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://data-center-insights-fawn.vercel.app").replace(/\/$/, "");

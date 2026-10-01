@@ -22,6 +22,7 @@ interface SitemapEntry {
 
 const staticEntries: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
+  { path: "/news", changefreq: "hourly", priority: "0.9" },
   { path: "/intelligence", changefreq: "daily", priority: "0.9" },
   { path: "/insights", changefreq: "daily", priority: "0.8" },
   { path: "/pricing", changefreq: "monthly", priority: "0.6" },
@@ -65,6 +66,32 @@ async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
   }));
 }
 
+async function fetchStoryEntries(): Promise<SitemapEntry[]> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return [];
+
+  const supabase = createClient(url, key);
+  // Published stories only: archived and rejected rows must never reach the sitemap.
+  const { data, error } = await supabase
+    .from("articles")
+    .select("slug, updated_at, published_at")
+    .eq("publication_status", "published")
+    .order("published_at", { ascending: false })
+    .limit(5000);
+  if (error || !data) {
+    console.warn("sitemap: failed to fetch stories:", error?.message);
+    return [];
+  }
+
+  return data.map((a) => ({
+    path: `/news/${a.slug}`,
+    lastmod: new Date(a.updated_at ?? a.published_at ?? Date.now()).toISOString().slice(0, 10),
+    changefreq: "monthly",
+    priority: "0.7",
+  }));
+}
+
 function generateSitemap(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
     [
@@ -87,8 +114,10 @@ function generateSitemap(entries: SitemapEntry[]) {
   ].join("\n");
 }
 
-const leaderEntries = await fetchLeaderEntries();
-const entries = [...staticEntries, ...leaderEntries];
+const storyEntries = await fetchStoryEntries();
+// Leader profiles are noindex until people are verified (LeaderProfile.tsx), so they stay out of
+// the sitemap. fetchLeaderEntries is kept for when verification ships.
+const entries = [...staticEntries, ...storyEntries];
 
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries));
-console.log(`sitemap.xml written (${entries.length} entries, ${leaderEntries.length} dynamic)`);
+console.log(`sitemap.xml written (${entries.length} entries: ${storyEntries.length} stories)`);

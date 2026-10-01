@@ -25,6 +25,8 @@ import Methodology from "./pages/Methodology";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
+import News from "./pages/News";
+import Story from "./pages/Story";
 
 // Stats pulls in Leaflet, which touches `window` at import time, so it loads only in the browser.
 const Stats = lazy(() => import("./pages/Stats"));
@@ -42,6 +44,8 @@ const App = ({ Router = BrowserRouter, queryClient }: { Router?: RouterComponent
         <Router>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:slug" element={<Story />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/confirm" element={<Confirm />} />
             <Route path="/archive" element={<Archive />} />

@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/news", "destination": "/index.html" },
+    { "source": "/news/:slug", "destination": "/index.html" },
     { "source": "/unsubscribe", "destination": "/index.html" },
     { "source": "/confirm", "destination": "/index.html" },
     { "source": "/archive", "destination": "/index.html" },

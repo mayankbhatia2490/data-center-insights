@@ -108,6 +108,9 @@ const LeaderProfile = () => {
           description={`${person.name}${person.title ? `, ${person.title}` : ""}${person.organization ? ` at ${person.organization}` : ""} — profile, coverage, and news mentions on Data Center Pulse.`}
           path={`/leaders/${person.id}`}
           type="profile"
+          // No person has been verified yet (see docs/technical-seo-spec.md), so profiles stay
+          // out of search results. Revisit once a verification flow exists.
+          noindex
           jsonLd={{
             "@context": "https://schema.org",
             "@type": "ProfilePage",
