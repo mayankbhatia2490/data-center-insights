@@ -41,7 +41,9 @@ From the repo and the rendered audit of production (`data-center-insights-fawn.v
 
 **Recommendation: A.** Public read routes become server components reading Supabase; interactive parts (filters, charts, the map, chat) stay as client components loaded lazily. Authenticated and admin routes can stay client-only behind `noindex`.
 
-**Decision:** confirm Next.js before any article-page work. Do the Phase 0 fixes (section 14) on the current app first, because they help immediately.
+**Update 2026-10-01:** live data shows 15 published stories and 111 mostly thin facility records, so build-time pre-rendering on the current app is the recommended first step and Next.js is deferred until volume or per-user server logic justifies it. See `docs/phase-1-plan.md`.
+
+**Decision (original):** confirm Next.js before any article-page work. Do the Phase 0 fixes (section 14) on the current app first, because they help immediately.
 
 ## 4. URL structure
 
