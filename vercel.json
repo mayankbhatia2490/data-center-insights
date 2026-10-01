@@ -12,7 +12,12 @@
     { "source": "/pricing", "destination": "/index.html" },
     { "source": "/account", "destination": "/index.html" },
     { "source": "/admin/claims", "destination": "/index.html" },
-    { "source": "/admin/people-verification", "destination": "/index.html" }
+    { "source": "/admin/people-verification", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/about/methodology", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" },
+    { "source": "/terms", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" }
   ],
   "headers": [
     {

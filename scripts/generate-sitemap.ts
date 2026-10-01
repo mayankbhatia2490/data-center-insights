@@ -28,7 +28,19 @@ const staticEntries: SitemapEntry[] = [
   { path: "/stats", changefreq: "weekly", priority: "0.8" },
   { path: "/leaders", changefreq: "weekly", priority: "0.7" },
   { path: "/archive", changefreq: "daily", priority: "0.7" },
+  { path: "/about", changefreq: "monthly", priority: "0.5" },
+  { path: "/about/methodology", changefreq: "monthly", priority: "0.5" },
 ];
+
+// Privacy, Terms and Contact are noindex until the operator details are set (src/config/site.ts),
+// so they only enter the sitemap once configured.
+if (process.env.VITE_LEGAL_NAME && process.env.VITE_CONTACT_EMAIL && process.env.VITE_GOVERNING_LAW) {
+  staticEntries.push(
+    { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+    { path: "/terms", changefreq: "yearly", priority: "0.3" },
+    { path: "/contact", changefreq: "yearly", priority: "0.3" },
+  );
+}
 
 async function fetchLeaderEntries(): Promise<SitemapEntry[]> {
   const url = process.env.VITE_SUPABASE_URL;

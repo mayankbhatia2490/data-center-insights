@@ -1,4 +1,5 @@
 import Seo from "@/components/Seo";
+import SiteFooter from "@/components/SiteFooter";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/Header";
@@ -600,16 +601,7 @@ const Stats = () => {
         )}
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="container flex items-center justify-between py-5">
-          <Link to="/" className="text-xs text-muted-foreground hover:text-foreground no-underline">
-            ← Back to Pulse
-          </Link>
-          <Link to="/intelligence" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground no-underline">
-            Intelligence <ArrowRight size={12} />
-          </Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

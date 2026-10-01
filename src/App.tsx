@@ -20,6 +20,11 @@ import Pricing from "./pages/Pricing";
 import Account from "./pages/Account";
 import AdminClaims from "./pages/AdminClaims";
 import AdminPeopleVerification from "./pages/AdminPeopleVerification";
+import About from "./pages/About";
+import Methodology from "./pages/Methodology";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +51,11 @@ const App = () => (
             <Route path="/account" element={<Account />} />
             <Route path="/admin/claims" element={<AdminClaims />} />
             <Route path="/admin/people-verification" element={<AdminPeopleVerification />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/about/methodology" element={<Methodology />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/contact" element={<Contact />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

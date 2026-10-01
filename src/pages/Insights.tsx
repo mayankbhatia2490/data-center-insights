@@ -1,4 +1,5 @@
 import Seo from "@/components/Seo";
+import SiteFooter from "@/components/SiteFooter";
 import Header from "@/components/Header";
 import NewsTicker from "@/components/NewsTicker";
 import EditorsPicks from "@/components/EditorsPicks";
@@ -42,12 +43,7 @@ const Insights = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="container flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
-          <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
-          <span className="text-xs text-muted-foreground">© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <BottomSubscribeBar />
       <NewsChatbot />

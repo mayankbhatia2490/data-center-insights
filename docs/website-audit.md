@@ -22,7 +22,7 @@ What the audit found, and where it stands after SEO Phase 0 and the first databa
 | Hard-coded "5,000+ professionals" in the subscribe bar | **Fixed.** Replaced with plain wording, no number |
 | "3 sources · updated every 2 hours" on the homepage; "Exclusive Job Board Access" in the subscribe dialog | **Fixed.** Both removed |
 | Contrast failures (axe), 11 px text, mobile chat panel clipped, sideways scroll on `/stats` and `/leaders` | **Open** (design rebuild) |
-| No Privacy, Terms, About/methodology, Contact pages | **Open** |
+| No Privacy, Terms, About/methodology, Contact pages | **Built.** Pages, shared footer and routes are in. Privacy, Terms and Contact stay `noindex` until `VITE_LEGAL_NAME`, `VITE_CONTACT_EMAIL` and `VITE_GOVERNING_LAW` are set. Needs a lawyer's review before launch |
 | Pricing says "Contact us" but the button starts checkout | **Open** |
 | Seven separate email capture points | **Open** (design rebuild) |
 | Unsubscribe fires on page load | **Open** |

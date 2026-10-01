@@ -1,4 +1,5 @@
 import Seo from "@/components/Seo";
+import SiteFooter from "@/components/SiteFooter";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -252,20 +253,7 @@ const Index = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border bg-card">
-        <div className="container flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
-          <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
-          </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link to="/archive" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Briefing Archive</Link>
-            <Link to="/leaders" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Industry Leaders</Link>
-            <Link to="/stats" className="hover:text-foreground transition-colors no-underline text-muted-foreground">Statistics</Link>
-            <span>© 2026 Data Center Pulse. Intelligence for infrastructure leaders.</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <BottomSubscribeBar />
       <NewsChatbot />

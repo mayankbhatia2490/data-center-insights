@@ -12,3 +12,5 @@ Data Center Pulse tracks the Middle East and North Africa data center market wit
 - [Market Statistics](/stats): Interactive provider capacity, investment history, and regional MENA capacity charts.
 - [Industry Leaders](/leaders): Profiles of CEOs, investors, and government leaders ranked by influence.
 - [Briefing Archive](/archive): Past daily AI-generated intelligence briefings.
+- [About](/about): What Data Center Pulse is and who it is for.
+- [Methodology](/about/methodology): Sources, AI use, verification and limits.
