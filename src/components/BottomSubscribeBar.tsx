@@ -78,7 +78,7 @@ const BottomSubscribeBar = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50 h-12 bg-[hsl(213,52%,25%)] border-t border-border animate-in slide-in-from-bottom duration-300">
       <div className="container h-full flex items-center justify-between gap-4">
         <span className="text-[11px] text-muted-foreground hidden sm:block shrink-0">
-          Join <span className="text-foreground font-semibold">5,000+</span> data center professionals
+          The daily <span className="text-foreground font-semibold">MENA data center</span> briefing, free
         </span>
         <div className="flex flex-col gap-0.5 flex-1 max-w-md ml-auto">
           <form onSubmit={handleSubscribe} className="flex items-center gap-2">
