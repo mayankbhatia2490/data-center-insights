@@ -1,6 +1,6 @@
 import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import NewsTicker from "@/components/NewsTicker";
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Zap, Mail, X, Globe, TrendingUp, AlertTriangle, Target, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import NewsChatbot from "@/components/NewsChatbot";
+import { useHydrated } from "@/hooks/useHydrated";
 import DailyDigest from "@/components/DailyDigest";
 import WeeklyIndexWidget from "@/components/WeeklyIndexWidget";
 import { useSubscribe } from "@/hooks/useSubscribe";
@@ -22,7 +22,12 @@ import { supabase } from "@/integrations/supabase/client";
 // Only show the subscriber line once the real count is large enough to be a credible social-proof signal.
 const MIN_PUBLIC_SUBSCRIBERS = 100;
 
+// The chat widget is not part of the page content, so it loads after the page is interactive, in the
+// browser only, instead of weighing on the first load.
+const NewsChatbot = lazy(() => import("@/components/NewsChatbot"));
+
 const Index = () => {
+  const hydrated = useHydrated();
   const [visibleCount, setVisibleCount] = useState(6);
   const [activeFilter, setActiveFilter] = useState("All");
   const { data: articles, isLoading } = useArticles(activeFilter, 50);
@@ -256,7 +261,11 @@ const Index = () => {
       <SiteFooter />
 
       <BottomSubscribeBar />
-      <NewsChatbot />
+      {hydrated && (
+        <Suspense fallback={null}>
+          <NewsChatbot />
+        </Suspense>
+      )}
 
       {/* Newsletter Modal */}
       {showModal && !modalSubscribed && (

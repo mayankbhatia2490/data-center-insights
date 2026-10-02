@@ -63,7 +63,8 @@ jobs:
           path: dist
       - name: Serve the built site and choose pages to test
         run: |
-          npx --yes http-server dist -p 4173 -s &
+          # -g -b: serve gzip and brotli like Vercel does, so the scores reflect what visitors get.
+          npx --yes http-server dist -p 4173 -s -g -b &
           npx --yes wait-on http://127.0.0.1:4173/
           STORY=$(ls dist/news | head -1)
           # An indexable facility, taken from the sitemap: most facility pages are noindex on purpose,

@@ -25,6 +25,10 @@
   ],
   "headers": [
     {
+      "source": "/fonts/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "data-center-insights-(git-.+|[a-z0-9]{9}-.+)\\.vercel\\.app" }],
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
