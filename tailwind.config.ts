@@ -17,6 +17,7 @@ export default {
   		fontFamily: {
   			sans: [
   				'Inter',
+  				'Inter Fallback',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
@@ -29,7 +30,6 @@ export default {
   				'sans-serif'
   			],
   			serif: [
-  				'Lora',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
@@ -38,7 +38,6 @@ export default {
   				'serif'
   			],
   			mono: [
-  				'Space Mono',
   				'ui-monospace',
   				'SFMono-Regular',
   				'Menlo',
