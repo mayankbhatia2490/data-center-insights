@@ -1,6 +1,5 @@
-import { useHydrated } from "@/hooks/useHydrated";
 import { useState, useEffect } from "react";
-import { Menu, X, Zap, Sun, Moon, UserCircle } from "lucide-react";
+import { Menu, X, Zap, UserCircle } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,24 +32,15 @@ const Header = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [isDark, setIsDark] = useState(true); // dark on server and first client render; the effect below applies the saved theme
   const { subscribe, isLoading } = useSubscribe();
   const { user } = useAuth();
 
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("light", !next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "light") {
-      document.documentElement.classList.add("light");
-      setIsDark(false);
-    }
-  }, []);
+  // Highlight the tab for the page you are on (Tracker on /data, Statistics on /stats, and so on).
+  // On the home page and the news pages, the news filter you last picked stays highlighted.
+  const pathLabel = navLinks.find(
+    (l) => !l.href.startsWith("/#") && (location.pathname === l.href || location.pathname.startsWith(`${l.href}/`)),
+  )?.label;
+  const currentLabel = pathLabel ?? (location.pathname === "/" || location.pathname.startsWith("/news") ? activeLink : null);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,12 +56,6 @@ const Header = () => {
     }
   };
 
-  // Empty until hydrated: a pre-rendered page may be built on an earlier day.
-  const hydrated = useHydrated();
-  const today = hydrated
-    ? new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
-    : "";
-
   return (
     <>
       {/* Top loading progress bar */}
@@ -82,14 +66,11 @@ const Header = () => {
       {/* Row 1: Top Bar — 36px, 8px grid */}
 
       {/* Row 2: Main Header — 64px */}
-      <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
+      <header className="sticky top-0 z-50 h-16 bg-background border-b border-border">
         <div className="container h-full flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold tracking-tight">
-              Data Center <span className="text-primary">Pulse</span>
-            </span>
-          </div>
+          <Link to="/" className="font-serif text-[22px] font-semibold tracking-[-0.01em] text-foreground no-underline">
+            Data Center <span className="text-primary">Pulse</span>
+          </Link>
 
           <nav className="hidden items-center gap-0 md:flex h-full">
             {navLinks.map((link) => (
@@ -115,7 +96,7 @@ const Header = () => {
                   }
                 }}
                 className={`h-full flex items-center px-4 text-[13px] font-medium transition-colors duration-200 ${
-                  activeLink === link.label
+                  currentLabel === link.label
                     ? "text-foreground border-b-2 border-b-primary"
                     : "text-muted-foreground hover:text-foreground border-b-2 border-b-transparent"
                 }`}
@@ -126,13 +107,6 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              className="flex h-8 w-8 items-center justify-center rounded-[4px] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-200"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
             <Link
               to={user ? "/account" : "/login"}
               className="hidden sm:flex h-8 w-8 items-center justify-center rounded-[4px] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-200"
@@ -207,8 +181,8 @@ const Header = () => {
           </DialogHeader>
           {subscribed ? (
             <div className="py-8 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[4px] bg-accent/20">
-                <Zap className="h-6 w-6 text-accent" />
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[4px] bg-positive/20">
+                <Zap className="h-6 w-6 text-positive" />
               </div>
               <p className="text-lg font-semibold">Thanks for joining!</p>
               <p className="text-sm text-muted-foreground">Check your inbox for a confirmation.</p>
@@ -221,7 +195,7 @@ const Header = () => {
                   Daily Briefing on M&A, AI & Infrastructure
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-positive" />
                   Market Analysis & REIT Tracking
                 </li>
               </ul>

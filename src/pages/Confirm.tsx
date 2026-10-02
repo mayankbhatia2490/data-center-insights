@@ -66,7 +66,7 @@ const Confirm = () => {
 
         {status === "success" && (
           <div className="space-y-4">
-            <CheckCircle className="h-12 w-12 text-accent mx-auto" />
+            <CheckCircle className="h-12 w-12 text-positive mx-auto" />
             <p className="text-lg font-semibold">{message}</p>
             <p className="text-sm text-muted-foreground">You'll receive the daily briefing every morning.</p>
             <Link to="/" className="text-primary text-sm hover:underline block mt-4">

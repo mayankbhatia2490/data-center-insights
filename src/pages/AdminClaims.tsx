@@ -105,7 +105,7 @@ const AdminClaims = () => {
       <main className="container py-8 md:py-12">
         <div className="mb-8 flex items-center gap-3">
           <ShieldCheck size={24} className="text-primary" />
-          <h1 className="text-2xl font-black tracking-tight">Pending Profile Claims</h1>
+          <h1 className="text-2xl font-semibold tracking-[-0.01em]">Pending Profile Claims</h1>
         </div>
 
         {claimsLoading ? (

@@ -6,11 +6,11 @@ import type { DataCenter } from "@/data/gccDataCenters";
 type Props = { data: DataCenter[]; selectedId?: string; onSelect: (item: DataCenter) => void };
 
 const lifecycleColor: Record<DataCenter["lifecycle_stage"], string> = {
-  operational: "#27b36a",
-  under_construction: "#f5a623",
-  planned: "#6f7bf7",
-  land_banked: "#9ca3af",
-  decommissioned: "#ef5350",
+  operational: "#0b6e66",
+  under_construction: "#b45309",
+  planned: "#1a73a7",
+  land_banked: "#9a927e",
+  decommissioned: "#9f1239",
   unknown: "#8b95a5",
 };
 
@@ -48,7 +48,7 @@ const DataCenterMap = ({ data, selectedId, onSelect }: Props) => {
       const color = lifecycleColor[item.lifecycle_stage];
       const marker = L.circleMarker([latitude, longitude], {
         radius: item.id === selectedId ? 10 : 7,
-        color: item.id === selectedId ? "#111827" : color,
+        color: item.id === selectedId ? "#1d2430" : color,
         weight: item.id === selectedId ? 3 : 2,
         fillColor: color,
         fillOpacity: 0.9,

@@ -6,7 +6,7 @@ import { TrendingUp, AlertTriangle, Lightbulb } from "lucide-react";
 const typeConfig: Record<string, { icon: typeof TrendingUp; color: string; bg: string }> = {
   trend: { icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
   risk: { icon: AlertTriangle, color: "text-destructive", bg: "bg-destructive/10" },
-  opportunity: { icon: Lightbulb, color: "text-accent-foreground", bg: "bg-accent" },
+  opportunity: { icon: Lightbulb, color: "text-accent-foreground", bg: "bg-positive" },
 };
 
 const MarketSignals = () => {

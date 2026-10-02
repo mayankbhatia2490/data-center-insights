@@ -9,9 +9,9 @@ import { storyPath } from "@/lib/storyMeta";
 const getCategoryColor = (cat: string) => {
   switch (cat) {
     case "M&A": return "text-primary";
-    case "Sustainability": return "text-accent";
+    case "Sustainability": return "text-positive";
     case "AI": return "text-primary";
-    case "Middle East": return "text-[hsl(35,92%,60%)]";
+    case "Middle East": return "text-[hsl(var(--category-me))]";
     case "Policy": return "text-muted-foreground";
     default: return "text-primary";
   }
@@ -77,7 +77,7 @@ const HeroSection = () => {
               Featured Story
             </span>
             <Link to={featured.slug ? storyPath(featured.slug) : "/news"} className="no-underline">
-              <h1 className="text-[40px] md:text-[48px] font-black leading-[1.08] tracking-[-2px] text-foreground mb-4 hover:text-primary transition-colors">
+              <h1 className="text-[40px] md:text-[48px] font-semibold leading-[1.08] tracking-[-0.01em] text-foreground mb-4 hover:text-primary transition-colors">
                 {featured.title}
               </h1>
             </Link>

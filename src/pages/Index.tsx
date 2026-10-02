@@ -96,7 +96,7 @@ const Index = () => {
 
   const signalIcon = (type: string) => {
     if (type === "risk") return <AlertTriangle className="h-3.5 w-3.5 text-destructive" />;
-    if (type === "opportunity") return <Target className="h-3.5 w-3.5 text-accent" />;
+    if (type === "opportunity") return <Target className="h-3.5 w-3.5 text-positive" />;
     return <TrendingUp className="h-3.5 w-3.5 text-primary" />;
   };
 
@@ -282,9 +282,9 @@ const Index = () => {
               <p className="text-muted-foreground text-sm">Join the leading newsletter for MENA data center professionals. Delivered every morning at 8 AM Dubai time.</p>
             </div>
             <ul className="space-y-2 mb-8 text-sm">
-              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> Daily MENA Market Briefing</li>
-              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> M&amp;A Deal Alerts</li>
-              <li className="flex items-center gap-2"><Zap size={14} className="text-accent" /> Weekly Pulse Index Score</li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-positive" /> Daily MENA Market Briefing</li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-positive" /> M&amp;A Deal Alerts</li>
+              <li className="flex items-center gap-2"><Zap size={14} className="text-positive" /> Weekly Pulse Index Score</li>
             </ul>
             <form onSubmit={handleModalSubscribe} className="space-y-4">
               <Input type="email" placeholder="Work email address" value={modalEmail} onChange={(e) => setModalEmail(e.target.value)} required className="h-12 rounded-[4px]" />
@@ -299,7 +299,7 @@ const Index = () => {
       {showModal && modalSubscribed && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
           <div className="rounded-[4px] border border-border bg-card p-8 max-w-md w-full text-center">
-            <div className="w-12 h-12 bg-accent rounded-[4px] flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-positive rounded-[4px] flex items-center justify-center mx-auto mb-4">
               <Zap className="text-accent-foreground" size={24} />
             </div>
             <p className="text-lg font-semibold">Welcome aboard!</p>

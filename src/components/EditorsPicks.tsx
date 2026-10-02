@@ -43,7 +43,7 @@ const EditorsPicks = () => {
         {/* Editor's Picks */}
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <Award className="h-5 w-5 text-accent" />
+            <Award className="h-5 w-5 text-positive" />
             <h2 className="text-lg font-bold uppercase tracking-wider">
               Editor's Picks
             </h2>
@@ -75,7 +75,7 @@ const EditorsPicks = () => {
                         article.sentiment === "Bullish"
                           ? "bg-chart-2/15 text-chart-2"
                           : article.sentiment === "Bearish"
-                          ? "bg-destructive/15 text-destructive"
+                          ? "bg-destructive/10 text-[hsl(17_88%_32%)]"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >

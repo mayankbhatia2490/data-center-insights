@@ -18,7 +18,7 @@ const ClaimProfileBox = ({ personId, claimed }: { personId: string; claimed: boo
 
   if (claimed) {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-accent">
+      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-positive">
         <BadgeCheck size={13} /> Verified profile
       </span>
     );
@@ -161,7 +161,7 @@ const LeaderProfile = () => {
                 )}
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight text-foreground">{person.name}</h1>
+                <h1 className="text-2xl font-semibold tracking-[-0.01em] text-foreground">{person.name}</h1>
                 <p className="text-sm text-muted-foreground">
                   {person.title}{person.organization ? ` — ${person.organization}` : ""}
                 </p>
@@ -184,7 +184,7 @@ const LeaderProfile = () => {
                   <ClaimProfileBox personId={person.id} claimed={!!person.claimed_by} />
                 </div>
                 {person.verification_status === "verified" && (
-                  <div className="inline-flex items-center gap-1 text-[11px] text-accent mt-2">
+                  <div className="inline-flex items-center gap-1 text-[11px] text-positive mt-2">
                     <ShieldCheck size={12} /> Evidence checked automatically · {person.verification_score}/100
                   </div>
                 )}

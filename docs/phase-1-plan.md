@@ -101,6 +101,8 @@ The approved visual direction is the light "Ledger" system (Fraunces and Atkinso
 - **Recommended:** change the shared design tokens, header and footer to Ledger as part of Step 2 so new and old pages look consistent, then apply page-level redesigns in Phase 2.
 - Alternative: new templates only, accepting a visible mix of styles for a while.
 
+**Status (2026-10-02): applied.** The Ledger theme is live-ready in code: warm paper background, ink text, deep teal accent, Fraunces for headings and numbers, Atkinson Hyperlegible for text, both self-hosted. It is light only: the theme toggle and the dark palette are gone. The palette is token-driven (`src/index.css`), so any page that uses the shared tokens changed at once; a handful of hard-coded colours (map, chart palette, badges) were moved onto the new palette. Accessibility measured 100 on the homepage, a story, the tracker, a facility and pricing; the previous blue palette had a contrast failure. Not done here: the full per-page layout redesigns from the design canvas (for example the scorecard and the Intelligence page structure), which are Phase 2.
+
 ## 6. Parallel track: data supply
 
 Rendering does not create content. These need an owner and a target, set after reading the pipeline's health:

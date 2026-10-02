@@ -76,7 +76,7 @@ const Leaders = () => {
           </Link>
           <div className="flex items-center gap-3 mb-2">
             <Users size={24} className="text-primary" />
-            <h1 className="text-3xl font-black tracking-tight text-foreground">Industry Leaders</h1>
+            <h1 className="text-3xl font-semibold tracking-[-0.01em] text-foreground">Industry Leaders</h1>
           </div>
           <p className="text-sm text-muted-foreground">
             Tracked executives, regulators, and key decision-makers mentioned in data center news.
@@ -198,7 +198,7 @@ const Leaders = () => {
                       {l.claimed_by && (
                         <BadgeCheck
                           size={12}
-                          className="inline-block ml-1.5 text-accent align-text-bottom"
+                          className="inline-block ml-1.5 text-positive align-text-bottom"
                           aria-label="Verified profile"
                         />
                       )}

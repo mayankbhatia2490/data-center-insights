@@ -16,7 +16,7 @@ const Sparkline = ({ status }: { status: string | null }) => {
     <svg width="32" height="14" viewBox="0 0 32 14" fill="none" className="inline-block">
       <path
         d={path}
-        stroke={up ? "hsl(160,84%,39%)" : "hsl(0,84%,60%)"}
+        stroke={up ? "hsl(var(--positive))" : "hsl(var(--destructive))"}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -29,9 +29,9 @@ const Sparkline = ({ status }: { status: string | null }) => {
 const getCategoryColor = (cat: string) => {
   switch (cat) {
     case "M&A": return "text-primary";
-    case "Sustainability": return "text-accent";
+    case "Sustainability": return "text-positive";
     case "AI": return "text-primary";
-    case "Middle East": return "text-[hsl(35,92%,60%)]";
+    case "Middle East": return "text-[hsl(var(--category-me))]";
     default: return "text-muted-foreground";
   }
 };
@@ -100,7 +100,7 @@ const Sidebar = () => {
                   <td className="text-right font-mono text-xs text-foreground py-2">
                     ${typeof ticker.price === "number" ? ticker.price.toFixed(2) : ticker.price}
                   </td>
-                  <td className={`text-right text-xs font-semibold py-2 ${ticker.status === "up" ? "text-accent" : "text-destructive"}`}>
+                  <td className={`text-right text-xs font-semibold py-2 ${ticker.status === "up" ? "text-positive" : "text-destructive"}`}>
                     {ticker.change_percent}
                   </td>
                   <td className="text-right py-2 pl-2">

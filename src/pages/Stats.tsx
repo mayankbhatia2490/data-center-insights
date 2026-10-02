@@ -35,12 +35,12 @@ import {
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
-  "hsl(210 80% 55%)",
-  "hsl(142 60% 40%)",
-  "hsl(47 90% 50%)",
-  "hsl(280 55% 55%)",
-  "hsl(200 60% 45%)",
-  "hsl(340 55% 50%)",
+  "#c2410c",
+  "#1a73a7",
+  "#8a4b00",
+  "#6b4fa0",
+  "#b0456a",
+  "#4f5865",
 ];
 
 const TrendIcon = ({ direction }: { direction?: "up" | "down" | "neutral" }) => {
@@ -54,11 +54,11 @@ const TrendIcon = ({ direction }: { direction?: "up" | "down" | "neutral" }) => 
 // disclaimer buried below the whole dashboard.
 const DataSourceTag = ({ live }: { live: boolean }) =>
   live ? (
-    <span className="inline-flex items-center rounded-[2px] bg-accent/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-accent">
+    <span className="inline-flex items-center rounded-[2px] bg-positive/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-positive">
       Live · sourced
     </span>
   ) : (
-    <span className="inline-flex items-center rounded-[2px] bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-amber-600">
+    <span className="inline-flex items-center rounded-[2px] bg-[hsl(var(--category-me)/0.1)] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-[hsl(var(--category-me))]">
       Illustrative example
     </span>
   );
@@ -227,7 +227,7 @@ const Stats = () => {
         <div className="mb-6 border-b border-border pb-4">
           <div className="flex items-center gap-2 mb-1">
             <BarChart3 className="h-5 w-5 text-primary" />
-            <h1 className="text-xl font-black tracking-tight">Market Intelligence Dashboard</h1>
+            <h1 className="text-xl font-semibold tracking-[-0.01em]">Market Intelligence Dashboard</h1>
           </div>
           <p className="text-xs text-muted-foreground ml-7">
             Live industry metrics · Updated from aggregated intelligence feeds
@@ -260,11 +260,11 @@ const Stats = () => {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_0.8fr] gap-4">
-            <div className="overflow-hidden rounded-[4px] border border-border"><DataCenterMap data={filteredDataCenters} selectedId={selectedDataCenter} onSelect={(item) => setSelectedDataCenter(item.id)} /><div className="flex flex-wrap gap-3 border-t border-border px-3 py-2 text-[10px] text-muted-foreground"><span><i className="inline-block w-2 h-2 rounded-full bg-[#27b36a] mr-1" />Operational</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#f5a623] mr-1" />Under construction</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#6f7bf7] mr-1" />Planned</span><span className="ml-auto">OpenStreetMap tiles · approximate locations where exact coordinates are restricted</span></div></div>
+            <div className="overflow-hidden rounded-[4px] border border-border"><DataCenterMap data={filteredDataCenters} selectedId={selectedDataCenter} onSelect={(item) => setSelectedDataCenter(item.id)} /><div className="flex flex-wrap gap-3 border-t border-border px-3 py-2 text-[10px] text-muted-foreground"><span><i className="inline-block w-2 h-2 rounded-full bg-[#0b6e66] mr-1" />Operational</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#b45309] mr-1" />Under construction</span><span><i className="inline-block w-2 h-2 rounded-full bg-[#1a73a7] mr-1" />Planned</span><span className="ml-auto">OpenStreetMap tiles · approximate locations where exact coordinates are restricted</span></div></div>
             <div className="max-h-[490px] overflow-y-auto rounded-[4px] border border-border">
               {filteredDataCenters.length === 0 ? <p className="p-5 text-sm text-muted-foreground">No facilities match these filters.</p> : filteredDataCenters.map((item) => (
                 <button key={item.id} onClick={() => setSelectedDataCenter(item.id)} className={`block w-full border-b border-border/70 p-3 text-left transition-colors last:border-0 hover:bg-secondary/50 ${selectedDataCenter === item.id ? "bg-primary/5" : ""}`}>
-                  <div className="flex items-start justify-between gap-2"><span className="text-xs font-bold text-foreground">{item.canonical_name}</span><span className={`shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${item.lifecycle_stage === "operational" ? "bg-accent/10 text-accent" : "bg-primary/10 text-primary"}`}>{item.lifecycle_stage.replaceAll("_", " ")}</span></div>
+                  <div className="flex items-start justify-between gap-2"><span className="text-xs font-bold text-foreground">{item.canonical_name}</span><span className={`shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${item.lifecycle_stage === "operational" ? "bg-positive/10 text-positive" : "bg-primary/10 text-primary"}`}>{item.lifecycle_stage.replaceAll("_", " ")}</span></div>
                   <p className="mt-1 text-[10px] text-muted-foreground">{item.operator_name || "Operator not disclosed"} · {item.city || item.market}, {item.country}</p>
                   <div className="mt-2 flex items-center justify-between text-[10px]"><span className="text-muted-foreground">{item.service_types?.slice(0, 3).join(" · ")}</span><strong className="text-foreground">{item.capacity_mw ? `${item.capacity_mw} MW` : "Capacity n/d"}</strong></div>
                 </button>
@@ -292,7 +292,7 @@ const Stats = () => {
             <p className="text-[10px] text-muted-foreground">Facility count is shown in the map inventory; undisclosed capacity is excluded from this chart.</p>
           </div>
           <div className="rounded-[4px] border border-border bg-card p-5">
-            <div className="mb-4"><h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-accent shrink-0" />Reported Capacity by Operator</h2><p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Top operators in the current filtered facility set.</p></div>
+            <div className="mb-4"><h2 className="text-sm font-bold flex items-center gap-2"><span className="w-[2px] h-4 bg-positive shrink-0" />Reported Capacity by Operator</h2><p className="text-[10px] text-muted-foreground ml-3 mt-0.5">Top operators in the current filtered facility set.</p></div>
             <div className="h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={operatorCapacity} layout="vertical" margin={{ top: 4, right: 18, left: 12, bottom: 4 }}>
@@ -300,7 +300,7 @@ const Stats = () => {
                   <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} unit=" MW" />
                   <YAxis type="category" dataKey="name" width={120} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 2, fontSize: 11 }} formatter={(value: number) => [`${value.toFixed(1)} MW`, "Reported capacity"]} />
-                  <Bar dataKey="reportedMw" fill="hsl(var(--accent))" radius={[0, 3, 3, 0]} maxBarSize={24} />
+                  <Bar dataKey="reportedMw" fill="hsl(var(--primary))" radius={[0, 3, 3, 0]} maxBarSize={24} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -328,7 +328,7 @@ const Stats = () => {
                     <DataSourceTag live={metric.isLive} />
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-foreground leading-none">
+                    <span className="text-2xl font-semibold text-foreground leading-none">
                       {metric.value}
                     </span>
                     {metric.unit && (
@@ -340,9 +340,9 @@ const Stats = () => {
                       <span
                         className={`flex items-center gap-0.5 text-[11px] font-semibold ${
                           metric.trendDirection === "up"
-                            ? "text-green-500"
+                            ? "text-positive"
                             : metric.trendDirection === "down"
-                            ? "text-red-500"
+                            ? "text-destructive"
                             : "text-muted-foreground"
                         }`}
                       >
@@ -418,14 +418,14 @@ const Stats = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis
                       dataKey="name"
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Atkinson Hyperlegible" }}
                       angle={-40}
                       textAnchor="end"
                       axisLine={{ stroke: "hsl(var(--border))" }}
                       tickLine={false}
                     />
                     <YAxis
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Atkinson Hyperlegible" }}
                       axisLine={false}
                       tickLine={false}
                       label={{
@@ -434,7 +434,7 @@ const Stats = () => {
                         position: "insideLeft",
                         fill: "hsl(var(--muted-foreground))",
                         fontSize: 10,
-                        fontFamily: "Inter",
+                        fontFamily: "Atkinson Hyperlegible",
                       }}
                     />
                     <Tooltip
@@ -443,7 +443,7 @@ const Stats = () => {
                         border: "1px solid hsl(var(--border))",
                         borderRadius: 2,
                         fontSize: 11,
-                        fontFamily: "Inter",
+                        fontFamily: "Atkinson Hyperlegible",
                         padding: "8px 12px",
                       }}
                       formatter={(value: number, _name: string, entry: { payload: { fullName: string } }) => [
@@ -503,7 +503,7 @@ const Stats = () => {
                               border: "1px solid hsl(var(--border))",
                               borderRadius: 2,
                               fontSize: 10,
-                              fontFamily: "Inter",
+                              fontFamily: "Atkinson Hyperlegible",
                             }}
                             formatter={(value: number) => [`${value}%`]}
                           />
@@ -551,12 +551,12 @@ const Stats = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis
                       dataKey="year"
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Atkinson Hyperlegible" }}
                       axisLine={{ stroke: "hsl(var(--border))" }}
                       tickLine={false}
                     />
                     <YAxis
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Inter" }}
+                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "Atkinson Hyperlegible" }}
                       axisLine={false}
                       tickLine={false}
                       label={{
@@ -573,7 +573,7 @@ const Stats = () => {
                         border: "1px solid hsl(var(--border))",
                         borderRadius: 2,
                         fontSize: 11,
-                        fontFamily: "Inter",
+                        fontFamily: "Atkinson Hyperlegible",
                       }}
                       formatter={(value: number, name: string) => {
                         if (name === "amount") return [`$${value}B`, "Investment"];

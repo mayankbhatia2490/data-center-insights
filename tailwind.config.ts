@@ -16,8 +16,8 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'Inter',
-  				'Inter Fallback',
+  				'Atkinson Hyperlegible',
+  				'Atkinson Fallback',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
@@ -30,6 +30,8 @@ export default {
   				'sans-serif'
   			],
   			serif: [
+  				'Fraunces',
+  				'Fraunces Fallback',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
@@ -70,6 +72,7 @@ export default {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
   			},
+  			positive: 'hsl(var(--positive))',
   			accent: {
   				DEFAULT: 'hsl(var(--accent))',
   				foreground: 'hsl(var(--accent-foreground))'

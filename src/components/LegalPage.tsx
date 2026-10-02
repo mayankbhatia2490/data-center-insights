@@ -17,7 +17,7 @@ const LegalPage = ({ title, description, path, updated, noindex = false, childre
     <Seo title={`${title} — Data Center Pulse`} description={description} path={path} noindex={noindex} />
     <Header />
     <main className="container max-w-3xl py-10 md:py-14">
-      <h1 className="text-3xl font-black tracking-tight mb-2">{title}</h1>
+      <h1 className="text-3xl font-semibold tracking-[-0.01em] mb-2">{title}</h1>
       {updated && <p className="text-xs text-muted-foreground mb-8">Last updated {updated}</p>}
       <article
         className="prose prose-sm dark:prose-invert max-w-none

@@ -12,13 +12,13 @@ const getSentimentBadge = (sentiment: string | null) => {
   switch (sentiment) {
     case "Bullish":
       return (
-        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-accent/15 text-accent text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-positive/15 text-positive text-[10px] font-bold">
           <TrendingUp size={10} /> Bullish
         </span>
       );
     case "Bearish":
       return (
-        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-destructive/15 text-destructive text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-destructive/10 text-[hsl(17_88%_32%)] text-[10px] font-bold">
           <TrendingDown size={10} /> Bearish
         </span>
       );
@@ -38,7 +38,7 @@ const getCategoryBorder = (cat: string) => {
     case "M&A": return "border-l-primary";
     case "Sustainability": return "border-l-accent";
     case "AI": return "border-l-primary";
-    case "Middle East": return "border-l-[hsl(35,92%,55%)]";
+    case "Middle East": return "border-l-[hsl(var(--category-me))]";
     case "Policy": return "border-l-muted-foreground";
     default: return "border-l-primary";
   }
@@ -47,9 +47,9 @@ const getCategoryBorder = (cat: string) => {
 const getCategoryColor = (cat: string) => {
   switch (cat) {
     case "M&A": return "text-primary";
-    case "Sustainability": return "text-accent";
+    case "Sustainability": return "text-positive";
     case "AI": return "text-primary";
-    case "Middle East": return "text-[hsl(35,92%,60%)]";
+    case "Middle East": return "text-[hsl(var(--category-me))]";
     case "Policy": return "text-muted-foreground";
     default: return "text-primary";
   }
@@ -85,7 +85,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
         <div>
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             {isFirst && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-[4px] bg-destructive/15 text-destructive text-[10px] font-extrabold uppercase tracking-[1px]">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-[4px] bg-destructive/10 text-[hsl(17_88%_32%)] text-[10px] font-extrabold uppercase tracking-[1px]">
                 Breaking
               </span>
             )}
@@ -104,7 +104,7 @@ const NewsCard = ({ article, isFirst = false }: { article: ExtendedArticle; isFi
 
           {/* Insight */}
           {article.insight && (
-            <div className="mt-2 flex items-start gap-1.5 text-xs text-primary/80 bg-primary/5 rounded-[4px] px-3 py-2">
+            <div className="mt-2 flex items-start gap-1.5 text-xs text-primary bg-primary/5 rounded-[4px] px-3 py-2">
               <Lightbulb size={12} className="mt-0.5 shrink-0 text-primary" />
               <span className="line-clamp-2"><strong className="text-primary">Why it matters:</strong> {article.insight}</span>
             </div>
