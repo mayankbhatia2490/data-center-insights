@@ -86,7 +86,7 @@ const Facility = () => {
         <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground mb-4">
           <Link to="/" className="hover:underline">Home</Link> / <Link to="/data" className="hover:underline">Tracker</Link> / {f.country}
         </nav>
-        <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3">{f.canonical_name}</h1>
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-[-0.01em] leading-tight mb-3">{f.canonical_name}</h1>
 
         <section aria-labelledby="in-short" className="mb-8">
           <h2 id="in-short" className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">In short</h2>

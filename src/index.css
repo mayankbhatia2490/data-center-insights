@@ -1,23 +1,47 @@
 /*
- * Inter, self-hosted (Latin subset, variable weight 100-900; SIL Open Font License, see
- * public/fonts/Inter-OFL-LICENSE.txt). The page used to load four Google Fonts stylesheets, which
- * blocked first paint for about 7 seconds on a slow connection. The fallback face below is Arial
- * resized to Inter's metrics so text does not jump when the real font arrives.
+ * Fonts are self-hosted (Latin subsets; SIL Open Font License, see public/fonts/*-OFL-LICENSE.txt):
+ * Fraunces (variable weight) for headings and numbers, Atkinson Hyperlegible for text. The fallback
+ * faces below resize a common system font to each font's metrics, so text does not jump when the
+ * real font arrives (the page used to load four blocking Google Fonts stylesheets).
  */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Atkinson Hyperlegible';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url(/fonts/inter-latin-wght-normal.woff2) format('woff2-variations');
+  font-weight: 400;
+  src: url(/fonts/atkinson-hyperlegible-latin-400-normal.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Inter Fallback';
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(/fonts/atkinson-hyperlegible-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url(/fonts/fraunces-latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Atkinson Fallback';
   src: local('Arial');
-  size-adjust: 107.4%;
-  ascent-override: 90.49%;
-  descent-override: 22.56%;
+  size-adjust: 98.2%;
+  ascent-override: 96.72%;
+  descent-override: 29.53%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Times New Roman');
+  size-adjust: 125.2%;
+  ascent-override: 78.09%;
+  descent-override: 20.36%;
   line-gap-override: 0%;
 }
 
@@ -26,147 +50,76 @@
 @tailwind utilities;
 
 @layer base {
+  /* "Ledger": warm paper, ink text, deep teal accent. Light only. Every value was chosen for
+     WCAG AA contrast on the paper background (teal 5.8:1, muted text 6.8:1, body text 12.6:1). */
   :root {
-    --background: 209 40% 96%;
-    --foreground: 222 47% 11%;
+    --background: 42 56% 96%;
+    --foreground: 213 22% 19%;
 
-    --card: 210 40% 98%;
-    --card-foreground: 222 47% 11%;
+    --card: 48 100% 99%;
+    --card-foreground: 213 22% 19%;
 
-    --popover: 214 31% 91%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 48 100% 99%;
+    --popover-foreground: 213 22% 19%;
 
-    --primary: 200 98% 39%;
-    --primary-foreground: 204 100% 97%;
+    --primary: 175 82% 24%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 24% 26%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 41 42% 91%;
+    --secondary-foreground: 213 22% 19%;
 
-    --muted: 215 20% 65%;
-    --muted-foreground: 222 47% 11%;
+    --muted: 41 42% 91%;
+    --muted-foreground: 215 12% 35%;
 
-    --accent: 210 40% 98%;
-    --accent-foreground: 215 19% 34%;
+    --accent: 41 42% 91%;
+    --accent-foreground: 213 22% 19%;
 
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 85% 97%;
+    /* Positive / bullish. Teal, not green, so it reads with the rest of the palette. */
+    --positive: 175 82% 24%;
 
-    --border: 212 26% 83%;
-    --input: 212 26% 83%;
-    --ring: 200 98% 39%;
+    --destructive: 17 88% 40%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border-emphasis: 215 25% 27%;
+    --border: 41 32% 85%;
+    --input: 43 17% 67%;
+    --ring: 175 82% 24%;
+
+    --border-emphasis: 213 22% 19%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 222 42% 15%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 200 98% 39%;
-    --sidebar-primary-foreground: 204 100% 97%;
-    --sidebar-accent: 215 24% 26%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 212 26% 83%;
-    --sidebar-ring: 200 98% 39%;
+    --sidebar-background: 41 42% 91%;
+    --sidebar-foreground: 213 22% 19%;
+    --sidebar-primary: 175 82% 24%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 42 56% 96%;
+    --sidebar-accent-foreground: 213 22% 19%;
+    --sidebar-border: 41 32% 85%;
+    --sidebar-ring: 175 82% 24%;
 
-    --category-ma: 217 91% 60%;
-    --category-ai: 217 91% 60%;
-    --category-green: 160 84% 39%;
-    --category-me: 35 92% 55%;
-    --category-policy: 215 16% 47%;
+    --category-ma: 175 82% 24%;
+    --category-ai: 175 82% 24%;
+    --category-green: 175 82% 24%;
+    --category-me: 33 100% 27%;
+    --category-policy: 215 12% 35%;
 
-    /* Subscribe bar bg: #1e3a5f */
-    --subscribe-bar: 213 52% 25%;
-    --chart-1: 198 93% 59%;
-    --chart-2: 213 93% 67%;
-    --chart-3: 215 20% 65%;
-    --chart-4: 215 16% 46%;
-    --chart-5: 215 19% 34%;
-    --sidebar: 210 40% 98%;
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --subscribe-bar: 218 25% 15%;
+
+    --sidebar: 41 42% 91%;
+    --font-sans: 'Atkinson Hyperlegible', 'Atkinson Fallback', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    --font-serif: 'Fraunces', 'Fraunces Fallback', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+    --shadow-xs: 0 1px 2px 0px hsl(30 20% 20% / 0.05);
+    --shadow-sm: 0 1px 3px 0px hsl(30 20% 20% / 0.08), 0 1px 2px -1px hsl(30 20% 20% / 0.08);
+    --shadow: 0 1px 3px 0px hsl(30 20% 20% / 0.08), 0 1px 2px -1px hsl(30 20% 20% / 0.08);
+    --shadow-md: 0 1px 3px 0px hsl(30 20% 20% / 0.08), 0 2px 4px -1px hsl(30 20% 20% / 0.08);
+    --shadow-lg: 0 1px 3px 0px hsl(30 20% 20% / 0.08), 0 4px 6px -1px hsl(30 20% 20% / 0.08);
+    --shadow-xl: 0 1px 3px 0px hsl(30 20% 20% / 0.08), 0 8px 10px -1px hsl(30 20% 20% / 0.08);
+    --shadow-2xl: 0 1px 3px 0px hsl(30 20% 20% / 0.2);
+
     --tracking-normal: 0em;
     --spacing: 0.25rem;
-  }
-
-  .light {
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    --primary: 217 91% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 20% 94%;
-    --secondary-foreground: 222 47% 11%;
-
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 16% 47%;
-
-    --accent: 160 84% 39%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 50%;
-  }
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 217 32% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 215 24% 26%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 198 93% 59%;
-    --primary-foreground: 204 80% 15%;
-    --secondary: 212 26% 83%;
-    --secondary-foreground: 228 84% 4%;
-    --muted: 215 16% 46%;
-    --muted-foreground: 210 40% 98%;
-    --accent: 228 84% 4%;
-    --accent-foreground: 215 20% 65%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 85% 97%;
-    --border: 215 19% 34%;
-    --input: 215 19% 34%;
-    --ring: 198 93% 59%;
-    --chart-1: 199 95% 73%;
-    --chart-2: 211 96% 78%;
-    --chart-3: 215 20% 65%;
-    --chart-4: 215 16% 46%;
-    --chart-5: 215 19% 34%;
-    --sidebar: 217 32% 17%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 198 93% 59%;
-    --sidebar-primary-foreground: 204 80% 15%;
-    --sidebar-accent: 215 20% 65%;
-    --sidebar-accent-foreground: 228 84% 4%;
-    --sidebar-border: 215 19% 34%;
-    --sidebar-ring: 198 93% 59%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   }
 }
 
@@ -178,25 +131,31 @@
 
   body {
     @apply bg-background font-sans antialiased;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 400;
-    line-height: 1.65;
-    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+    color: hsl(var(--foreground));
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: hsl(var(--foreground));
   }
 
   h1 {
-    font-size: 56px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    line-height: 1.1;
-    color: hsl(var(--foreground));
+    font-size: 44px;
+    line-height: 1.12;
   }
 
   h2 {
     font-size: 28px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: hsl(var(--foreground));
+    line-height: 1.2;
+  }
+
+  h3 {
+    line-height: 1.25;
   }
 
   html {
@@ -212,21 +171,21 @@
 
 @layer components {
   .category-ma {
-    @apply bg-primary/15 text-primary border border-primary/30;
+    @apply bg-primary/10 text-primary border border-primary/30;
   }
 
   .category-ai {
-    @apply bg-primary/15 text-primary border border-primary/30;
+    @apply bg-primary/10 text-primary border border-primary/30;
   }
 
   .category-green {
-    @apply bg-accent/15 text-accent border border-accent/30;
+    @apply bg-positive/10 text-positive border border-positive/30;
   }
 
   .category-me {
-    background-color: hsl(35 92% 55% / 0.15);
-    color: hsl(35 92% 60%);
-    border: 1px solid hsl(35 92% 55% / 0.3);
+    background-color: hsl(var(--category-me) / 0.1);
+    color: hsl(var(--category-me));
+    border: 1px solid hsl(var(--category-me) / 0.3);
   }
 
   .category-policy {
@@ -236,7 +195,7 @@
   }
 
   .ticker-up {
-    @apply text-accent;
+    @apply text-positive;
   }
 
   .ticker-down {

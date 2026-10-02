@@ -33,7 +33,7 @@ const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
   if (!index) return null;
 
   const ScoreIcon = index.score > 10 ? TrendingUp : index.score < -10 ? TrendingDown : Minus;
-  const scoreColor = index.score > 10 ? "text-accent" : index.score < -10 ? "text-destructive" : "text-muted-foreground";
+  const scoreColor = index.score > 10 ? "text-positive" : index.score < -10 ? "text-destructive" : "text-muted-foreground";
 
   return (
     <div className="border-b border-border pb-8 mb-8">
@@ -44,7 +44,7 @@ const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
       </h3>
 
       <div className="flex items-center gap-3 mb-3">
-        <div className={`text-3xl font-black ${scoreColor}`}>
+        <div className={`text-3xl font-semibold ${scoreColor}`}>
           {index.score > 0 ? "+" : ""}{index.score}
         </div>
         <ScoreIcon size={20} className={scoreColor} />
@@ -55,11 +55,11 @@ const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
 
       {index.drivers && Array.isArray(index.drivers) && (
         <div className="mb-2">
-          <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Drivers</span>
+          <span className="text-[10px] font-bold text-positive uppercase tracking-wider">Drivers</span>
           <ul className="mt-1 space-y-0.5">
             {(index.drivers as string[]).map((d, i) => (
               <li key={i} className="text-[11px] text-foreground/80 flex items-start gap-1">
-                <TrendingUp size={10} className="text-accent mt-0.5 shrink-0" />
+                <TrendingUp size={10} className="text-positive mt-0.5 shrink-0" />
                 {d}
               </li>
             ))}

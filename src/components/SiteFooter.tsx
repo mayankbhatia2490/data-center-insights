@@ -8,7 +8,7 @@ const SiteFooter = () => (
     <div className="container flex flex-col gap-6 py-8 md:flex-row md:items-start md:justify-between">
       <div className="flex items-center gap-2">
         <Zap className="h-4 w-4 text-primary" />
-        <span className="text-sm font-semibold text-foreground">Data Center Pulse</span>
+        <span className="font-serif text-base font-semibold text-foreground">Data Center Pulse</span>
       </div>
       <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
         <Link to="/news" className={linkClass}>News</Link>

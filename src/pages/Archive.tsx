@@ -31,7 +31,7 @@ const Archive = () => {
         <div className="container h-full flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 no-underline">
             <Zap className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold tracking-tight">
+            <span className="text-lg font-bold tracking-[-0.01em]">
               Data Center <span className="text-primary">Pulse</span>
             </span>
           </Link>
@@ -42,7 +42,7 @@ const Archive = () => {
       </header>
 
       <main className="container py-12 max-w-3xl">
-        <h1 className="text-3xl font-black mb-2">Briefing Archive</h1>
+        <h1 className="text-3xl font-semibold mb-2">Briefing Archive</h1>
         <p className="text-muted-foreground mb-2">Browse past daily AI-generated intelligence briefings.</p>
 
         {!isLoading && digests?.length ? (

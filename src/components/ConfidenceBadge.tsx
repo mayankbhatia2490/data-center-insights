@@ -5,7 +5,7 @@ export type ConfidenceTier = "sourced" | "ai_inferred" | "verified";
 const config: Record<ConfidenceTier, { label: string; icon: typeof Sparkles; className: string }> = {
   sourced: { label: "Sourced", icon: Link2, className: "bg-primary/10 text-primary" },
   ai_inferred: { label: "AI-inferred", icon: Sparkles, className: "bg-secondary text-muted-foreground" },
-  verified: { label: "Verified", icon: BadgeCheck, className: "bg-accent/10 text-accent" },
+  verified: { label: "Verified", icon: BadgeCheck, className: "bg-positive/10 text-positive" },
 };
 
 interface ConfidenceBadgeProps {

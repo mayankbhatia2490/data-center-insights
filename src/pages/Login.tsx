@@ -46,7 +46,7 @@ const Login = () => {
 
         {sent ? (
           <div className="space-y-4 text-center">
-            <CheckCircle className="h-12 w-12 text-accent mx-auto" />
+            <CheckCircle className="h-12 w-12 text-positive mx-auto" />
             <p className="font-semibold">Check your inbox</p>
             <p className="text-sm text-muted-foreground">
               We sent a sign-in link to <span className="font-medium">{email}</span>.

@@ -21,7 +21,7 @@ const News = () => {
       />
       <Header />
       <main className="container max-w-3xl py-10 md:py-14">
-        <h1 className="text-3xl font-black tracking-tight mb-2">Latest MENA data center news</h1>
+        <h1 className="text-3xl font-semibold tracking-[-0.01em] mb-2">Latest MENA data center news</h1>
         <p className="text-muted-foreground mb-8">
           Every story links to its original source and states what kind of source it is.
         </p>

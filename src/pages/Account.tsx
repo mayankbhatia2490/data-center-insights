@@ -20,7 +20,7 @@ const Account = () => {
       <Header />
 
       <main className="container py-12 max-w-lg">
-        <h1 className="text-2xl font-black tracking-tight mb-6">Your account</h1>
+        <h1 className="text-2xl font-semibold tracking-[-0.01em] mb-6">Your account</h1>
 
         {authLoading || subLoading ? (
           <div className="h-32 animate-pulse border border-border bg-card rounded-[4px]" />

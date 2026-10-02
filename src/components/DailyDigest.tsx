@@ -57,8 +57,6 @@ const DailyDigest = () => {
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <Calendar size={12} />
             {format(new Date(digest.digest_date + "T00:00:00"), "MMMM d, yyyy")}
-            <span className="text-border mx-1">|</span>
-            <span>{digest.article_count} sources analyzed</span>
           </div>
         </div>
 

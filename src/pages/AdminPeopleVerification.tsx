@@ -111,7 +111,7 @@ const AdminPeopleVerification = () => {
       <main className="container py-8 md:py-12 max-w-5xl">
         <div className="mb-8 flex items-center gap-3">
           <ShieldCheck size={24} className="text-primary" />
-          <div><h1 className="text-2xl font-black tracking-tight">People Verification Queue</h1><p className="text-sm text-muted-foreground mt-1">Automation handles strong evidence; review only uncertain or conflicting records.</p></div>
+          <div><h1 className="text-2xl font-semibold tracking-[-0.01em]">People Verification Queue</h1><p className="text-sm text-muted-foreground mt-1">Automation handles strong evidence; review only uncertain or conflicting records.</p></div>
         </div>
         {queueLoading ? <div className="space-y-3">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-36 w-full" />)}</div> : !items?.length ? <p className="text-sm text-muted-foreground">No people waiting for review.</p> : (
           <div className="space-y-4">
@@ -123,7 +123,7 @@ const AdminPeopleVerification = () => {
                     <p className="text-sm text-muted-foreground">{item.person?.title}{item.person?.organization ? ` · ${item.person.organization}` : ""}</p>
                     <div className="flex flex-wrap gap-2 mt-2 text-[10px] uppercase tracking-wider font-bold">
                       <span className="rounded bg-primary/10 text-primary px-2 py-1">Score {item.source?.automated_score ?? 0}/100</span>
-                      {item.source?.checks?.source_reachable ? <span className="rounded bg-accent/10 text-accent px-2 py-1">Source reachable</span> : <span className="rounded bg-destructive/10 text-destructive px-2 py-1">Source unavailable</span>}
+                      {item.source?.checks?.source_reachable ? <span className="rounded bg-positive/10 text-positive px-2 py-1">Source reachable</span> : <span className="rounded bg-destructive/10 text-destructive px-2 py-1">Source unavailable</span>}
                       {item.source?.checks?.name_present && <span className="rounded bg-secondary text-muted-foreground px-2 py-1">Name found</span>}
                     </div>
                   </div>

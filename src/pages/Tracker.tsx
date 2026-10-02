@@ -81,7 +81,7 @@ const Tracker = () => {
       />
       <Header />
       <main className="container max-w-3xl py-10 md:py-14">
-        <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-3">MENA data center tracker</h1>
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-[-0.01em] mb-3">MENA data center tracker</h1>
 
         <section aria-labelledby="in-short" className="mb-8">
           <h2 id="in-short" className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">In short</h2>

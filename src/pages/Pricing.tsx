@@ -38,7 +38,7 @@ const Pricing = () => {
 
       <main className="container py-12 max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-black tracking-tight mb-2">Plans for every reader</h1>
+          <h1 className="text-3xl font-semibold tracking-[-0.01em] mb-2">Plans for every reader</h1>
           <p className="text-muted-foreground">
             Start free. Upgrade when you need deeper investor-grade intelligence.
           </p>
@@ -47,11 +47,11 @@ const Pricing = () => {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="border border-border bg-card rounded-[4px] p-8">
             <h2 className="font-bold text-xl mb-1">Free</h2>
-            <p className="text-3xl font-black mb-4">$0</p>
+            <p className="font-serif text-3xl font-semibold mb-4">$0</p>
             <ul className="space-y-2 mb-6">
               {FREE_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                  <Check className="h-4 w-4 text-positive shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
               ))}
@@ -68,11 +68,11 @@ const Pricing = () => {
             <h2 className="font-bold text-xl mb-1 flex items-center gap-2">
               <Zap className="h-5 w-5 text-primary" /> Premium
             </h2>
-            <p className="text-3xl font-black mb-4">{PREMIUM.priceLabel || "By request"}</p>
+            <p className="font-serif text-3xl font-semibold mb-4">{PREMIUM.priceLabel || "By request"}</p>
             <ul className="space-y-2 mb-6">
               {PREMIUM_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
+                  <Check className="h-4 w-4 text-positive shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
               ))}

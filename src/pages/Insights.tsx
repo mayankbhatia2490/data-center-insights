@@ -22,7 +22,7 @@ const Insights = () => {
 
       <main className="container py-8 md:py-12">
         <div className="mb-8">
-          <h1 className="flex items-center gap-2 text-2xl font-black tracking-tight">
+          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-[-0.01em]">
             <Lightbulb className="h-6 w-6 text-primary" />
             Insights & Trends
           </h1>

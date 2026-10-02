@@ -84,7 +84,7 @@ const Story = () => {
         </nav>
         <article>
           <p className="text-[11px] font-extrabold uppercase tracking-[1.5px] text-primary mb-2">{a.category}</p>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3">{a.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-[-0.01em] leading-tight mb-3">{a.title}</h1>
           <p className="text-xs text-muted-foreground mb-8">
             {a.source ? `${a.source} · ` : ""}
             <TimeAgo date={a.published_at ?? a.created_at} />
