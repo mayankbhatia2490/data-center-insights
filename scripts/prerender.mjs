@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { computeContentMarker } from "./content-marker.mjs";
 
 const DIST = path.resolve("dist");
 const SSR = path.resolve("dist-ssr/entry-server.js");
@@ -11,8 +12,22 @@ const SSR = path.resolve("dist-ssr/entry-server.js");
 // Pages whose content does not depend on live data. Data-driven pages are added in later steps.
 const STATIC_ROUTES = ["/", "/news", "/data", "/about", "/about/methodology", "/pricing", "/privacy", "/terms", "/contact"];
 
+// Fingerprint of the database content this build is made from. Taken BEFORE any page is rendered: if
+// the data changes during the build, the marker is older than the pages, so the next check rebuilds
+// once more instead of missing the change. A failure leaves it null (the next check then rebuilds
+// once) rather than failing the deploy.
+let marker = null;
+try {
+  marker = await computeContentMarker();
+} catch (e) {
+  console.warn("prerender: could not compute the content marker:", e?.message ?? e);
+}
+
 const { render, getPublishedSlugs, getFacilityRoutes } = await import(pathToFileURL(SSR).href);
 const template = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
+if (template.includes("__RQ_STATE__") || !template.includes('<div id="root"></div>')) {
+  throw new Error("dist/index.html is already pre-rendered: run `vite build` first (this script is not idempotent)");
+}
 
 // Routes that are not pre-rendered (account pages, new stories, unknown URLs) are rewritten to this
 // empty app shell by vercel.json. It must not be index.html: that file becomes the pre-rendered
@@ -59,3 +74,10 @@ for (const route of ROUTES) {
   fs.writeFileSync(out, page);
   console.log(`prerendered ${route} (${html.length} bytes of body HTML)`);
 }
+
+// Records what this build was made from, so the rebuild job can tell when the database has moved on.
+fs.writeFileSync(
+  path.join(DIST, "build.json"),
+  JSON.stringify({ builtAt: new Date().toISOString(), marker, pages: ROUTES.length, stories: storyRoutes.length, facilities: facilityRoutes.length }) + "\n",
+);
+console.log(`build.json written (marker ${marker ?? "unavailable"})`);

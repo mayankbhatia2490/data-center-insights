@@ -1,0 +1,49 @@
+name: Rebuild if stale
+
+# The site is pre-rendered, so new stories and facility changes only appear after a rebuild. This job
+# checks the database against what the live site was built from and triggers a Vercel deploy when they
+# differ, then pings IndexNow engines with the changed URLs. See docs/rebuild-and-indexing.md.
+on:
+  schedule:
+    - cron: "7,37 * * * *" # every 30 minutes
+    - cron: "17 3 * * *" # daily forced rebuild as a safety net
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even if nothing changed
+        type: boolean
+        default: false
+      dry_run:
+        description: Report only, do not deploy
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rebuild
+  cancel-in-progress: false
+
+env:
+  SITE_URL: ${{ vars.SITE_URL }}
+  VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+  VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+  FORCE_REBUILD: ${{ inputs.force == true || github.event.schedule == '17 3 * * *' }}
+  DRY_RUN: ${{ inputs.dry_run == true }}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: oven-sh/setup-bun@v2
+      - run: npm ci
+      - name: Rebuild if the database has changed
+        run: bunx tsx scripts/rebuild-if-stale.ts

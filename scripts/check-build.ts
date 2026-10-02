@@ -5,6 +5,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { FACILITY_COLUMNS, facilityPath, isIndexable, type Facility } from "../src/lib/facility";
+import { isSitemapIndex, parseSitemapIndex, parseUrlset } from "../src/lib/sitemap";
 
 try {
   process.loadEnvFile(resolve(".env"));
@@ -85,13 +86,32 @@ for (const file of htmlFiles(DIST)) {
 
   pages.set(route, { html, indexable });
 }
+// ---- 1b. Rebuild bookkeeping ----
+const buildJson = existsSync(join(DIST, "build.json")) ? JSON.parse(readFileSync(join(DIST, "build.json"), "utf8")) : null;
+if (!buildJson?.builtAt) fail("dist/build.json is missing or has no builtAt (the rebuild job needs it)");
+else if (!buildJson.marker && process.env.VITE_SUPABASE_URL) fail("dist/build.json has no content marker, so the rebuild job would rebuild on every run");
+const keyFile = readFileSync(resolve("public/indexnow-key.txt"), "utf8").trim();
+if (!/^[a-zA-Z0-9-]{8,128}$/.test(keyFile)) fail("public/indexnow-key.txt is not a valid IndexNow key");
+if (!existsSync(join(DIST, "indexnow-key.txt"))) fail("dist/indexnow-key.txt is missing (IndexNow cannot verify the site)");
+
 if (pages.size < 10) fail(`only ${pages.size} pages were pre-rendered; expected the homepage, news, tracker and more`);
 
 // ---- 2. Sitemap agrees with the pages ----
-const sitemapPath = resolve("public/sitemap.xml");
-const sitemap = existsSync(sitemapPath) ? readFileSync(sitemapPath, "utf8") : "";
+const readPublic = (name: string) => (existsSync(resolve("public", name)) ? readFileSync(resolve("public", name), "utf8") : "");
+const sitemap = readPublic("sitemap.xml");
 if (!sitemap) fail("public/sitemap.xml is missing");
-const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(SITE_URL, "") || "/");
+const locs: string[] = [];
+if (sitemap && !isSitemapIndex(sitemap)) fail("public/sitemap.xml is not a sitemap index");
+else {
+  const children = parseSitemapIndex(sitemap);
+  if (children.length === 0) fail("the sitemap index lists no child sitemaps");
+  for (const child of children) {
+    const name = child.replace(SITE_URL, "").replace(/^\//, "");
+    const xml = readPublic(name);
+    if (!xml) fail(`child sitemap ${name} is listed in the index but missing`);
+    locs.push(...parseUrlset(xml).map((u) => u.loc.replace(SITE_URL, "") || "/"));
+  }
+}
 if (new Set(locs).size !== locs.length) fail("sitemap has duplicate URLs");
 if (locs.some((l) => l.startsWith("/leaders/"))) fail("sitemap lists /leaders/ profiles (people stay noindex until verified)");
 for (const loc of locs) {
