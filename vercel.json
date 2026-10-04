@@ -17,6 +17,7 @@
     { "source": "/account", "destination": "/spa.html" },
     { "source": "/admin/claims", "destination": "/spa.html" },
     { "source": "/admin/people-verification", "destination": "/spa.html" },
+    { "source": "/admin/research-review", "destination": "/spa.html" },
     { "source": "/about", "destination": "/spa.html" },
     { "source": "/about/methodology", "destination": "/spa.html" },
     { "source": "/privacy", "destination": "/spa.html" },
