@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { requireCronSecret } from "./_shared/cronAuth.ts";
 
 /**
  * Promote trusted discovery candidates into the evidence-first research pipeline.
