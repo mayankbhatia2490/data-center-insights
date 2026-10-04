@@ -33,6 +33,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Account = lazy(() => import("./pages/Account"));
 const AdminClaims = lazy(() => import("./pages/AdminClaims"));
 const AdminPeopleVerification = lazy(() => import("./pages/AdminPeopleVerification"));
+const AdminResearchReview = lazy(() => import("./pages/AdminResearchReview"));
 
 // Stats pulls in Leaflet, which touches `window` at import time, so it loads only in the browser.
 const Stats = lazy(() => import("./pages/Stats"));
@@ -68,6 +69,7 @@ const App = ({ Router = BrowserRouter, queryClient }: { Router?: RouterComponent
             <Route path="/account" element={<Account />} />
             <Route path="/admin/claims" element={<AdminClaims />} />
             <Route path="/admin/people-verification" element={<AdminPeopleVerification />} />
+            <Route path="/admin/research-review" element={<AdminResearchReview />} />
             <Route path="/about" element={<About />} />
             <Route path="/about/methodology" element={<Methodology />} />
             <Route path="/privacy" element={<Privacy />} />
