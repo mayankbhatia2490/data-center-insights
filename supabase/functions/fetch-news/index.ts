@@ -1,22 +1,14 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { requireCronSecret } from "../_shared/cronAuth.ts";
+import { requireCronSecret } from "./_shared/cronAuth.ts";
+import { DIRECT_FEED_SOURCES, type SourcePolicy } from "./_shared/sourceRegistry.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-cron-secret",
 };
 
-type SourcePolicy = { source: string; domain: string; feed: string; tier: 1 | 2; type: "primary" | "specialist_media" | "established_business_media"; reliability: number };
 type Article = Record<string, any>;
-
-const SOURCES: SourcePolicy[] = [
-  { source: "DataCenterDynamics", domain: "datacenterdynamics.com", feed: "https://www.datacenterdynamics.com/en/rss/", tier: 2, type: "specialist_media", reliability: 92 },
-  { source: "Data Center Knowledge", domain: "datacenterknowledge.com", feed: "https://www.datacenterknowledge.com/rss.xml", tier: 2, type: "specialist_media", reliability: 90 },
-  { source: "Capacity Media", domain: "capacitymedia.com", feed: "https://www.capacitymedia.com/feed", tier: 2, type: "specialist_media", reliability: 88 },
-  { source: "Blocks & Files", domain: "blocksandfiles.com", feed: "https://blocksandfiles.com/feed/", tier: 2, type: "specialist_media", reliability: 82 },
-  { source: "ServeTheHome", domain: "servethehome.com", feed: "https://www.servethehome.com/feed/", tier: 2, type: "specialist_media", reliability: 80 },
-  { source: "The Register", domain: "theregister.com", feed: "https://www.theregister.com/data_centre/headlines.atom", tier: 2, type: "established_business_media", reliability: 86 },
-];
+const SOURCES = DIRECT_FEED_SOURCES;
 
 const MENA_TERMS = ["dubai", "saudi", "uae", "abu dhabi", "riyadh", "qatar", "bahrain", "oman", "kuwait", "middle east", "gulf", "mena", "neom", "jeddah", "muscat", "g42", "khazna", "stc", "mubadala", "adq"];
 
@@ -62,6 +54,7 @@ function parseItems(xml: string, atom: boolean, policy: SourcePolicy): Article[]
 }
 
 async function fetchSource(policy: SourcePolicy): Promise<Article[]> {
+  if (!policy.feed) return [];
   try {
     const response = await fetch(policy.feed, { headers: { "User-Agent": "DataCenterPulse/2.0" } });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
