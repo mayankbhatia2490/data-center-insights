@@ -13,19 +13,19 @@ const getSentimentBadge = (sentiment: string | null) => {
     case "Bullish":
       return (
         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-positive/15 text-positive text-[10px] font-bold">
-          <TrendingUp size={10} /> Bullish
+          <TrendingUp size={10} /> AI tone: bullish
         </span>
       );
     case "Bearish":
       return (
         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-destructive/10 text-[hsl(17_88%_32%)] text-[10px] font-bold">
-          <TrendingDown size={10} /> Bearish
+          <TrendingDown size={10} /> AI tone: bearish
         </span>
       );
     case "Neutral":
       return (
         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[4px] bg-muted text-muted-foreground text-[10px] font-bold">
-          <Minus size={10} /> Neutral
+          <Minus size={10} /> AI tone: neutral
         </span>
       );
     default:

@@ -42,8 +42,9 @@ const Index = () => {
   // Credibility stats
   const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
   const [articleCount, setArticleCount] = useState<number | null>(null);
+  const [signalsLoaded, setSignalsLoaded] = useState(false);
   const [signals, setSignals] = useState<
-    { type: string | null; title: string | null; region: string | null; confidence: number | null }[]
+    { type: string | null; title: string | null; region: string | null; confidence: number | null; confidence_tier: string | null; source_article_ids: string[] | null }[]
   >([]);
 
   useEffect(() => {
@@ -52,16 +53,19 @@ const Index = () => {
       if (typeof data === "number") setSubscriberCount(data);
     });
     // Fetch article count
-    supabase.from("articles").select("id", { count: "exact", head: true }).eq("publication_status", "published").then(({ count }) => {
+    supabase.from("articles").select("id", { count: "exact", head: true }).eq("publication_status", "published").in("source_tier", [1, 2]).then(({ count }) => {
       if (count !== null) setArticleCount(count);
     });
     // Fetch top 3 market signals
     supabase
       .from("market_signals")
-      .select("type, title, region, confidence")
+      .select("type, title, region, confidence, confidence_tier, source_article_ids")
       .order("created_at", { ascending: false })
-      .limit(3)
-      .then(({ data }) => { if (data) setSignals(data); });
+      .limit(10)
+      .then(({ data }) => {
+        if (data) setSignals(data.filter((signal) => signal.confidence_tier === "verified" && (signal.source_article_ids?.length || 0) >= 2).slice(0, 3));
+        setSignalsLoaded(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -149,10 +153,12 @@ const Index = () => {
             {/* Live Market Signals */}
             <div className="flex flex-col gap-2">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Live Market Signals</p>
-              {signals.length === 0 ? (
+              {!signalsLoaded ? (
                 <div className="space-y-1.5">
                   {[1,2,3].map(i => <Skeleton key={i} className="h-4 w-full" />)}
                 </div>
+              ) : signals.length === 0 ? (
+                <p className="text-xs leading-relaxed text-muted-foreground">No corroborated signals published yet. Early AI-assisted candidates remain in review.</p>
               ) : (
                 <div className="space-y-2">
                   {signals.map((s, i) => (
@@ -181,7 +187,7 @@ const Index = () => {
                   <Globe className="h-3.5 w-3.5 text-primary" />
                   <span className="text-xs text-foreground">
                     {articleCount !== null
-                      ? <><strong>{articleCount.toLocaleString()}</strong> validated MENA stories published</>
+                      ? <><strong>{articleCount.toLocaleString()}</strong> specialist-source stories published</>
                       : <Skeleton className="h-4 w-48 inline-block" />}
                   </span>
                 </div>
@@ -230,8 +236,8 @@ const Index = () => {
               ))
             ) : visibleNews.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
-                <p className="text-lg font-semibold">No articles yet</p>
-                <p className="text-sm mt-1">News will appear here once the aggregator runs.</p>
+                <p className="text-lg font-semibold">No stories match this filter</p>
+                <p className="text-sm mt-1">Try All, Infrastructure, or MENA. We only publish stories that pass the source policy.</p>
               </div>
             ) : (
               <>

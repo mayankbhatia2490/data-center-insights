@@ -15,7 +15,7 @@ const Intelligence = () => {
     <div className="min-h-screen bg-background pb-16">
       <Seo
         title="Market Intelligence — Data Center Pulse"
-        description="Weekly data center market sentiment, emerging signals, and outlook for MENA and global infrastructure investors."
+        description="Evidence-gated data center developments, source-backed signals, and regional outlook for MENA infrastructure decision-makers."
         path="/intelligence"
       />
       <Header />
@@ -28,7 +28,7 @@ const Intelligence = () => {
             Market Intelligence
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Weekly sentiment, emerging signals, and market outlook.
+            Evidence-gated developments and regional signals. AI-assisted interpretations remain clearly marked until reviewed.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ const Intelligence = () => {
         {/* Market Signals + Regional Outlook — premium tier */}
         <PremiumGate
           title="Market Signals is a premium feature"
-          description="Emerging risk and opportunity signals across MENA data center markets, generated daily from our AI pipeline — available to Premium subscribers."
+          description="Source-backed risk and opportunity signals across MENA data center markets. AI-assisted candidates remain in review until corroborated — available to Premium subscribers."
         >
           <MarketSignals />
           <RegionalOutlookSection />

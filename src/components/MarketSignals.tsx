@@ -25,7 +25,9 @@ const MarketSignals = () => {
     );
   }
 
-  if (!signals || signals.length === 0) return null;
+  const publicSignals = (signals || []).filter(
+    (signal) => signal.confidence_tier === "verified" && (signal.source_article_ids?.length || 0) >= 2,
+  );
 
   return (
     <section className="container py-8">
@@ -33,8 +35,13 @@ const MarketSignals = () => {
         <TrendingUp className="h-5 w-5 text-primary" />
         Market Signals
       </h2>
+      {publicSignals.length === 0 ? (
+        <div className="rounded border border-dashed border-border bg-muted/30 p-5 text-sm text-muted-foreground">
+          No corroborated market signals are published yet. Early AI-assisted signals remain in review until they have independent evidence.
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {signals.map((s) => {
+        {publicSignals.map((s) => {
           const config = typeConfig[s.type || "trend"] || typeConfig.trend;
           const Icon = config.icon;
           return (
@@ -71,6 +78,7 @@ const MarketSignals = () => {
           );
         })}
       </div>
+      )}
     </section>
   );
 };

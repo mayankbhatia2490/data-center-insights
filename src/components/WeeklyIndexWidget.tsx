@@ -32,6 +32,24 @@ const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
 
   if (!index) return null;
 
+  if (index.confidence_tier !== "verified") {
+    return (
+      <div className="border-b border-border pb-8 mb-8">
+        <h3 className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-4">
+          <span className="w-[2px] h-4 bg-primary mr-2 shrink-0" />
+          Pulse Index
+          <ConfidenceBadge tier={index.confidence_tier} sourceCount={index.source_article_ids?.length} />
+        </h3>
+        <div className="rounded border border-dashed border-border bg-muted/30 p-3">
+          <p className="text-sm font-semibold">No independently verified pulse is published yet.</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+            The current score is AI-assisted and remains internal until the underlying claims are corroborated and reviewed.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const ScoreIcon = index.score > 10 ? TrendingUp : index.score < -10 ? TrendingDown : Minus;
   const scoreColor = index.score > 10 ? "text-positive" : index.score < -10 ? "text-destructive" : "text-muted-foreground";
 

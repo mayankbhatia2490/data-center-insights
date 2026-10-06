@@ -79,7 +79,7 @@ const EditorsPicks = () => {
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
-                      {article.sentiment}
+                      AI tone: {article.sentiment.toLowerCase()}
                     </span>
                   )}
                 </div>
