@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { requireCronSecret } from "../_shared/cronAuth.ts";
-import { callAI } from "../_shared/aiClient.ts";
+import { requireCronSecret } from "./_shared/cronAuth.ts";
+import { callAI } from "./_shared/aiClient.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,12 +37,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Fetch articles from the last 24 hours including insight
+    // Only generate a public digest from articles that passed the source and validation gates.
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const { data: articles } = await supabase
       .from("articles")
       .select("title, summary, category, source, source_url, sentiment, insight")
       .gte("published_at", yesterday)
+      .eq("publication_status", "published")
+      .in("validation_status", ["validated_primary", "validated_specialist"])
+      .in("source_tier", [1, 2])
       .order("published_at", { ascending: false })
       .limit(50);
 

@@ -24,7 +24,7 @@ const Archive = () => {
     <div className="min-h-screen bg-background">
       <Seo
         title="Briefing Archive — Data Center Pulse"
-        description="Browse past daily AI-generated intelligence briefings on MENA and global data center M&A, AI infrastructure, and sustainability."
+        description="Browse past AI-assisted data center briefings with clear source and verification limitations."
         path="/archive"
       />
       <header className="sticky top-0 z-50 h-16 bg-card border-b-2 border-b-primary">
@@ -43,7 +43,7 @@ const Archive = () => {
 
       <main className="container py-12 max-w-3xl">
         <h1 className="text-3xl font-semibold mb-2">Briefing Archive</h1>
-        <p className="text-muted-foreground mb-2">Browse past daily AI-generated intelligence briefings.</p>
+        <p className="text-muted-foreground mb-2">Browse past AI-assisted briefings. These are interpretations, not verified facts, unless the underlying stories passed the validation policy.</p>
 
         {!isLoading && digests?.length ? (
           <p className="text-xs text-muted-foreground mb-8">

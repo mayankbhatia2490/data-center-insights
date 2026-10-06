@@ -15,7 +15,18 @@ export const dailyDigestQueryOptions = queryOptions({
       .limit(1)
       .maybeSingle();
     if (error) throw error;
-    return data;
+    if (!data) return null;
+
+    const { count, error: evidenceError } = await supabase
+      .from("articles")
+      .select("id", { count: "exact", head: true })
+      .eq("publication_status", "published")
+      .in("validation_status", ["validated_primary", "validated_specialist"])
+      .gte("published_at", `${data.digest_date}T00:00:00Z`)
+      .lt("published_at", `${data.digest_date}T23:59:59Z`);
+    if (evidenceError) throw evidenceError;
+
+    return count && count > 0 ? data : null;
   },
 });
 
@@ -51,7 +62,7 @@ const DailyDigest = () => {
           <div className="flex items-center gap-2">
             <Zap size={16} className="text-primary" />
             <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary">
-              Morning Intelligence Brief
+              Verified Morning Brief
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
