@@ -38,7 +38,7 @@ const WeeklyIndexWidget = ({ compact = false }: { compact?: boolean }) => {
         <h3 className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[1.5px] text-muted-foreground mb-4">
           <span className="w-[2px] h-4 bg-primary mr-2 shrink-0" />
           Pulse Index
-          <ConfidenceBadge tier={index.confidence_tier} sourceCount={index.source_article_ids?.length} />
+          <ConfidenceBadge tier={index.confidence_tier} />
         </h3>
         <div className="rounded border border-dashed border-border bg-muted/30 p-3">
           <p className="text-sm font-semibold">No independently verified pulse is published yet.</p>

@@ -17,16 +17,20 @@ export const dailyDigestQueryOptions = queryOptions({
     if (error) throw error;
     if (!data) return null;
 
+    // Only count validated stories the brief could have used: published in the
+    // 48h before it was generated (not later the same calendar day).
+    const generatedAt = new Date(data.created_at);
+    const windowStart = new Date(generatedAt.getTime() - 48 * 60 * 60 * 1000);
     const { count, error: evidenceError } = await supabase
       .from("articles")
       .select("id", { count: "exact", head: true })
       .eq("publication_status", "published")
       .in("validation_status", ["validated_primary", "validated_specialist"])
-      .gte("published_at", `${data.digest_date}T00:00:00Z`)
-      .lt("published_at", `${data.digest_date}T23:59:59Z`);
+      .gte("published_at", windowStart.toISOString())
+      .lte("published_at", generatedAt.toISOString());
     if (evidenceError) throw evidenceError;
 
-    return count && count > 0 ? data : null;
+    return count && count > 0 ? { ...data, validatedCount: count } : null;
   },
 });
 
@@ -62,7 +66,7 @@ const DailyDigest = () => {
           <div className="flex items-center gap-2">
             <Zap size={16} className="text-primary" />
             <span className="text-[10px] font-extrabold uppercase tracking-[1.5px] text-primary">
-              Verified Morning Brief
+              AI-assisted brief
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -70,6 +74,9 @@ const DailyDigest = () => {
             {format(new Date(digest.digest_date + "T00:00:00"), "MMMM d, yyyy")}
           </div>
         </div>
+        <p className="-mt-3 mb-5 text-[11px] text-muted-foreground">
+          AI interpretation of {digest.validatedCount} validated source stor{digest.validatedCount === 1 ? "y" : "ies"} — not independently verified analysis or investment advice.
+        </p>
 
         <div className="prose prose-sm dark:prose-invert max-w-none 
           [&_h2]:text-[13px] [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:tracking-[1px] [&_h2]:text-primary [&_h2]:mt-5 [&_h2]:mb-2
